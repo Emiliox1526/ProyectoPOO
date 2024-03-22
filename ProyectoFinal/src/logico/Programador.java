@@ -1,9 +1,9 @@
 package logico;
 
-public class Programadores extends Trabajador {
+public class Programador extends Trabajador {
 	private String[] lenguajeDeProgramacion = new String[3];
 
-	public Programadores(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
+	public Programador(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
 			int edad, String evaluacionAnual, String[] lenguajeDeProgramacion) {
 		super(cedula, nombre, apellidos, direccionParticular, sexo, edad, evaluacionAnual);
 		this.lenguajeDeProgramacion = lenguajeDeProgramacion;
