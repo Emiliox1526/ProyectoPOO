@@ -113,6 +113,42 @@ public class Empresa {
 		idTrabajador++;
 		cantTrabajador++;
 	}
+	public void eliminarCliente(String idCliente) {
+	    for (int i = misClientes.size() - 1; i >= 0; i--) {
+	        Cliente cliente = misClientes.get(i);
+	        if (cliente.getId().equalsIgnoreCase(idCliente)) {
+	            misClientes.remove(i);
+	            cantCliente--;
+	        }
+	    }
+	}
 	
+	public void eliminarProyecto(String idProyecto) {
+	    for (int i = misProyectos.size() - 1; i >= 0; i--) {
+	        Proyecto proyecto = misProyectos.get(i);
+	        if (proyecto.getId().equalsIgnoreCase(idProyecto)) {
+	            misProyectos.remove(i);
+	            cantProyecto--;
+	        }
+	    }
+	}
+	public void eliminarContrato(String idContrato) {
+	    for (int i = misContratos.size() - 1; i >= 0; i--) {
+	        Contrato contrato = misContratos.get(i);
+	        if (contrato.getId().equalsIgnoreCase(idContrato)) {
+	            misContratos.remove(i);
+	            cantContrato--;
+	        }
+	    }
+	}
+	public void eliminarTrabajador(String cedulaTrabajador) {
+	    for (int i = misProyectos.size() - 1; i >= 0; i--) {
+	        Trabajador trabajador = misTrabajadores.get(i);
+	        if (trabajador.getCedula().equalsIgnoreCase(cedulaTrabajador)) {
+	            misTrabajadores.remove(i);
+	            cantTrabajador--;
+	        }
+	    }
+	}
 
 }
