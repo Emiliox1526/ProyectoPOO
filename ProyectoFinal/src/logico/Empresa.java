@@ -11,6 +11,13 @@ public class Empresa {
 	private static Empresa empresa = null;
 	public static int idContrato;
 	public static int idProyecto;
+	public static int idCliente;
+	public static int idTrabajador;
+	public int cantContrato;
+	public int cantProyecto;
+	public int cantCliente;
+	public int cantTrabajador;
+	
 	
 	public Empresa() {
 		super();
@@ -20,6 +27,7 @@ public class Empresa {
 		misProyectos = new ArrayList<>();
 		idContrato = 1;
 		idProyecto = 1;
+		idCliente = 1;
 	}
 	
 	public static Empresa getInstance() {
@@ -85,6 +93,26 @@ public class Empresa {
 		Empresa.idProyecto = idProyecto;
 	}
 	
+	public void ingresarCliente(Cliente cliente){
+		misClientes.add(cliente);
+		idCliente++;
+		cantCliente++;
+	}
+	public void ingresarContrato(Contrato contrato){
+		misContratos.add(contrato);
+		idContrato++;
+		cantContrato++;
+	}
+	public void ingresarProyecto(Proyecto proyecto){
+		misProyectos.add(proyecto);
+		idProyecto++;
+		cantProyecto++;
+	}
+	public void ingresarTrabajador(Trabajador trabajador){
+		misTrabajadores.add(trabajador);
+		idTrabajador++;
+		cantTrabajador++;
+	}
 	
 
 }
