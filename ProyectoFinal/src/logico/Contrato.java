@@ -58,6 +58,9 @@ public class Contrato {
 	public void setFechaInicio(Date fechaInicio) {
 		this.fechaInicio = fechaInicio;
 	}
+	public float calcularPenalizacion() {
+		return 0; //Cambiar cuando tengamos mas claro todas las otras funciones [TEMPORAL]
+	}
 	
 
 }
