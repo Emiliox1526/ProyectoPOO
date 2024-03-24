@@ -1,5 +1,6 @@
 package logico;
 
+import java.sql.Date;
 import java.util.ArrayList;
 
 public class Empresa {
@@ -149,6 +150,32 @@ public class Empresa {
 	            cantTrabajador--;
 	        }
 	    }
+	}
+	
+	public void ProrrogarFecha(String idProyecto,Date fechaProrroga) {
+		
+		for (Proyecto proyecto : misProyectos) {
+			if(proyecto.getId().equalsIgnoreCase(idProyecto)) {
+				proyecto.setFechaProrroga(fechaProrroga);
+			}	
+		}	
+	}
+	
+	public float CalcularPenalizacion(String idProyecto) {
+		
+		float penalizacion = 0;
+		for (Proyecto proyecto : misProyectos) {
+			if(proyecto.getId().equalsIgnoreCase(idProyecto)) {
+				if(proyecto.getFechaProrroga() == null) {
+					penalizacion = (proyecto.getFechaEntregaInicial().getDay() - proyecto.getFechaEntregaFinal().getDay())*50;
+				}else {
+					
+					penalizacion = (proyecto.getFechaProrroga().getDay() - proyecto.getFechaEntregaFinal().getDay())*50;
+					
+				}
+			}	
+		}	
+		return penalizacion;
 	}
 
 }
