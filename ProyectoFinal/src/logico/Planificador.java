@@ -1,11 +1,13 @@
 package logico;
 
+import java.sql.Date;
+
 public class Planificador extends Trabajador {
 	private int frecuenciaDePlanificacion;
 
 	public Planificador(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
-			int edad, String evaluacionAnual, int frecuenciaDePlanificacion) {
-		super(cedula, nombre, apellidos, direccionParticular, sexo, edad, evaluacionAnual);
+			Date fechaDeNacimiento, String evaluacionAnual, int frecuenciaDePlanificacion) {
+		super(cedula, nombre, apellidos, direccionParticular, sexo, fechaDeNacimiento, evaluacionAnual);
 		this.frecuenciaDePlanificacion = frecuenciaDePlanificacion;
 	}
 

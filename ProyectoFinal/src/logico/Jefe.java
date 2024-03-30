@@ -1,12 +1,13 @@
 package logico;
 
+import java.sql.Date;
+
 public class Jefe extends Trabajador {
 	private int cantTrabajadores;
-	
 
-	public Jefe(String cedula, String nombre, String apellidos, String direccionParticular, String sexo, int edad,
-			String evaluacionAnual, int cantTrabajadores) {
-		super(cedula, nombre, apellidos, direccionParticular, sexo, edad, evaluacionAnual);
+	public Jefe(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
+			Date fechaDeNacimiento, String evaluacionAnual, int cantTrabajadores) {
+		super(cedula, nombre, apellidos, direccionParticular, sexo, fechaDeNacimiento, evaluacionAnual);
 		this.cantTrabajadores = cantTrabajadores;
 	}
 

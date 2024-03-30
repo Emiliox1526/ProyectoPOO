@@ -156,10 +156,13 @@ public class Empresa {
 		
 		for (Proyecto proyecto : misProyectos) {
 			if(proyecto.getId().equalsIgnoreCase(idProyecto)) {
-				proyecto.setFechaProrroga(fechaProrroga);
+				if(!(proyecto.isPenalizado())) {
+					proyecto.setFechaProrroga(fechaProrroga);
+				}
 			}	
 		}	
 	}
+	
 	
 	public float CalcularPenalizacion(String idProyecto) {
 		
@@ -168,10 +171,10 @@ public class Empresa {
 			if(proyecto.getId().equalsIgnoreCase(idProyecto)) {
 				if(proyecto.getFechaProrroga() == null) {
 					penalizacion = (proyecto.getFechaEntregaInicial().getDay() - proyecto.getFechaEntregaFinal().getDay())*50;
+					proyecto.setPenalizado(true);
 				}else {
-					
 					penalizacion = (proyecto.getFechaProrroga().getDay() - proyecto.getFechaEntregaFinal().getDay())*50;
-					
+					proyecto.setPenalizado(true);
 				}
 			}	
 		}	

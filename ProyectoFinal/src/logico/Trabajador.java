@@ -1,23 +1,27 @@
 package logico;
 
+import java.sql.Date;
+import java.time.LocalDate;
+
 public class Trabajador {
 	
+	static LocalDate fechaActual = LocalDate.now();
 	protected String cedula;
 	protected String nombre;
 	protected String apellidos;
 	protected String direccionParticular;
 	protected String sexo;
-	protected int edad;
+	protected Date FechaDeNacimiento;
 	protected String evaluacionAnual;
-	public Trabajador(String cedula, String nombre, String apellidos, String direccionParticular, String sexo, int edad,
-			String evaluacionAnual) {
+	public Trabajador(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
+			Date fechaDeNacimiento, String evaluacionAnual) {
 		super();
 		this.cedula = cedula;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.direccionParticular = direccionParticular;
 		this.sexo = sexo;
-		this.edad = edad;
+		FechaDeNacimiento = fechaDeNacimiento;
 		this.evaluacionAnual = evaluacionAnual;
 	}
 	public String getCedula() {
@@ -50,11 +54,11 @@ public class Trabajador {
 	public void setSexo(String sexo) {
 		this.sexo = sexo;
 	}
-	public int getEdad() {
-		return edad;
+	public Date getFechaDeNacimiento() {
+		return FechaDeNacimiento;
 	}
-	public void setEdad(int edad) {
-		this.edad = edad;
+	public void setFechaDeNacimiento(Date fechaDeNacimiento) {
+		FechaDeNacimiento = fechaDeNacimiento;
 	}
 	public String getEvaluacionAnual() {
 		return evaluacionAnual;
@@ -62,5 +66,23 @@ public class Trabajador {
 	public void setEvaluacionAnual(String evaluacionAnual) {
 		this.evaluacionAnual = evaluacionAnual;
 	}
-
+	
+	int calcularEdad(){
+		int edadanios = 0;
+		int edadDias = 0;
+		int edad = 0;
+		
+		edadanios = fechaActual.getYear() - FechaDeNacimiento.getYear();
+		edadDias = fechaActual.getDayOfYear() - FechaDeNacimiento.getDay();
+		
+		if (edadDias < 0) {
+			edad = edadanios + 1;
+		}else {
+			edad = edadanios;
+		}
+		
+		return edad;
+		
+	}
+	
 }

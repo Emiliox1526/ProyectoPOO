@@ -1,11 +1,13 @@
 package logico;
 
+import java.sql.Date;
+
 public class Programador extends Trabajador {
 	private String[] lenguajeDeProgramacion = new String[3];
 
 	public Programador(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
-			int edad, String evaluacionAnual, String[] lenguajeDeProgramacion) {
-		super(cedula, nombre, apellidos, direccionParticular, sexo, edad, evaluacionAnual);
+			Date fechaDeNacimiento, String evaluacionAnual, String[] lenguajeDeProgramacion) {
+		super(cedula, nombre, apellidos, direccionParticular, sexo, fechaDeNacimiento, evaluacionAnual);
 		this.lenguajeDeProgramacion = lenguajeDeProgramacion;
 	}
 
