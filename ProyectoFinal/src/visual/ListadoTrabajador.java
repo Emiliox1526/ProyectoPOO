@@ -23,6 +23,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.border.LineBorder;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.MatteBorder;
+import java.awt.SystemColor;
 
 public class ListadoTrabajador extends JDialog {
 
@@ -54,111 +60,120 @@ public class ListadoTrabajador extends JDialog {
 	
 		public ListadoTrabajador() {
 		setResizable(false);
-			setBounds(100, 100, 435, 423);
+			setBounds(100, 100, 479, 456);
 			getContentPane().setLayout(new BorderLayout());
 			contentPanel.setBackground(Color.WHITE);
 			contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 			getContentPane().add(contentPanel, BorderLayout.CENTER);
 			contentPanel.setLayout(null);
-			{
-				JSeparator separator = new JSeparator();
-				separator.setBounds(10, 36, 374, 2);
-				contentPanel.add(separator);
-			}
-			{
-				JLabel lblNewLabel = new JLabel("Trabajadores\r\n");
-				lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 15));
-				lblNewLabel.setBounds(34, 11, 105, 14);
-				contentPanel.add(lblNewLabel);
-			}
-			{
-				JLabel lblNewLabel_1 = new JLabel("Buscar por:");
-				lblNewLabel_1.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-				lblNewLabel_1.setBounds(20, 49, 82, 14);
-				contentPanel.add(lblNewLabel_1);
-			}
-			{
-				JLabel lblNewLabel_2 = new JLabel("ID");
-				lblNewLabel_2.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-				lblNewLabel_2.setBounds(20, 91, 30, 14);
-				contentPanel.add(lblNewLabel_2);
-			}
-			{
-				JLabel lblNewLabel_3 = new JLabel("Nombre (s)");
-				lblNewLabel_3.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-				lblNewLabel_3.setBounds(20, 116, 96, 14);
-				contentPanel.add(lblNewLabel_3);
-			}
-			{
-				JLabel lblApellidos = new JLabel("Apellido (s)");
-				lblApellidos.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-				lblApellidos.setBounds(20, 141, 96, 14);
-				contentPanel.add(lblApellidos);
-			}
-			{
-				JLabel lblNewLabel_4 = new JLabel("Evaluacion anual");
-				lblNewLabel_4.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-				lblNewLabel_4.setBounds(20, 166, 119, 14);
-				contentPanel.add(lblNewLabel_4);
-			}
-			
-			Id = new JTextField();
-			Id.setBounds(172, 92, 86, 14);
-			contentPanel.add(Id);
-			Id.setColumns(10);
-			
-			nombre = new JTextField();
-			nombre.setColumns(10);
-			nombre.setBounds(172, 117, 86, 14);
-			contentPanel.add(nombre);
-			
-			Apellido = new JTextField();
-			Apellido.setColumns(10);
-			Apellido.setBounds(172, 142, 86, 14);
-			contentPanel.add(Apellido);
-			
-			JComboBox EvalAnual = new JComboBox();
-			EvalAnual.setBackground(Color.WHITE);
-			EvalAnual.setBounds(172, 164, 86, 20);
-			contentPanel.add(EvalAnual);
-			
-			JButton btnNuevo = new JButton("Nuevo");
-			btnNuevo.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
-			btnNuevo.setBackground(new Color(0, 255, 255));
-			btnNuevo.setBounds(307, 113, 89, 42);
-			contentPanel.add(btnNuevo);
-			
-			JButton btnBuscar = new JButton("Buscar");
-			btnBuscar.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-				}
-			});
-			btnBuscar.setBackground(Color.WHITE);
-			btnBuscar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
-			btnBuscar.setBounds(172, 195, 89, 23);
-			contentPanel.add(btnBuscar);
 			
 			JPanel panel = new JPanel();
-			panel.setBounds(20, 260, 374, 90);
+			panel.setBounds(20, 195, 419, 155);
 			contentPanel.add(panel);
 			panel.setLayout(new BorderLayout(0, 0));
 			
 			JScrollPane scrollPane = new JScrollPane();
-			panel.add(scrollPane, BorderLayout.CENTER);
+			panel.add(scrollPane);
 			
 			String[] header = {"ID", "Nombre", "Apellido", "Evaluacion"};
 			
 			model = new DefaultTableModel();
 			model.setColumnIdentifiers(header);
 			table = new JTable();
+			table.setBackground(SystemColor.textHighlightText);
 			table.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			table.setColumnSelectionAllowed(true);
 			table.setEnabled(false);
 			table.setModel(model);
 			scrollPane.setViewportView(table);
 			
+			JPanel panel_1 = new JPanel();
+			panel_1.setBackground(SystemColor.menu);
+			panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
+			panel_1.setBounds(10, 11, 442, 357);
+			contentPanel.add(panel_1);
+			panel_1.setLayout(null);
+			{
+				JLabel lblNewLabel = new JLabel("Trabajadores\r\n");
+				lblNewLabel.setBounds(10, 0, 91, 25);
+				panel_1.add(lblNewLabel);
+				lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 15));
+			}
+			{
+				JSeparator separator = new JSeparator();
+				separator.setBounds(10, 23, 429, 2);
+				panel_1.add(separator);
+			}
+			{
+				JLabel lblNewLabel_1 = new JLabel("Buscar por:");
+				lblNewLabel_1.setBounds(10, 36, 82, 14);
+				panel_1.add(lblNewLabel_1);
+				lblNewLabel_1.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+			}
+			{
+				JLabel lblNewLabel_2 = new JLabel("ID:");
+				lblNewLabel_2.setBounds(10, 61, 30, 14);
+				panel_1.add(lblNewLabel_2);
+				lblNewLabel_2.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+			}
+			{
+				JLabel lblNewLabel_3 = new JLabel("Nombre(s):");
+				lblNewLabel_3.setBounds(10, 86, 96, 14);
+				panel_1.add(lblNewLabel_3);
+				lblNewLabel_3.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+			}
+			{
+				JLabel lblApellidos = new JLabel("Apellido(s):");
+				lblApellidos.setBounds(10, 114, 96, 14);
+				panel_1.add(lblApellidos);
+				lblApellidos.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+			}
+			{
+				JLabel lblNewLabel_4 = new JLabel("Evaluacion anual:");
+				lblNewLabel_4.setBounds(10, 139, 119, 14);
+				panel_1.add(lblNewLabel_4);
+				lblNewLabel_4.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+			}
+			
+			Id = new JTextField();
+			Id.setBounds(135, 59, 114, 20);
+			panel_1.add(Id);
+			Id.setColumns(10);
+			
+			nombre = new JTextField();
+			nombre.setBounds(135, 84, 114, 20);
+			panel_1.add(nombre);
+			nombre.setColumns(10);
+			
+			Apellido = new JTextField();
+			Apellido.setBounds(135, 112, 114, 20);
+			panel_1.add(Apellido);
+			Apellido.setColumns(10);
+			
+			JComboBox EvalAnual = new JComboBox();
+			EvalAnual.setBounds(135, 137, 114, 20);
+			panel_1.add(EvalAnual);
+			EvalAnual.setBackground(Color.WHITE);
+			
+			JButton btnNuevo = new JButton("Nuevo");
+			btnNuevo.setBounds(285, 73, 89, 42);
+			panel_1.add(btnNuevo);
+			btnNuevo.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
+			btnNuevo.setBackground(new Color(0, 255, 255));
+			
+			JButton btnBuscar = new JButton("Buscar");
+			btnBuscar.setBounds(285, 130, 89, 23);
+			panel_1.add(btnBuscar);
+			btnBuscar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+				}
+			});
+			btnBuscar.setBackground(new Color(51, 204, 153));
+			btnBuscar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
+			
 			{
 				JPanel buttonPane = new JPanel();
+				buttonPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 				buttonPane.setBackground(Color.WHITE);
 				buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 				getContentPane().add(buttonPane, BorderLayout.SOUTH);
