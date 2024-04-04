@@ -66,19 +66,22 @@ public class Principal extends JFrame {
         contentPane.add(lblNewLabel);
 
         JPanel panel_3 = new JPanel();
-        panel_3.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+        panel_3.setForeground(new Color(153, 102, 102));
+        panel_3.setBorder(new LineBorder(new Color(153, 102, 102), 2));
         panel_3.setBounds(10, 32, 695, 261);
         contentPane.add(panel_3);
         panel_3.setLayout(null);
         
                 JPanel panel = new JPanel();
+                panel.setBackground(new Color(51, 204, 204));
                 panel.setBounds(48, 56, 120, 33);
                 panel_3.add(panel);
                 panel.setBorder(new LineBorder(new Color(0, 0, 0)));
                 
                         JLabel lblNewLabel_1 = new JLabel("CLIENTES");
+                        lblNewLabel_1.setForeground(new Color(255, 255, 255));
                         panel.add(lblNewLabel_1);
-                        lblNewLabel_1.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
+                        lblNewLabel_1.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
                         
                                 JButton btnCliente = new JButton("");
                                 btnCliente.addActionListener(new ActionListener() {
@@ -95,12 +98,15 @@ public class Principal extends JFrame {
                                 btnCliente.setBackground(Color.WHITE);
                                 
                                         JPanel panel_1 = new JPanel();
+                                        panel_1.setBackground(new Color(102, 204, 204));
                                         panel_1.setBounds(210, 56, 120, 33);
                                         panel_3.add(panel_1);
                                         panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
                                         
                                                 JLabel lblTrabajadores_1 = new JLabel("TRABAJADORES");
-                                                lblTrabajadores_1.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
+                                                lblTrabajadores_1.setForeground(new Color(255, 255, 255));
+                                                lblTrabajadores_1.setBackground(new Color(255, 255, 255));
+                                                lblTrabajadores_1.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
                                                 panel_1.add(lblTrabajadores_1);
                                                 
                                                         JButton btnTrabajador = new JButton("");
@@ -113,12 +119,14 @@ public class Principal extends JFrame {
                                                         btnTrabajador.setIcon(new ImageIcon(trabajadorImage));
                                                         
                                                                 JPanel panel_2 = new JPanel();
+                                                                panel_2.setBackground(new Color(102, 204, 204));
                                                                 panel_2.setBounds(367, 56, 120, 33);
                                                                 panel_3.add(panel_2);
                                                                 panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
                                                                 
                                                                         JLabel lblProyectos_1 = new JLabel("PROYECTOS");
-                                                                        lblProyectos_1.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
+                                                                        lblProyectos_1.setForeground(new Color(255, 255, 255));
+                                                                        lblProyectos_1.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
                                                                         panel_2.add(lblProyectos_1);
                                                                         
                                                                                 JButton btnProyecto = new JButton("");
@@ -136,13 +144,15 @@ public class Principal extends JFrame {
                                                                                 panel_3.add(btnAdministracion);
                                                                                 
                                                                                 JPanel panel_4 = new JPanel();
+                                                                                panel_4.setBackground(new Color(102, 204, 204));
                                                                                 panel_4.setBorder(new LineBorder(new Color(0, 0, 0)));
                                                                                 panel_4.setBounds(520, 56, 120, 33);
                                                                                 panel_3.add(panel_4);
                                                                                 
                                                                                 JLabel lblAdministracion = new JLabel("ADMINISTRACION");
+                                                                                lblAdministracion.setForeground(new Color(255, 255, 255));
                                                                                 lblAdministracion.setEnabled(false);
-                                                                                lblAdministracion.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
+                                                                                lblAdministracion.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
                                                                                 panel_4.add(lblAdministracion);
     }
 }
