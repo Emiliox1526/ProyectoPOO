@@ -7,7 +7,11 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+
+import logico.Empresa;
+import logico.Trabajador;
 
 import java.awt.Color;
 import javax.swing.JSeparator;
@@ -23,12 +27,12 @@ import java.awt.event.ActionEvent;
 public class ListadoTrabajador extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTable table;
+	private JTextField Id;
+	private JTextField nombre;
+	private JTextField Apellido;
 	private DefaultTableModel model;
 	private Object[] row;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -63,89 +67,97 @@ public class ListadoTrabajador extends JDialog {
 			}
 			{
 				JLabel lblNewLabel = new JLabel("Trabajadores\r\n");
-				lblNewLabel.setFont(new Font("Segoe Print", Font.PLAIN, 15));
+				lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 15));
 				lblNewLabel.setBounds(34, 11, 105, 14);
 				contentPanel.add(lblNewLabel);
 			}
 			{
 				JLabel lblNewLabel_1 = new JLabel("Buscar por:");
-				lblNewLabel_1.setFont(new Font("Segoe Print", Font.PLAIN, 14));
+				lblNewLabel_1.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 				lblNewLabel_1.setBounds(20, 49, 82, 14);
 				contentPanel.add(lblNewLabel_1);
 			}
 			{
 				JLabel lblNewLabel_2 = new JLabel("ID");
-				lblNewLabel_2.setFont(new Font("Segoe Print", Font.PLAIN, 14));
+				lblNewLabel_2.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 				lblNewLabel_2.setBounds(20, 91, 30, 14);
 				contentPanel.add(lblNewLabel_2);
 			}
 			{
 				JLabel lblNewLabel_3 = new JLabel("Nombre (s)");
-				lblNewLabel_3.setFont(new Font("Segoe Print", Font.PLAIN, 14));
+				lblNewLabel_3.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 				lblNewLabel_3.setBounds(20, 116, 96, 14);
 				contentPanel.add(lblNewLabel_3);
 			}
 			{
 				JLabel lblApellidos = new JLabel("Apellido (s)");
-				lblApellidos.setFont(new Font("Segoe Print", Font.PLAIN, 14));
+				lblApellidos.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 				lblApellidos.setBounds(20, 141, 96, 14);
 				contentPanel.add(lblApellidos);
 			}
 			{
 				JLabel lblNewLabel_4 = new JLabel("Evaluacion anual");
-				lblNewLabel_4.setFont(new Font("Segoe Print", Font.PLAIN, 14));
+				lblNewLabel_4.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 				lblNewLabel_4.setBounds(20, 166, 119, 14);
 				contentPanel.add(lblNewLabel_4);
 			}
 			
-			textField = new JTextField();
-			textField.setBounds(172, 92, 86, 14);
-			contentPanel.add(textField);
-			textField.setColumns(10);
+			Id = new JTextField();
+			Id.setBounds(172, 92, 86, 14);
+			contentPanel.add(Id);
+			Id.setColumns(10);
 			
-			textField_1 = new JTextField();
-			textField_1.setColumns(10);
-			textField_1.setBounds(172, 117, 86, 14);
-			contentPanel.add(textField_1);
+			nombre = new JTextField();
+			nombre.setColumns(10);
+			nombre.setBounds(172, 117, 86, 14);
+			contentPanel.add(nombre);
 			
-			textField_2 = new JTextField();
-			textField_2.setColumns(10);
-			textField_2.setBounds(172, 142, 86, 14);
-			contentPanel.add(textField_2);
+			Apellido = new JTextField();
+			Apellido.setColumns(10);
+			Apellido.setBounds(172, 142, 86, 14);
+			contentPanel.add(Apellido);
 			
-			JComboBox comboBox = new JComboBox();
-			comboBox.setBackground(Color.WHITE);
-			comboBox.setBounds(172, 164, 86, 20);
-			contentPanel.add(comboBox);
+			JComboBox EvalAnual = new JComboBox();
+			EvalAnual.setBackground(Color.WHITE);
+			EvalAnual.setBounds(172, 164, 86, 20);
+			contentPanel.add(EvalAnual);
 			
-			JButton btnNewButton = new JButton("Nuevo");
-			btnNewButton.setFont(new Font("Segoe Print", Font.PLAIN, 11));
-			btnNewButton.setBackground(new Color(0, 255, 255));
-			btnNewButton.setBounds(307, 113, 89, 42);
-			contentPanel.add(btnNewButton);
+			JButton btnNuevo = new JButton("Nuevo");
+			btnNuevo.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
+			btnNuevo.setBackground(new Color(0, 255, 255));
+			btnNuevo.setBounds(307, 113, 89, 42);
+			contentPanel.add(btnNuevo);
 			
-			JButton btnNewButton_1 = new JButton("Buscar");
-			btnNewButton_1.setBackground(Color.WHITE);
-			btnNewButton_1.setFont(new Font("Segoe Print", Font.PLAIN, 11));
-			btnNewButton_1.setBounds(172, 195, 89, 23);
-			contentPanel.add(btnNewButton_1);
+			JButton btnBuscar = new JButton("Buscar");
+			btnBuscar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+				}
+			});
+			btnBuscar.setBackground(Color.WHITE);
+			btnBuscar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
+			btnBuscar.setBounds(172, 195, 89, 23);
+			contentPanel.add(btnBuscar);
 			
 			JPanel panel = new JPanel();
-			panel.setBackground(Color.WHITE);
-			panel.setBounds(34, 243, 350, 97);
+			panel.setBounds(20, 260, 374, 90);
 			contentPanel.add(panel);
 			panel.setLayout(new BorderLayout(0, 0));
-			
 			
 			JScrollPane scrollPane = new JScrollPane();
 			panel.add(scrollPane, BorderLayout.CENTER);
 			
+			String[] header = {"ID", "Nombre", "Apellido", "Evaluacion"};
+			
+			model = new DefaultTableModel();
+			model.setColumnIdentifiers(header);
 			table = new JTable();
-			table.setBackground(Color.WHITE);
+			table.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			table.setColumnSelectionAllowed(true);
+			table.setEnabled(false);
+			table.setModel(model);
 			scrollPane.setViewportView(table);
+			
 			{
-				
-				
 				JPanel buttonPane = new JPanel();
 				buttonPane.setBackground(Color.WHITE);
 				buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -163,6 +175,19 @@ public class ListadoTrabajador extends JDialog {
 					buttonPane.add(cancelButton);
 				}
 			}
+			loadTrabajadores();
+		}
+		
+		private void loadTrabajadores() {
+			model.setRowCount(0);
+			row = new Object[model.getColumnCount()];
+			for (Trabajador trabajador : Empresa.getInstance().getMisTrabajadores()) {
+				row[0] = trabajador.getCedula();
+				row[1] = trabajador.getNombre();
+				row[2] = trabajador.getApellidos();
+				row[3] = trabajador.getEvaluacionAnual();
+			} 
+			
 		}
 	}
 
