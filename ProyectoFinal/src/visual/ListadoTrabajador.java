@@ -89,7 +89,7 @@ public class ListadoTrabajador extends JDialog {
 			
 			JPanel panel_1 = new JPanel();
 			panel_1.setBackground(SystemColor.menu);
-			panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
+			panel_1.setBorder(new LineBorder(new Color(160, 82, 45), 2, true));
 			panel_1.setBounds(10, 11, 442, 357);
 			contentPanel.add(panel_1);
 			panel_1.setLayout(null);
@@ -101,6 +101,7 @@ public class ListadoTrabajador extends JDialog {
 			}
 			{
 				JSeparator separator = new JSeparator();
+				separator.setForeground(new Color(0, 0, 0));
 				separator.setBounds(10, 23, 429, 2);
 				panel_1.add(separator);
 			}

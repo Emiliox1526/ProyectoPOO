@@ -69,7 +69,7 @@ public class Principal extends JFrame {
 
         JPanel panel_3 = new JPanel();
         panel_3.setForeground(new Color(153, 102, 102));
-        panel_3.setBorder(new LineBorder(new Color(153, 102, 102), 2));
+        panel_3.setBorder(new LineBorder(new Color(153, 102, 102), 2, true));
         panel_3.setBounds(10, 39, 695, 254);
         contentPane.add(panel_3);
         panel_3.setLayout(null);
