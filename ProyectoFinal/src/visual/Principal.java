@@ -19,10 +19,12 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
 
 public class Principal extends JFrame {
 
     private JPanel contentPane;
+    private JTextField textField;
 
     /**
      * Launch the application.
@@ -61,14 +63,14 @@ public class Principal extends JFrame {
         Image proyectoImage = proyectoIcon.getImage().getScaledInstance(120, 122, Image.SCALE_SMOOTH);
 
         JLabel lblNewLabel = new JLabel("Pagina Principal");
-        lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
-        lblNewLabel.setBounds(310, 11, 105, 22);
+        lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+        lblNewLabel.setBounds(10, 11, 137, 22);
         contentPane.add(lblNewLabel);
 
         JPanel panel_3 = new JPanel();
         panel_3.setForeground(new Color(153, 102, 102));
         panel_3.setBorder(new LineBorder(new Color(153, 102, 102), 2));
-        panel_3.setBounds(10, 32, 695, 261);
+        panel_3.setBounds(10, 39, 695, 254);
         contentPane.add(panel_3);
         panel_3.setLayout(null);
         
@@ -154,5 +156,16 @@ public class Principal extends JFrame {
                                                                                 lblAdministracion.setEnabled(false);
                                                                                 lblAdministracion.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
                                                                                 panel_4.add(lblAdministracion);
+                                                                                
+                                                                                JLabel lblCuentaLogeada = new JLabel("Cuenta Logeada:");
+                                                                                lblCuentaLogeada.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+                                                                                lblCuentaLogeada.setBounds(410, 11, 137, 22);
+                                                                                contentPane.add(lblCuentaLogeada);
+                                                                                
+                                                                                textField = new JTextField();
+                                                                                textField.setEditable(false);
+                                                                                textField.setBounds(528, 13, 177, 20);
+                                                                                contentPane.add(textField);
+                                                                                textField.setColumns(10);
     }
 }
