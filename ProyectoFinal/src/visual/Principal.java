@@ -47,7 +47,6 @@ public class Principal extends JFrame {
      */
     public Principal() {
         setTitle("Empresa de programacion");
-        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 736, 355);
         contentPane = new JPanel();
@@ -55,6 +54,7 @@ public class Principal extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+        setLocationRelativeTo(null);
         ImageIcon clienteIcon = new ImageIcon(Principal.class.getResource("/images/Cliente.png"));
         Image clienteImage = clienteIcon.getImage().getScaledInstance(120-15, 122-15, Image.SCALE_SMOOTH);
         ImageIcon trabajadorIcon = new ImageIcon(Principal.class.getResource("/images/Trabajadores.png"));
@@ -112,6 +112,11 @@ public class Principal extends JFrame {
                                                 panel_1.add(lblTrabajadores_1);
                                                 
                                                         JButton btnTrabajador = new JButton("");
+                                                        btnTrabajador.addActionListener(new ActionListener() {
+                                                        	public void actionPerformed(ActionEvent e) {
+                                                        		
+                                                        	}
+                                                        });
                                                         btnTrabajador.setBounds(210, 87, 120, 122);
                                                         panel_3.add(btnTrabajador);
                                                         btnTrabajador.setHorizontalAlignment(SwingConstants.LEFT);

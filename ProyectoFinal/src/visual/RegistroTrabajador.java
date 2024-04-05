@@ -53,6 +53,7 @@ public class RegistroTrabajador extends JDialog {
 	 * Create the dialog.
 	 */
 	public RegistroTrabajador() {
+		setResizable(false);
 		getContentPane().setBackground(Color.WHITE);
 		setBounds(100, 100, 418, 563);
 		getContentPane().setLayout(new BorderLayout());
@@ -61,7 +62,7 @@ public class RegistroTrabajador extends JDialog {
 			panel.setBackground(new Color(255, 255, 255));
 			getContentPane().add(panel, BorderLayout.CENTER);
 			panel.setLayout(null);
-			
+			setLocationRelativeTo(null);
 			JLabel lblNewLabel = new JLabel("Nuevo trabajador\r\n");
 			lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 12));
 			lblNewLabel.setBounds(20, 11, 97, 25);
@@ -105,6 +106,7 @@ public class RegistroTrabajador extends JDialog {
 			panel_1.setBounds(53, 274, 112, 165);
 			panel.add(panel_1);
 			panel_1.setLayout(null);
+			
 			
 
 			Cedula = new JTextField();
