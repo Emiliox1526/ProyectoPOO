@@ -66,6 +66,7 @@ public class ListadoTrabajador extends JDialog {
 			contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 			getContentPane().add(contentPanel, BorderLayout.CENTER);
 			contentPanel.setLayout(null);
+			setLocationRelativeTo(null);
 			
 			JPanel panel = new JPanel();
 			panel.setBounds(20, 195, 419, 155);
@@ -157,6 +158,13 @@ public class ListadoTrabajador extends JDialog {
 			EvalAnual.setBackground(Color.WHITE);
 			
 			JButton btnNuevo = new JButton("Nuevo");
+			btnNuevo.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					RegistroTrabajador t = new RegistroTrabajador();
+					t.setModal(true);
+					t.setVisible(true);
+				}
+			});
 			btnNuevo.setBounds(285, 73, 89, 42);
 			panel_1.add(btnNuevo);
 			btnNuevo.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
@@ -167,7 +175,12 @@ public class ListadoTrabajador extends JDialog {
 			panel_1.add(btnBuscar);
 			btnBuscar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
+
+						loadTrabajadoresbyId(Id.getText());
+						loadTrabajadoresbyNombre(Id.getText());
+						loadTrabajadoresbyApellido(Id.getText());
 				}
+
 			});
 			btnBuscar.setBackground(new Color(51, 204, 153));
 			btnBuscar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
@@ -191,17 +204,50 @@ public class ListadoTrabajador extends JDialog {
 					buttonPane.add(cancelButton);
 				}
 			}
-			loadTrabajadores();
 		}
 		
-		private void loadTrabajadores() {
+		private void loadTrabajadoresbyApellido(String text) {
+			// TODO Auto-generated method stub
 			model.setRowCount(0);
 			row = new Object[model.getColumnCount()];
+			Trabajador t = Empresa.getInstance().BuscarTrabajadorById(text);
 			for (Trabajador trabajador : Empresa.getInstance().getMisTrabajadores()) {
-				row[0] = trabajador.getCedula();
-				row[1] = trabajador.getNombre();
-				row[2] = trabajador.getApellidos();
-				row[3] = trabajador.getEvaluacionAnual();
+				if(t.getApellidos().equalsIgnoreCase(trabajador.getApellidos())) {
+					row[0] = trabajador.getCedula();
+					row[1] = trabajador.getNombre();
+					row[2] = trabajador.getApellidos();
+					row[3] = trabajador.getEvaluacionAnual();
+				}
+			}
+			
+		}
+
+		private void loadTrabajadoresbyNombre(String text) {
+			// TODO Auto-generated method stub
+			model.setRowCount(0);
+			row = new Object[model.getColumnCount()];
+			Trabajador t = Empresa.getInstance().BuscarTrabajadorById(text);
+			for (Trabajador trabajador : Empresa.getInstance().getMisTrabajadores()) {
+				if(t.getNombre().equalsIgnoreCase(trabajador.getNombre())) {
+					row[0] = trabajador.getCedula();
+					row[1] = trabajador.getNombre();
+					row[2] = trabajador.getApellidos();
+					row[3] = trabajador.getEvaluacionAnual();
+				}
+			}
+		}
+		
+		private void loadTrabajadoresbyId(String cedula) {
+			model.setRowCount(0);
+			row = new Object[model.getColumnCount()];
+			Trabajador t = Empresa.getInstance().BuscarTrabajadorById(cedula);
+			for (Trabajador trabajador : Empresa.getInstance().getMisTrabajadores()) {
+				if(t.getCedula().equalsIgnoreCase(trabajador.getCedula())) {
+					row[0] = trabajador.getCedula();
+					row[1] = trabajador.getNombre();
+					row[2] = trabajador.getApellidos();
+					row[3] = trabajador.getEvaluacionAnual();
+				}
 			} 
 			
 		}

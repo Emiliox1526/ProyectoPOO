@@ -180,5 +180,20 @@ public class Empresa {
 		}	
 		return penalizacion;
 	}
+	
+	public Trabajador BuscarTrabajadorById(String id){
+		
+		Trabajador au = null;
+		
+		for (Trabajador trabajador : misTrabajadores) {
+			if(trabajador.getCedula().equalsIgnoreCase(id)) {
+				au = trabajador;
+			}
+		}
+		
+		
+		return au;
+		
+	}
 
 }

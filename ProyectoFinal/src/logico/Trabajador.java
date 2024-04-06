@@ -11,17 +11,17 @@ public class Trabajador {
 	protected String apellidos;
 	protected String direccionParticular;
 	protected String sexo;
-	protected Date FechaDeNacimiento;
+	protected java.util.Date FechaDeNacimiento;
 	protected String evaluacionAnual;
 	public Trabajador(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
-			Date fechaDeNacimiento, String evaluacionAnual) {
+			java.util.Date fecha, String evaluacionAnual) {
 		super();
 		this.cedula = cedula;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.direccionParticular = direccionParticular;
 		this.sexo = sexo;
-		FechaDeNacimiento = fechaDeNacimiento;
+		FechaDeNacimiento = fecha;
 		this.evaluacionAnual = evaluacionAnual;
 	}
 	public String getCedula() {

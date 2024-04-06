@@ -20,11 +20,14 @@ import javax.swing.JSpinner;
 import javax.swing.JComboBox;
 import javax.swing.border.TitledBorder;
 
+import logico.Diseñador;
 import logico.Jefe;
+import logico.Programador;
 import logico.Trabajador;
 
 import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
+import java.sql.Date;
 import java.awt.event.ActionEvent;
 import com.toedter.calendar.JDateChooser;
 
@@ -34,8 +37,7 @@ public class RegistroTrabajador extends JDialog {
 	private JTextField textField;
 	private JTextField Direccion;
 	private ButtonGroup botones = new ButtonGroup();
-	private JTextField JefeText;
-	private JTextField textField_1;
+	private JTextField ProgramadorText;
 
 	/**
 	 * Launch the application.
@@ -56,7 +58,7 @@ public class RegistroTrabajador extends JDialog {
 	public RegistroTrabajador() {
 		setResizable(false);
 		getContentPane().setBackground(Color.WHITE);
-		setBounds(100, 100, 418, 563);
+		setBounds(100, 100, 418, 495);
 		getContentPane().setLayout(new BorderLayout());
 		{
 			JPanel panel = new JPanel();
@@ -98,13 +100,13 @@ public class RegistroTrabajador extends JDialog {
 			panel.add(lblDireccion);
 			
 			JLabel lblNewLabel_2 = new JLabel("Rol:");
-			lblNewLabel_2.setBounds(20, 274, 46, 14);
+			lblNewLabel_2.setBounds(20, 223, 46, 14);
 			panel.add(lblNewLabel_2);
 			
 			JPanel panel_1 = new JPanel();
 			panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
 			panel_1.setBackground(new Color(240, 255, 240));
-			panel_1.setBounds(53, 274, 112, 165);
+			panel_1.setBounds(53, 223, 112, 165);
 			panel.add(panel_1);
 			panel_1.setLayout(null);
 			
@@ -125,15 +127,11 @@ public class RegistroTrabajador extends JDialog {
 			textField.setBounds(105, 105, 86, 20);
 			panel.add(textField);
 			
-			JSpinner spinner = new JSpinner();
-			spinner.setBounds(108, 206, 46, 20);
-			panel.add(spinner);
-			
 			JComboBox comboBox = new JComboBox();
-			comboBox.setBounds(274, 105, 59, 20);
+			comboBox.setBounds(274, 105, 96, 20);
 			panel.add(comboBox);
 			
-			comboBox.addItem("         ");
+			comboBox.addItem("<Seleccione>");
 			comboBox.addItem("M");
 			comboBox.addItem("F");
 			
@@ -143,45 +141,49 @@ public class RegistroTrabajador extends JDialog {
 			panel.add(Direccion);
 			
 			JLabel JefeLabel = new JLabel("Cantidad de trabajadores:");
-			JefeLabel.setBounds(175, 293, 127, 14);
+			JefeLabel.setBounds(175, 233, 127, 14);
 			panel.add(JefeLabel);
 			JefeLabel.setVisible(false);
 			
 			JLabel DiseniadorLabel = new JLabel("A\u00F1os de eperiencia:");
-			DiseniadorLabel.setBounds(175, 331, 97, 14);
+			DiseniadorLabel.setBounds(175, 282, 97, 14);
 			panel.add(DiseniadorLabel);
 			DiseniadorLabel.setVisible(false);
 			
 			JLabel ProgramadorLabel = new JLabel("Programador:");
-			ProgramadorLabel.setBounds(175, 373, 71, 14);
+			ProgramadorLabel.setBounds(175, 324, 71, 14);
 			panel.add(ProgramadorLabel);
 			ProgramadorLabel.setVisible(false);
 			
-			JefeText = new JTextField();
-			JefeText.setColumns(10);
-			JefeText.setBounds(287, 373, 86, 37);
-			panel.add(JefeText);
-			JefeText.setVisible(false);
+			ProgramadorText = new JTextField();
+			ProgramadorText.setColumns(10);
+			ProgramadorText.setBounds(284, 325, 86, 37);
+			panel.add(ProgramadorText);
+			ProgramadorText.setVisible(false);
 			
 			JLabel PlanificadorLabel = new JLabel("Frecuencia de planificacion:");
-			PlanificadorLabel.setBounds(175, 422, 144, 14);
+			PlanificadorLabel.setBounds(175, 373, 144, 14);
 			panel.add(PlanificadorLabel);
 			PlanificadorLabel.setVisible(false);
 			
 			JSpinner jefeSpinner = new JSpinner();
-			jefeSpinner.setBounds(326, 290, 44, 20);
+			jefeSpinner.setBounds(326, 230, 44, 20);
 			panel.add(jefeSpinner);
 			jefeSpinner.setVisible(false);
 			
 			JSpinner DiseniadorSpinner = new JSpinner();
-			DiseniadorSpinner.setBounds(326, 328, 44, 20);
+			DiseniadorSpinner.setBounds(326, 282, 44, 20);
 			panel.add(DiseniadorSpinner);
 			DiseniadorSpinner.setVisible(false);
 			
 			JSpinner PlanificadorSpinner = new JSpinner();
-			PlanificadorSpinner.setBounds(326, 419, 44, 20);
+			PlanificadorSpinner.setBounds(326, 373, 44, 20);
 			PlanificadorSpinner.setVisible(false);
 			panel.add(PlanificadorSpinner);
+			
+			JDateChooser dateChooser = new JDateChooser();
+			dateChooser.setBounds(89, 156, 100, 22);
+			panel.add(dateChooser);
 			
 			JRadioButton rdbtnNewRadioButton = new JRadioButton("Jefe");
 			rdbtnNewRadioButton.addActionListener(new ActionListener() {
@@ -190,7 +192,7 @@ public class RegistroTrabajador extends JDialog {
 					JefeLabel.setVisible(true);
 					DiseniadorLabel.setVisible(false);
 					ProgramadorLabel.setVisible(false);
-					JefeText.setVisible(false);
+					ProgramadorText.setVisible(false);
 					PlanificadorLabel.setVisible(false);
 					jefeSpinner.setVisible(true);
 					DiseniadorSpinner.setVisible(false);
@@ -209,7 +211,7 @@ public class RegistroTrabajador extends JDialog {
 					JefeLabel.setVisible(false);
 					DiseniadorLabel.setVisible(true);
 					ProgramadorLabel.setVisible(false);
-					JefeText.setVisible(false);
+					ProgramadorText.setVisible(false);
 					PlanificadorLabel.setVisible(false);
 					jefeSpinner.setVisible(false);
 					DiseniadorSpinner.setVisible(true);
@@ -227,7 +229,7 @@ public class RegistroTrabajador extends JDialog {
 					JefeLabel.setVisible(false);
 					DiseniadorLabel.setVisible(false);
 					ProgramadorLabel.setVisible(true);
-					JefeText.setVisible(true);
+					ProgramadorText.setVisible(true);
 					PlanificadorLabel.setVisible(false);
 					jefeSpinner.setVisible(false);
 					DiseniadorSpinner.setVisible(false);
@@ -245,7 +247,7 @@ public class RegistroTrabajador extends JDialog {
 				JefeLabel.setVisible(false);
 				DiseniadorLabel.setVisible(false);
 				ProgramadorLabel.setVisible(false);
-				JefeText.setVisible(false);
+				ProgramadorText.setVisible(false);
 				PlanificadorLabel.setVisible(true);
 				jefeSpinner.setVisible(false);
 				DiseniadorSpinner.setVisible(false);
@@ -264,7 +266,7 @@ public class RegistroTrabajador extends JDialog {
 			
 			
 			JPanel panel_2 = new JPanel();
-			panel_2.setBounds(0, 478, 404, 46);
+			panel_2.setBounds(0, 421, 404, 46);
 			panel.add(panel_2);
 			panel_2.setLayout(null);
 			{
@@ -278,20 +280,21 @@ public class RegistroTrabajador extends JDialog {
 						String Apellido = textField.getText(); // apellido
 						String direccion = Direccion.getText();
 						String Sexo = comboBox.getSelectedItem().toString();
+						Date fecha = null;
+						
+						fecha.setYear(1300);
+						
 						if(rdbtnNewRadioButton.isSelected()){
-							t.setNombre(nombre);
-							t.setApellidos(Apellido);
-							t.setCedula(id);
-							t.setDireccionParticular(direccion);
-							t.setSexo(Sexo);
-							
-							t = new Jefe(id, nombre, Apellido, direccion, Sexo, null, jefeSpinner.getValue());
+							String cant = jefeSpinner.getValue().toString();
+							t = new Jefe(id, nombre, Apellido, direccion, Sexo, fecha , null , Integer.parseInt(cant));
 						}
-						if(rbtnQCilindro.isSelected()){
-							
+						if(rdbtnNewRadioButton_1.isSelected()){
+							String cant = DiseniadorSpinner.getValue().toString();
+							t = new Diseñador(id, nombre, Apellido, direccion, Sexo,fecha, null , Integer.parseInt(cant));
 						}
-						if(rbtnQCHueco.isSelected()){
-							
+						if(rdbtnNewRadioButton_2.isSelected()){
+							//String cant = ProgramadorText.getText();
+							//t = new Programador(id, nombre, Apellido, direccion, Sexo,fecha, null , cant);
 						}
 						
 					}
@@ -309,24 +312,15 @@ public class RegistroTrabajador extends JDialog {
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						dispose();
+						ListadoTrabajador l = new ListadoTrabajador();
+						l.setModal(true);
+						l.setVisible(true);
 					}
 				});
 				cancelButton.setBackground(new Color(255, 99, 71));
 				cancelButton.setActionCommand("Cancel");
 			}
 			
-			JLabel lblNewLabel_3 = new JLabel("Fecha de nacimiento:");
-			lblNewLabel_3.setBounds(201, 209, 118, 14);
-			panel.add(lblNewLabel_3);
-			
-			textField_1 = new JTextField();
-			textField_1.setBounds(306, 206, 59, 20);
-			panel.add(textField_1);
-			textField_1.setColumns(10);
-			
-			JDateChooser dateChooser = new JDateChooser();
-			dateChooser.setBounds(89, 156, 100, 22);
-			panel.add(dateChooser);
 		}
 	}
 	
