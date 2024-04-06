@@ -1,6 +1,7 @@
 package visual;
 
 import java.awt.BorderLayout;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -21,10 +22,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
+import logico.Control;
+
 public class Principal extends JFrame {
 
     private JPanel contentPane;
-    private JTextField textField;
+    private JTextField txtUser;
 
     /**
      * Launch the application.
@@ -33,7 +36,7 @@ public class Principal extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    Principal frame = new Principal();
+                    Principal frame = new Principal(null);
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -45,7 +48,7 @@ public class Principal extends JFrame {
     /**
      * Create the frame.
      */
-    public Principal() {
+    public Principal(Control control) {
         setTitle("Empresa de programacion");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 736, 355);
@@ -167,10 +170,16 @@ public class Principal extends JFrame {
                                                                                 lblCuentaLogeada.setBounds(410, 11, 137, 22);
                                                                                 contentPane.add(lblCuentaLogeada);
                                                                                 
-                                                                                textField = new JTextField();
-                                                                                textField.setEditable(false);
-                                                                                textField.setBounds(528, 13, 177, 20);
-                                                                                contentPane.add(textField);
-                                                                                textField.setColumns(10);
+                                                                                txtUser = new JTextField();
+                                                                                txtUser.setEditable(false);
+                                                                                txtUser.setBounds(528, 13, 177, 20);
+                                                                                contentPane.add(txtUser);
+                                                                                txtUser.setColumns(10);
+                                                                                if (control == null) {
+                                                                                	txtUser.setText("");
+																				} else {
+																					txtUser.setText(control.getLoginUser().getUserName());
+																				}
+                                                                                
     }
 }
