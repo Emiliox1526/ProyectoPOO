@@ -26,6 +26,7 @@ import logico.Trabajador;
 import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import com.toedter.calendar.JDateChooser;
 
 public class RegistroTrabajador extends JDialog {
 	private JTextField Cedula;
@@ -125,7 +126,7 @@ public class RegistroTrabajador extends JDialog {
 			panel.add(textField);
 			
 			JSpinner spinner = new JSpinner();
-			spinner.setBounds(105, 153, 46, 20);
+			spinner.setBounds(108, 206, 46, 20);
 			panel.add(spinner);
 			
 			JComboBox comboBox = new JComboBox();
@@ -322,6 +323,10 @@ public class RegistroTrabajador extends JDialog {
 			textField_1.setBounds(306, 206, 59, 20);
 			panel.add(textField_1);
 			textField_1.setColumns(10);
+			
+			JDateChooser dateChooser = new JDateChooser();
+			dateChooser.setBounds(89, 156, 100, 22);
+			panel.add(dateChooser);
 		}
 	}
 	
