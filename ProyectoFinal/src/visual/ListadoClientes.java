@@ -182,6 +182,6 @@ public class ListadoClientes extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
-		//loadTrabajadores();
+		//loadClientes();
 	}
 }
