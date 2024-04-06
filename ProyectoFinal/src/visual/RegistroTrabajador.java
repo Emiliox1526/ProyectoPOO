@@ -89,8 +89,8 @@ public class RegistroTrabajador extends JDialog {
 			lblSexo.setBounds(201, 108, 59, 14);
 			panel.add(lblSexo);
 			
-			JLabel lblEdad = new JLabel("Edad:");
-			lblEdad.setBounds(29, 156, 37, 14);
+			JLabel lblEdad = new JLabel("Fecha:");
+			lblEdad.setBounds(20, 156, 48, 14);
 			panel.add(lblEdad);
 			
 			JLabel lblDireccion = new JLabel("Direccion:");
