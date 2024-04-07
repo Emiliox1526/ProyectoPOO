@@ -23,6 +23,10 @@ import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import logico.Cliente;
+import logico.Empresa;
+import logico.Trabajador;
+
 public class ListadoClientes extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
@@ -31,6 +35,8 @@ public class ListadoClientes extends JDialog {
 	private DefaultTableModel model;
 	private Object[] row;
 	private JTable table;
+	private JTextField id;
+	private JTextField nombre;
 
 	/**
 	 * Launch the application.
@@ -50,7 +56,7 @@ public class ListadoClientes extends JDialog {
 	 */
 	public ListadoClientes() {
 		setResizable(false);
-		setBounds(100, 100, 479, 456);
+		setBounds(100, 100, 479, 388);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(Color.WHITE);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -58,30 +64,15 @@ public class ListadoClientes extends JDialog {
 		contentPanel.setLayout(null);
 		setLocationRelativeTo(null);
 		
-		JPanel panel = new JPanel();
-		panel.setBounds(20, 195, 419, 155);
-		contentPanel.add(panel);
-		panel.setLayout(new BorderLayout(0, 0));
-		
-		JScrollPane scrollPane = new JScrollPane();
-		panel.add(scrollPane);
-		
 		String[] header = {"ID", "Nombre", "Apellido", "Evaluacion"};
 		
 		model = new DefaultTableModel();
 		model.setColumnIdentifiers(header);
-		table = new JTable();
-		table.setBackground(SystemColor.textHighlightText);
-		table.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		table.setColumnSelectionAllowed(true);
-		table.setEnabled(false);
-		table.setModel(model);
-		scrollPane.setViewportView(table);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(SystemColor.menu);
 		panel_1.setBorder(new LineBorder(new Color(160, 82, 45), 2, true));
-		panel_1.setBounds(10, 11, 442, 357);
+		panel_1.setBounds(10, 11, 442, 302);
 		contentPanel.add(panel_1);
 		panel_1.setLayout(null);
 		{
@@ -114,61 +105,66 @@ public class ListadoClientes extends JDialog {
 			panel_1.add(lblNewLabel_3);
 			lblNewLabel_3.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 		}
-		{
-			JLabel lblApellidos = new JLabel("Apellido(s):");
-			lblApellidos.setBounds(10, 114, 96, 14);
-			panel_1.add(lblApellidos);
-			lblApellidos.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-		}
-		{
-			JLabel lblNewLabel_4 = new JLabel("Evaluacion anual:");
-			lblNewLabel_4.setBounds(10, 139, 119, 14);
-			panel_1.add(lblNewLabel_4);
-			lblNewLabel_4.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-		}
 		
-		Id = new JTextField();
-		Id.setBounds(135, 59, 114, 20);
-		panel_1.add(Id);
-		Id.setColumns(10);
-		
-		nombre = new JTextField();
-		nombre.setBounds(135, 84, 114, 20);
-		panel_1.add(nombre);
-		nombre.setColumns(10);
-		
-		Apellido = new JTextField();
-		Apellido.setBounds(135, 112, 114, 20);
-		panel_1.add(Apellido);
-		Apellido.setColumns(10);
-		
-		JComboBox EvalAnual = new JComboBox();
-		EvalAnual.setBounds(135, 137, 114, 20);
-		panel_1.add(EvalAnual);
-		EvalAnual.setBackground(Color.WHITE);
 		
 		JButton btnNuevo = new JButton("Nuevo");
-		btnNuevo.setBounds(285, 73, 89, 42);
+		btnNuevo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				RegistroCliente c = new RegistroCliente();
+				c.setModal(true);
+				c.setVisible(true);
+			}
+		});
+		btnNuevo.setBounds(285, 36, 89, 42);
 		panel_1.add(btnNuevo);
 		btnNuevo.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
 		btnNuevo.setBackground(new Color(0, 255, 255));
 		
 		JButton btnBuscar = new JButton("Buscar");
-		btnBuscar.setBounds(285, 130, 89, 23);
+		btnBuscar.setBounds(285, 83, 89, 23);
 		panel_1.add(btnBuscar);
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				loadClientesById(id.getText());
+				loadClientesByNombre(nombre.getText());
 			}
+
 		});
 		btnBuscar.setBackground(new Color(51, 204, 153));
 		btnBuscar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
 		
+		JPanel panel = new JPanel();
+		panel.setBounds(10, 117, 419, 155);
+		panel_1.add(panel);
+		panel.setLayout(new BorderLayout(0, 0));
+		
+		JScrollPane scrollPane = new JScrollPane();
+		panel.add(scrollPane);
+		table = new JTable();
+		table.setBackground(SystemColor.textHighlightText);
+		table.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		table.setColumnSelectionAllowed(true);
+		table.setEnabled(false);
+		table.setModel(model);
+		scrollPane.setViewportView(table);
+		
+		id = new JTextField();
+		id.setBounds(131, 59, 128, 20);
+		panel_1.add(id);
+		id.setColumns(10);
+		
+		nombre = new JTextField();
+		nombre.setColumns(10);
+		nombre.setBounds(131, 84, 128, 20);
+		panel_1.add(nombre);
+		
 		{
 			JPanel buttonPane = new JPanel();
+			buttonPane.setBounds(0, 324, 473, 35);
+			contentPanel.add(buttonPane);
 			buttonPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 			buttonPane.setBackground(Color.WHITE);
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				
 				JButton cancelButton = new JButton("Cerrar\r\n");
@@ -182,6 +178,43 @@ public class ListadoClientes extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
-		//loadClientes();
+		loadClientes();
+	}
+	
+	private void loadClientes() {
+		// TODO Auto-generated method stub
+		model.setRowCount(0);
+		row = new Object[model.getColumnCount()];
+		for (Cliente cliente : Empresa.getInstance().getMisClientes()) {
+				row[0] = cliente.getId();
+				row[1] = cliente.getNombre();
+		}
+		
+	}
+	
+	private void loadClientesById(String text) {
+		// TODO Auto-generated method stub
+		model.setRowCount(0);
+		row = new Object[model.getColumnCount()];
+		for (Cliente cliente : Empresa.getInstance().getMisClientes()) {
+			if(cliente.getId().equalsIgnoreCase(text)) {
+				row[0] = cliente.getId();
+				row[1] = cliente.getNombre();
+			}
+		}
+		
+	}
+	
+	private void loadClientesByNombre(String text) {
+		// TODO Auto-generated method stub
+		model.setRowCount(0);
+		row = new Object[model.getColumnCount()];
+		for (Cliente cliente : Empresa.getInstance().getMisClientes()) {
+			if(cliente.getNombre().equalsIgnoreCase(text)) {
+				row[0] = cliente.getId();
+				row[1] = cliente.getNombre();
+			}
+		}
+		
 	}
 }

@@ -91,6 +91,9 @@ public class Principal extends JFrame {
                                 JButton btnCliente = new JButton("");
                                 btnCliente.addActionListener(new ActionListener() {
                                 	public void actionPerformed(ActionEvent e) {
+                                		ListadoClientes c = new ListadoClientes();
+                                		c.setModal(true);
+                                		c.setVisible(true);
                                 	}
                                 	
                                 });
@@ -117,7 +120,9 @@ public class Principal extends JFrame {
                                                         JButton btnTrabajador = new JButton("");
                                                         btnTrabajador.addActionListener(new ActionListener() {
                                                         	public void actionPerformed(ActionEvent e) {
-                                                        		
+                                                        		ListadoTrabajador l = new ListadoTrabajador();
+                                                        		l.setModal(true);
+                                                        		l.setVisible(true);
                                                         	}
                                                         });
                                                         btnTrabajador.setBounds(210, 87, 120, 122);

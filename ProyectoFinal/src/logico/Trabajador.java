@@ -14,14 +14,14 @@ public class Trabajador {
 	protected java.util.Date FechaDeNacimiento;
 	protected String evaluacionAnual;
 	public Trabajador(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
-			java.util.Date fecha, String evaluacionAnual) {
+			java.util.Date date, String evaluacionAnual) {
 		super();
 		this.cedula = cedula;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.direccionParticular = direccionParticular;
 		this.sexo = sexo;
-		FechaDeNacimiento = fecha;
+		FechaDeNacimiento = date;
 		this.evaluacionAnual = evaluacionAnual;
 	}
 	public String getCedula() {

@@ -204,6 +204,8 @@ public class ListadoTrabajador extends JDialog {
 					buttonPane.add(cancelButton);
 				}
 			}
+			
+			loadTrabajadores();
 		}
 		
 		private void loadTrabajadoresbyApellido(String text) {
@@ -248,7 +250,18 @@ public class ListadoTrabajador extends JDialog {
 					row[2] = trabajador.getApellidos();
 					row[3] = trabajador.getEvaluacionAnual();
 				}
-			} 
+			}
+		}
+			
+			private void loadTrabajadores() {
+				model.setRowCount(0);
+				row = new Object[model.getColumnCount()];
+				for (Trabajador trabajador : Empresa.getInstance().getMisTrabajadores()) {
+						row[0] = trabajador.getCedula();
+						row[1] = trabajador.getNombre();
+						row[2] = trabajador.getApellidos();
+						row[3] = trabajador.getEvaluacionAnual();
+				} 
 			
 		}
 	}

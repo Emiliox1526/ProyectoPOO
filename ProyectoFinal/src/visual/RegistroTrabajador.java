@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
+import javax.swing.ComboBoxEditor;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -12,6 +13,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import javax.swing.JSeparator;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JRadioButton;
 import java.awt.Label;
@@ -22,6 +25,7 @@ import javax.swing.border.TitledBorder;
 
 import logico.Diseñador;
 import logico.Jefe;
+import logico.Planificador;
 import logico.Programador;
 import logico.Trabajador;
 
@@ -38,6 +42,7 @@ public class RegistroTrabajador extends JDialog {
 	private JTextField Direccion;
 	private ButtonGroup botones = new ButtonGroup();
 	private JTextField ProgramadorText;
+	private static String[] l;
 
 	/**
 	 * Launch the application.
@@ -151,7 +156,7 @@ public class RegistroTrabajador extends JDialog {
 			DiseniadorLabel.setVisible(false);
 			
 			JLabel ProgramadorLabel = new JLabel("Programador:");
-			ProgramadorLabel.setBounds(175, 324, 71, 14);
+			ProgramadorLabel.setBounds(175, 324, 85, 14);
 			panel.add(ProgramadorLabel);
 			ProgramadorLabel.setVisible(false);
 			
@@ -185,6 +190,20 @@ public class RegistroTrabajador extends JDialog {
 			dateChooser.setBounds(89, 156, 100, 22);
 			panel.add(dateChooser);
 			
+			JButton btnNewButton = new JButton("Agregar");
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					int i = 0;
+					while(btnNewButton.isSelected()) {
+						l [i]= ProgramadorText.getText();
+						i++;
+					}
+					ProgramadorText.setText(" ");
+				}
+			});
+			btnNewButton.setBounds(175, 342, 85, 20);
+			panel.add(btnNewButton);
+			
 			JRadioButton rdbtnNewRadioButton = new JRadioButton("Jefe");
 			rdbtnNewRadioButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -197,6 +216,7 @@ public class RegistroTrabajador extends JDialog {
 					jefeSpinner.setVisible(true);
 					DiseniadorSpinner.setVisible(false);
 					PlanificadorSpinner.setVisible(false);
+					btnNewButton.setVisible(false);
 					
 				}
 			});
@@ -216,6 +236,7 @@ public class RegistroTrabajador extends JDialog {
 					jefeSpinner.setVisible(false);
 					DiseniadorSpinner.setVisible(true);
 					PlanificadorSpinner.setVisible(false);
+					btnNewButton.setVisible(false);
 				}
 			});
 			rdbtnNewRadioButton_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -234,6 +255,7 @@ public class RegistroTrabajador extends JDialog {
 					jefeSpinner.setVisible(false);
 					DiseniadorSpinner.setVisible(false);
 					PlanificadorSpinner.setVisible(false);
+					btnNewButton.setVisible(true);
 				}
 			});
 			rdbtnNewRadioButton_2.setBackground(new Color(240, 255, 240));
@@ -252,6 +274,7 @@ public class RegistroTrabajador extends JDialog {
 				jefeSpinner.setVisible(false);
 				DiseniadorSpinner.setVisible(false);
 				PlanificadorSpinner.setVisible(true);
+				btnNewButton.setVisible(false);
 				}
 			});
 			rdbtnPlanificador.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -280,22 +303,27 @@ public class RegistroTrabajador extends JDialog {
 						String Apellido = textField.getText(); // apellido
 						String direccion = Direccion.getText();
 						String Sexo = comboBox.getSelectedItem().toString();
-						Date fecha = null;
 						
-						fecha.setYear(1300);
 						
 						if(rdbtnNewRadioButton.isSelected()){
 							String cant = jefeSpinner.getValue().toString();
-							t = new Jefe(id, nombre, Apellido, direccion, Sexo, fecha , null , Integer.parseInt(cant));
+							t = new Jefe(id, nombre, Apellido, direccion, Sexo, dateChooser.getDate() , null , Integer.parseInt(cant));
+							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informaci n", JOptionPane.INFORMATION_MESSAGE);
 						}
 						if(rdbtnNewRadioButton_1.isSelected()){
 							String cant = DiseniadorSpinner.getValue().toString();
-							t = new Diseñador(id, nombre, Apellido, direccion, Sexo,fecha, null , Integer.parseInt(cant));
+							t = new Diseñador(id, nombre, Apellido, direccion, Sexo, dateChooser.getDate()  , null , Integer.parseInt(cant));
+							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informaci n", JOptionPane.INFORMATION_MESSAGE);
 						}
 						if(rdbtnNewRadioButton_2.isSelected()){
-							//String cant = ProgramadorText.getText();
-							//t = new Programador(id, nombre, Apellido, direccion, Sexo,fecha, null , cant);
+							t = new Programador(id, nombre, Apellido, direccion, Sexo,(Date) dateChooser.getDate(), null , l);
+							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informaci n", JOptionPane.INFORMATION_MESSAGE);
+						}if(rdbtnPlanificador.isSelected()){
+							String cant = DiseniadorSpinner.getValue().toString();
+							t = new Planificador(id, nombre, Apellido, direccion, Sexo, (Date) dateChooser.getDate(), null , Integer.parseInt(cant));
+							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informaci n", JOptionPane.INFORMATION_MESSAGE);
 						}
+						clean();
 						
 					}
 				});
@@ -321,10 +349,16 @@ public class RegistroTrabajador extends JDialog {
 				cancelButton.setActionCommand("Cancel");
 			}
 			
+			
 		}
 	}
 	
-	void botones() {
+	void clean() {
+		
+		Cedula.setText(" ");
+		Nombre.setText(" ");
+		textField.setText(" "); 
+		Direccion.setText(" ");
 		
 	}
 }

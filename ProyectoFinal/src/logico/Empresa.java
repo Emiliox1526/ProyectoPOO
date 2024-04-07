@@ -196,4 +196,30 @@ public class Empresa {
 		
 	}
 
+	public Cliente BuscarClienteByNombre(String id) {
+		Cliente au = null;
+		
+		for (Cliente cliente : misClientes) {
+			if(cliente.getId().equalsIgnoreCase(id)) {
+				au = cliente;
+			}
+		}
+		
+		
+		return au;
+	}
+
+	public Cliente BuscarClienteById(String nombre) {
+		Cliente au = null;
+		
+		for (Cliente cliente : misClientes) {
+			if(cliente.getNombre().equalsIgnoreCase(nombre)) {
+				au = cliente;
+			}
+		}
+		
+		
+		return au;
+	}
+
 }

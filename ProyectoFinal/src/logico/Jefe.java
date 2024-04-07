@@ -6,8 +6,8 @@ public class Jefe extends Trabajador {
 	private int cantTrabajadores;
 
 	public Jefe(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
-			java.util.Date fecha, String evaluacionAnual, int cantTrabajadores) {
-		super(cedula, nombre, apellidos, direccionParticular, sexo, fecha, evaluacionAnual);
+			java.util.Date date, String evaluacionAnual, int cantTrabajadores) {
+		super(cedula, nombre, apellidos, direccionParticular, sexo, date, evaluacionAnual);
 		this.cantTrabajadores = cantTrabajadores;
 	}
 
