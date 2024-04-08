@@ -88,16 +88,10 @@ public class ListadoTrabajador extends JDialog {
 			table.setColumnSelectionAllowed(true);
 			table.setEnabled(false);
 			scrollPane.setViewportView(table);
-			
-<<<<<<< HEAD
-=======
-			String[] header = {"ID", "Nombre", "Apellido", "Evaluacion"};
-			model = new DefaultTableModel();
-			model.setColumnIdentifiers(header);
 			table.setModel(model);
 			
 			
->>>>>>> branch 'master' of https://github.com/Emiliox1526/ProyectoPOO.git
+
 			JPanel panel_1 = new JPanel();
 			panel_1.setBackground(SystemColor.menu);
 			panel_1.setBorder(new LineBorder(new Color(160, 82, 45), 2, true));
