@@ -104,10 +104,9 @@ public class regUser extends JDialog {
                     for (User user : Control.getInstance().getMisUsers()) {
                         if (user.getUserName().equals(usuario)) {
                             usuarioExistente = true;
-                            break;
                         }
                     }
-                    if (usuarioExistente) {
+                    if (usuarioExistente == true) {
                         JOptionPane.showMessageDialog(regUser.this, "El nombre de usuario ya está en uso", "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
                         User usuarioRegistrado = new User("Cliente", usuario, password);

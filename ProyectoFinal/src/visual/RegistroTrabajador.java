@@ -22,6 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.JSpinner;
 import javax.swing.JComboBox;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 
 import logico.Diseñador;
 import logico.Jefe;
@@ -32,8 +33,15 @@ import logico.Trabajador;
 import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import com.toedter.calendar.JDateChooser;
+import javax.swing.BoxLayout;
+import javax.swing.JTable;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class RegistroTrabajador extends JDialog {
 	private JTextField Cedula;
@@ -41,8 +49,19 @@ public class RegistroTrabajador extends JDialog {
 	private JTextField textField;
 	private JTextField Direccion;
 	private ButtonGroup botones = new ButtonGroup();
-	private JTextField ProgramadorText;
 	private static String[] l;
+	private static Object[] rows;
+	private static Object[] rowsAgregado;
+	private static DefaultTableModel model;
+	private static DefaultTableModel modelAgregado;
+	private JTable tableListaLenguajes;
+	private JTable tableAgregados;
+	private int indexSeleccionadoLenguajes = -1;
+	private int indexSeleccionadoAgregados = -1;
+	ArrayList<String> listaLenguajes = new ArrayList<>();
+	ArrayList<String> listaAgregados = new ArrayList<>();
+	
+	
 
 	/**
 	 * Launch the application.
@@ -62,78 +81,186 @@ public class RegistroTrabajador extends JDialog {
 	 */
 	public RegistroTrabajador() {
 		setResizable(false);
+		listaLenguajes.add("JavaScript");
+		listaLenguajes.add("HTML");
+		listaLenguajes.add("Python");
+		listaLenguajes.add("SQL");
+		listaLenguajes.add("Java");
+		listaLenguajes.add("C#");
+		listaLenguajes.add("C");
+		listaLenguajes.add("NoSQL");
+		listaLenguajes.add("Rust");
+		listaLenguajes.add("Perl");
+		listaLenguajes.add("Swift");
 		getContentPane().setBackground(Color.WHITE);
-		setBounds(100, 100, 418, 495);
+		setBounds(100, 100, 572, 510);
 		getContentPane().setLayout(new BorderLayout());
 		{
 			JPanel panel = new JPanel();
-			panel.setBackground(new Color(255, 255, 255));
+			panel.setBackground(new Color(230, 230, 250));
 			getContentPane().add(panel, BorderLayout.CENTER);
 			panel.setLayout(null);
 			setLocationRelativeTo(null);
 			JLabel lblNewLabel = new JLabel("Nuevo trabajador\r\n");
-			lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 12));
-			lblNewLabel.setBounds(20, 11, 97, 25);
+			lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 15));
+			lblNewLabel.setBounds(10, 26, 135, 25);
 			panel.add(lblNewLabel);
 			
-			JSeparator separator = new JSeparator();
-			separator.setBounds(20, 34, 350, 2);
-			panel.add(separator);
+			JPanel panel_3 = new JPanel();
+			panel_3.setBackground(new Color(175, 238, 238));
+			panel_3.setBorder(new LineBorder(new Color(65, 105, 225), 2));
+			panel_3.setBounds(175, 222, 339, 176);
+			panel.add(panel_3);
+			panel_3.setLayout(null);
+			
+			JPanel panel_4 = new JPanel();
+			panel_4.setBackground(new Color(135, 206, 250));
+			panel_4.setBorder(new LineBorder(new Color(65, 105, 225), 2));
+			panel_4.setBounds(0, 139, 339, 37);
+			panel_3.add(panel_4);
+			
+			JButton btnAgregar = new JButton("Agregar");
+			btnAgregar.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
+			btnAgregar.setForeground(Color.WHITE);
+			btnAgregar.setBackground(new Color(124, 252, 0));
+			panel_4.add(btnAgregar);
+			
+			JButton btnQuitar = new JButton("Quitar");
+			btnQuitar.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
+			btnQuitar.setForeground(Color.WHITE);
+			btnQuitar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if(indexSeleccionadoAgregados != -1) {
+						String lenguajeEliminado = listaAgregados.get(indexSeleccionadoAgregados);
+						listaLenguajes.add(lenguajeEliminado);
+			            listaAgregados.remove(indexSeleccionadoAgregados);
+			            loadLenguajes();
+			        }
+				}
+			});
+			btnQuitar.setBackground(new Color(255, 0, 0));
+			panel_4.add(btnQuitar);
+			
+			JPanel panelListaLenguajes = new JPanel();
+			panelListaLenguajes.setBorder(new LineBorder(new Color(0, 0, 0)));
+			panelListaLenguajes.setBounds(10, 11, 153, 121);
+			panel_3.add(panelListaLenguajes);
+			panelListaLenguajes.setLayout(new BorderLayout(0, 0));
+			
+			JScrollPane scrollPane = new JScrollPane();
+			panelListaLenguajes.add(scrollPane, BorderLayout.CENTER);
+			
+			tableListaLenguajes = new JTable();
+			tableListaLenguajes.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
+			tableListaLenguajes.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					indexSeleccionadoLenguajes = tableListaLenguajes.getSelectedRow();
+				}
+			});
+			scrollPane.setViewportView(tableListaLenguajes);
+			String[] headers = {"Lenguajes"};
+			model = new DefaultTableModel();
+			model.setColumnIdentifiers(headers);
+			String[] headersAgregado = {"Agregados(Max 3)"};
+			modelAgregado = new DefaultTableModel();	
+			modelAgregado.setColumnIdentifiers(headersAgregado);
+			
+			JPanel panelAgregados = new JPanel();
+			panelAgregados.setBorder(new LineBorder(new Color(0, 0, 0)));
+			panelAgregados.setBounds(173, 11, 156, 121);
+			panel_3.add(panelAgregados);
+			panelAgregados.setLayout(new BorderLayout(0, 0));
+			
+			JScrollPane scrollPane_1 = new JScrollPane();
+			panelAgregados.add(scrollPane_1, BorderLayout.CENTER);
+			
+			tableAgregados = new JTable();
+			tableAgregados.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					indexSeleccionadoAgregados = tableAgregados.getSelectedRow();
+				}
+			});
+			scrollPane_1.setViewportView(tableAgregados);
+			btnAgregar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					if(indexSeleccionadoLenguajes != -1) {
+						String lenguajeAgregado = listaLenguajes.get(indexSeleccionadoLenguajes);
+			            if (listaAgregados.size() < 3) {
+			                listaAgregados.add(lenguajeAgregado);
+			                listaLenguajes.remove(indexSeleccionadoLenguajes);
+			                loadLenguajes();
+			            } else {
+			                JOptionPane.showMessageDialog(null, "No se permiten mas de 3 lenguajes", "Error", JOptionPane.ERROR_MESSAGE);
+			            }
+			        }
+					
+				}
+			});
+			panel_3.setVisible(false);
 			
 			JLabel lblNewLabel_1 = new JLabel("Cedula:\r\n");
-			lblNewLabel_1.setBounds(29, 62, 88, 14);
+			lblNewLabel_1.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+			lblNewLabel_1.setBounds(20, 62, 88, 14);
 			panel.add(lblNewLabel_1);
 			
 			JLabel lblApellidos = new JLabel("Apellido (s):");
-			lblApellidos.setBounds(29, 108, 88, 14);
+			lblApellidos.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+			lblApellidos.setBounds(279, 97, 88, 14);
 			panel.add(lblApellidos);
 			
-			JLabel label_1 = new JLabel("Nombre (s):");
-			label_1.setBounds(201, 62, 88, 14);
-			panel.add(label_1);
+			JLabel lblNombres = new JLabel("Nombre(s):");
+			lblNombres.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+			lblNombres.setBounds(20, 97, 88, 14);
+			panel.add(lblNombres);
 			
 			JLabel lblSexo = new JLabel("Sexo:");
-			lblSexo.setBounds(201, 108, 59, 14);
+			lblSexo.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+			lblSexo.setBounds(20, 128, 59, 14);
 			panel.add(lblSexo);
 			
 			JLabel lblEdad = new JLabel("Fecha:");
-			lblEdad.setBounds(20, 156, 48, 14);
+			lblEdad.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+			lblEdad.setBounds(20, 183, 48, 22);
 			panel.add(lblEdad);
 			
 			JLabel lblDireccion = new JLabel("Direccion:");
-			lblDireccion.setBounds(201, 156, 88, 14);
+			lblDireccion.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+			lblDireccion.setBounds(20, 158, 88, 14);
 			panel.add(lblDireccion);
 			
 			JLabel lblNewLabel_2 = new JLabel("Rol:");
-			lblNewLabel_2.setBounds(20, 223, 46, 14);
+			lblNewLabel_2.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+			lblNewLabel_2.setBounds(20, 304, 46, 14);
 			panel.add(lblNewLabel_2);
 			
 			JPanel panel_1 = new JPanel();
-			panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
-			panel_1.setBackground(new Color(240, 255, 240));
-			panel_1.setBounds(53, 223, 112, 165);
+			panel_1.setBorder(new LineBorder(new Color(65, 105, 225), 2));
+			panel_1.setBackground(new Color(175, 238, 238));
+			panel_1.setBounds(53, 233, 112, 165);
 			panel.add(panel_1);
 			panel_1.setLayout(null);
 			
 			
 
 			Cedula = new JTextField();
-			Cedula.setBounds(105, 59, 86, 20);
+			Cedula.setBounds(99, 59, 170, 20);
 			panel.add(Cedula);
 			Cedula.setColumns(10);
 			
 			Nombre = new JTextField();
 			Nombre.setColumns(10);
-			Nombre.setBounds(274, 59, 86, 20);
+			Nombre.setBounds(99, 94, 170, 20);
 			panel.add(Nombre);
 			
 			textField = new JTextField();
 			textField.setColumns(10);
-			textField.setBounds(105, 105, 86, 20);
+			textField.setBounds(362, 95, 152, 20);
 			panel.add(textField);
 			
 			JComboBox comboBox = new JComboBox();
-			comboBox.setBounds(274, 105, 96, 20);
+			comboBox.setBounds(99, 125, 170, 20);
 			panel.add(comboBox);
 			
 			comboBox.addItem("<Seleccione>");
@@ -142,192 +269,182 @@ public class RegistroTrabajador extends JDialog {
 			
 			Direccion = new JTextField();
 			Direccion.setColumns(10);
-			Direccion.setBounds(276, 153, 97, 20);
+			Direccion.setBounds(99, 155, 415, 20);
 			panel.add(Direccion);
 			
 			JLabel JefeLabel = new JLabel("Cantidad de trabajadores:");
-			JefeLabel.setBounds(175, 233, 127, 14);
+			JefeLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 13));
+			JefeLabel.setBounds(175, 315, 163, 14);
 			panel.add(JefeLabel);
-			JefeLabel.setVisible(false);
+			JefeLabel.setVisible(true);
 			
 			JLabel DiseniadorLabel = new JLabel("A\u00F1os de eperiencia:");
-			DiseniadorLabel.setBounds(175, 282, 97, 14);
+			DiseniadorLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 13));
+			DiseniadorLabel.setBounds(175, 318, 163, 14);
 			panel.add(DiseniadorLabel);
 			DiseniadorLabel.setVisible(false);
 			
-			JLabel ProgramadorLabel = new JLabel("Programador:");
-			ProgramadorLabel.setBounds(175, 324, 85, 14);
+			JLabel ProgramadorLabel = new JLabel("Lenguaje de programacion");
+			ProgramadorLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+			ProgramadorLabel.setBounds(264, 195, 197, 38);
 			panel.add(ProgramadorLabel);
 			ProgramadorLabel.setVisible(false);
 			
-			ProgramadorText = new JTextField();
-			ProgramadorText.setColumns(10);
-			ProgramadorText.setBounds(284, 325, 86, 37);
-			panel.add(ProgramadorText);
-			ProgramadorText.setVisible(false);
-			
 			JLabel PlanificadorLabel = new JLabel("Frecuencia de planificacion:");
-			PlanificadorLabel.setBounds(175, 373, 144, 14);
+			PlanificadorLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 13));
+			PlanificadorLabel.setBounds(175, 318, 192, 14);
 			panel.add(PlanificadorLabel);
 			PlanificadorLabel.setVisible(false);
 			
 			JSpinner jefeSpinner = new JSpinner();
-			jefeSpinner.setBounds(326, 230, 44, 20);
+			jefeSpinner.setBounds(341, 312, 48, 20);
 			panel.add(jefeSpinner);
-			jefeSpinner.setVisible(false);
+			jefeSpinner.setVisible(true);
 			
 			JSpinner DiseniadorSpinner = new JSpinner();
-			DiseniadorSpinner.setBounds(326, 282, 44, 20);
+			DiseniadorSpinner.setBounds(329, 315, 48, 20);
 			panel.add(DiseniadorSpinner);
 			DiseniadorSpinner.setVisible(false);
 			
 			JSpinner PlanificadorSpinner = new JSpinner();
-			PlanificadorSpinner.setBounds(326, 373, 44, 20);
+			PlanificadorSpinner.setBounds(353, 315, 36, 20);
 			PlanificadorSpinner.setVisible(false);
 			panel.add(PlanificadorSpinner);
 			
 			JDateChooser dateChooser = new JDateChooser();
-			dateChooser.setBounds(89, 156, 100, 22);
+			dateChooser.setBounds(99, 183, 135, 22);
 			panel.add(dateChooser);
 			
-			JButton btnNewButton = new JButton("Agregar");
-			btnNewButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					int i = 0;
-					while(btnNewButton.isSelected()) {
-						l [i]= ProgramadorText.getText();
-						i++;
-					}
-					ProgramadorText.setText(" ");
-				}
-			});
-			btnNewButton.setBounds(175, 342, 85, 20);
-			panel.add(btnNewButton);
+			JRadioButton rbtJefe = new JRadioButton("Jefe");
+			rbtJefe.setSelected(true);
 			
-			JRadioButton rdbtnNewRadioButton = new JRadioButton("Jefe");
-			rdbtnNewRadioButton.addActionListener(new ActionListener() {
+			rbtJefe.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					
+					panel_3.setVisible(false);
 					JefeLabel.setVisible(true);
 					DiseniadorLabel.setVisible(false);
 					ProgramadorLabel.setVisible(false);
-					ProgramadorText.setVisible(false);
 					PlanificadorLabel.setVisible(false);
 					jefeSpinner.setVisible(true);
 					DiseniadorSpinner.setVisible(false);
 					PlanificadorSpinner.setVisible(false);
-					btnNewButton.setVisible(false);
+					btnAgregar.setVisible(false);
 					
 				}
 			});
-			rdbtnNewRadioButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
-			rdbtnNewRadioButton.setBackground(new Color(240, 255, 240));
-			rdbtnNewRadioButton.setBounds(6, 7, 100, 23);
-			panel_1.add(rdbtnNewRadioButton);
+			rbtJefe.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 12));
+			rbtJefe.setBackground(new Color(135, 206, 235));
+			rbtJefe.setBounds(6, 7, 100, 23);
+			panel_1.add(rbtJefe);
 			
-			JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("Dise\u00F1ador");
-			rdbtnNewRadioButton_1.addActionListener(new ActionListener() {
+			JRadioButton rbtDesign = new JRadioButton("Dise\u00F1ador");
+			rbtDesign.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					panel_3.setVisible(false);
 					JefeLabel.setVisible(false);
 					DiseniadorLabel.setVisible(true);
 					ProgramadorLabel.setVisible(false);
-					ProgramadorText.setVisible(false);
 					PlanificadorLabel.setVisible(false);
 					jefeSpinner.setVisible(false);
 					DiseniadorSpinner.setVisible(true);
 					PlanificadorSpinner.setVisible(false);
-					btnNewButton.setVisible(false);
+					btnAgregar.setVisible(false);
 				}
 			});
-			rdbtnNewRadioButton_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
-			rdbtnNewRadioButton_1.setBackground(new Color(240, 255, 240));
-			rdbtnNewRadioButton_1.setBounds(6, 49, 100, 23);
-			panel_1.add(rdbtnNewRadioButton_1);
+			rbtDesign.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 12));
+			rbtDesign.setBackground(new Color(135, 206, 235));
+			rbtDesign.setBounds(6, 49, 100, 23);
+			panel_1.add(rbtDesign);
 			
-			JRadioButton rdbtnNewRadioButton_2 = new JRadioButton("Programador");
-			rdbtnNewRadioButton_2.addActionListener(new ActionListener() {
+			JRadioButton rbtProgramador = new JRadioButton("Programador");
+			rbtProgramador.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					panel_3.setVisible(true);
 					JefeLabel.setVisible(false);
 					DiseniadorLabel.setVisible(false);
 					ProgramadorLabel.setVisible(true);
-					ProgramadorText.setVisible(true);
 					PlanificadorLabel.setVisible(false);
 					jefeSpinner.setVisible(false);
 					DiseniadorSpinner.setVisible(false);
 					PlanificadorSpinner.setVisible(false);
-					btnNewButton.setVisible(true);
+					btnAgregar.setVisible(true);
 				}
 			});
-			rdbtnNewRadioButton_2.setBackground(new Color(240, 255, 240));
-			rdbtnNewRadioButton_2.setFont(new Font("Tahoma", Font.PLAIN, 12));
-			rdbtnNewRadioButton_2.setBounds(6, 92, 100, 23);
-			panel_1.add(rdbtnNewRadioButton_2);
+			rbtProgramador.setBackground(new Color(135, 206, 235));
+			rbtProgramador.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 12));
+			rbtProgramador.setBounds(6, 92, 100, 23);
+			panel_1.add(rbtProgramador);
 			
-			JRadioButton rdbtnPlanificador = new JRadioButton("Planificador");
-			rdbtnPlanificador.addActionListener(new ActionListener() {
+			JRadioButton rbtPlanificador = new JRadioButton("Planificador");
+			rbtPlanificador.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+				panel_3.setVisible(false);
 				JefeLabel.setVisible(false);
 				DiseniadorLabel.setVisible(false);
 				ProgramadorLabel.setVisible(false);
-				ProgramadorText.setVisible(false);
 				PlanificadorLabel.setVisible(true);
 				jefeSpinner.setVisible(false);
 				DiseniadorSpinner.setVisible(false);
 				PlanificadorSpinner.setVisible(true);
-				btnNewButton.setVisible(false);
+				btnAgregar.setVisible(false);
 				}
 			});
-			rdbtnPlanificador.setFont(new Font("Tahoma", Font.PLAIN, 12));
-			rdbtnPlanificador.setBackground(new Color(240, 255, 240));
-			rdbtnPlanificador.setBounds(6, 133, 100, 23);
-			panel_1.add(rdbtnPlanificador);
+			rbtPlanificador.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 12));
+			rbtPlanificador.setBackground(new Color(135, 206, 235));
+			rbtPlanificador.setBounds(6, 133, 100, 23);
+			panel_1.add(rbtPlanificador);
 			
-			botones.add(rdbtnNewRadioButton);
-			botones.add(rdbtnNewRadioButton_1);
-			botones.add(rdbtnNewRadioButton_2);
-			botones.add(rdbtnPlanificador);
+			botones.add(rbtJefe);
+			botones.add(rbtDesign);
+			botones.add(rbtProgramador);
+			botones.add(rbtPlanificador);
 			
 			
 			JPanel panel_2 = new JPanel();
-			panel_2.setBounds(0, 421, 404, 46);
+			panel_2.setBackground(new Color(135, 206, 250));
+			panel_2.setBorder(new LineBorder(new Color(160, 82, 45), 2));
+			panel_2.setBounds(0, 425, 556, 45);
 			panel.add(panel_2);
 			panel_2.setLayout(null);
 			{
 				JButton okButton = new JButton("Registrar");
+				okButton.setForeground(new Color(255, 255, 255));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
 						Trabajador t = null;
 						String id = Cedula.getText();
 						String nombre = Nombre.getName();
-						String Apellido = textField.getText(); // apellido
+						String Apellido = textField.getText();
 						String direccion = Direccion.getText();
 						String Sexo = comboBox.getSelectedItem().toString();
+						java.util.Date utilDate = dateChooser.getDate();
+						java.sql.Date fecha = new java.sql.Date(utilDate.getTime());
 						
-						
-						if(rdbtnNewRadioButton.isSelected()){
+						if(rbtJefe.isSelected()){
 							String cant = jefeSpinner.getValue().toString();
-							t = new Jefe(id, nombre, Apellido, direccion, Sexo, dateChooser.getDate() , null , Integer.parseInt(cant));
-							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informaci n", JOptionPane.INFORMATION_MESSAGE);
+							t = new Jefe(id, nombre, Apellido, direccion, Sexo, fecha , "Cumplidor"  , Integer.parseInt(cant));
+							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
 						}
-						if(rdbtnNewRadioButton_1.isSelected()){
+						if(rbtDesign.isSelected()){
 							String cant = DiseniadorSpinner.getValue().toString();
-							t = new Diseñador(id, nombre, Apellido, direccion, Sexo, dateChooser.getDate()  , null , Integer.parseInt(cant));
-							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informaci n", JOptionPane.INFORMATION_MESSAGE);
+							t = new Diseñador(id, nombre, Apellido, direccion, Sexo, fecha  , "Cumplidor" , Integer.parseInt(cant));
+							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
 						}
-						if(rdbtnNewRadioButton_2.isSelected()){
-							t = new Programador(id, nombre, Apellido, direccion, Sexo,(Date) dateChooser.getDate(), null , l);
-							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informaci n", JOptionPane.INFORMATION_MESSAGE);
-						}if(rdbtnPlanificador.isSelected()){
+						if(rbtProgramador.isSelected()){
+							
+							t = new Programador(id, nombre, Apellido, direccion, Sexo, fecha, "Cumplidor"  , listaAgregados);
+							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
+						}if(rbtPlanificador.isSelected()){
 							String cant = DiseniadorSpinner.getValue().toString();
-							t = new Planificador(id, nombre, Apellido, direccion, Sexo, (Date) dateChooser.getDate(), null , Integer.parseInt(cant));
-							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informaci n", JOptionPane.INFORMATION_MESSAGE);
+							t = new Planificador(id, nombre, Apellido, direccion, Sexo, fecha, "Cumplidor"  , Integer.parseInt(cant));
+							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
 						}
 						clean();
 						
 					}
 				});
-				okButton.setBounds(223, 11, 89, 23);
+				okButton.setBounds(376, 7, 89, 34);
 				panel_2.add(okButton);
 				okButton.setBackground(Color.GREEN);
 				okButton.setActionCommand("OK");
@@ -335,7 +452,8 @@ public class RegistroTrabajador extends JDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Cerrar");
-				cancelButton.setBounds(322, 11, 72, 23);
+				cancelButton.setForeground(new Color(255, 255, 255));
+				cancelButton.setBounds(474, 7, 72, 34);
 				panel_2.add(cancelButton);
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
@@ -349,9 +467,31 @@ public class RegistroTrabajador extends JDialog {
 				cancelButton.setActionCommand("Cancel");
 			}
 			
+			JPanel panel_5 = new JPanel();
+			panel_5.setBorder(new LineBorder(new Color(160, 82, 45), 2, true));
+			panel_5.setBounds(10, 48, 535, 362);
+			panel.add(panel_5);
 			
+			loadLenguajes();
 		}
 	}
+	
+	private void loadLenguajes() {
+
+	    model.setRowCount(0);
+	    for (String lenguaje : listaLenguajes) {
+	        model.addRow(new Object[]{lenguaje});
+	    }
+	    tableListaLenguajes.setModel(model);
+
+
+	    modelAgregado.setRowCount(0);
+	    for (String agregado : listaAgregados) {
+	        modelAgregado.addRow(new Object[]{agregado});
+	    }
+	    tableAgregados.setModel(modelAgregado);
+	}
+
 	
 	void clean() {
 		

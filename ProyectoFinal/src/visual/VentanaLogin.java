@@ -117,7 +117,7 @@ public class VentanaLogin extends JDialog {
         JButton btnNewButton = new JButton("Login");
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (Control.getInstance().confirmLogin(txtUsuario.getText(), new String(txtContraseña.getPassword()))) {
+                if (Control.getInstance().confirmLogin(txtUsuario.getText(), new String(txtContraseña.getPassword()))) {  
                     Principal frame = new Principal(Control.getInstance());
                     dispose();
                     frame.setVisible(true);

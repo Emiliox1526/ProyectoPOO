@@ -64,6 +64,8 @@ public class Principal extends JFrame {
         Image trabajadorImage = trabajadorIcon.getImage().getScaledInstance(120-15, 122-15, Image.SCALE_SMOOTH);
         ImageIcon proyectoIcon = new ImageIcon(Principal.class.getResource("/images/Proyecto.png"));
         Image proyectoImage = proyectoIcon.getImage().getScaledInstance(120, 122, Image.SCALE_SMOOTH);
+        ImageIcon adminIcon = new ImageIcon(Principal.class.getResource("/images/Admin.png"));
+        Image adminImage = adminIcon.getImage().getScaledInstance(120, 122, Image.SCALE_SMOOTH);
 
         JLabel lblNewLabel = new JLabel("Pagina Principal");
         lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
@@ -155,7 +157,10 @@ public class Principal extends JFrame {
                                                                                 btnAdministracion.setEnabled(false);
                                                                                 btnAdministracion.setForeground(Color.WHITE);
                                                                                 btnAdministracion.setBackground(Color.WHITE);
+                                                                                btnAdministracion.setHorizontalAlignment(SwingConstants.CENTER);
+                                                                                btnAdministracion.setIcon(new ImageIcon(adminImage));
                                                                                 btnAdministracion.setBounds(520, 87, 120, 122);
+                                                                                
                                                                                 panel_3.add(btnAdministracion);
                                                                                 
                                                                                 JPanel panel_4 = new JPanel();
@@ -183,7 +188,10 @@ public class Principal extends JFrame {
                                                                                 if (control == null) {
                                                                                 	txtUser.setText("");
 																				} else {
-																					txtUser.setText(control.getLoginUser().getUserName());
+																					txtUser.setText(Control.getLoginUser().getUserName());
+																					if(Control.getLoginUser().getTipo().equals("Administrador")) {
+																						btnAdministracion.setEnabled(true);
+																					}
 																				}
                                                                                 
     }

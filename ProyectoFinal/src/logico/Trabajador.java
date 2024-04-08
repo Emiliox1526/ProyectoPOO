@@ -55,7 +55,7 @@ public class Trabajador {
 		this.sexo = sexo;
 	}
 	public Date getFechaDeNacimiento() {
-		return FechaDeNacimiento;
+		return (Date) FechaDeNacimiento;
 	}
 	public void setFechaDeNacimiento(Date fechaDeNacimiento) {
 		FechaDeNacimiento = fechaDeNacimiento;
