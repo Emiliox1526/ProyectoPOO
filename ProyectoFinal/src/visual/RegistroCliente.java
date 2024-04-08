@@ -45,9 +45,9 @@ public class RegistroCliente extends JDialog {
 	 * Create the dialog.
 	 */
 	public RegistroCliente() {
-		setBounds(100, 100, 290, 300);
+		setBounds(100, 100, 290, 306);
 		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBackground(Color.WHITE);
+		contentPanel.setBackground(new Color(176, 224, 230));
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
@@ -56,15 +56,11 @@ public class RegistroCliente extends JDialog {
 		
 		JLabel lblNewLabel = new JLabel("Registro cliente");
 		lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 12));
-		lblNewLabel.setBounds(20, 11, 102, 14);
+		lblNewLabel.setBounds(10, 21, 102, 14);
 		contentPanel.add(lblNewLabel);
 		
-		JSeparator separator = new JSeparator();
-		separator.setBounds(20, 25, 231, 2);
-		contentPanel.add(separator);
-		
 		JLabel lblNewLabel_1 = new JLabel("Nombre:");
-		lblNewLabel_1.setBounds(20, 116, 46, 14);
+		lblNewLabel_1.setBounds(20, 116, 64, 14);
 		contentPanel.add(lblNewLabel_1);
 		
 		JLabel lblNewLabel_2 = new JLabel("Cedula");
@@ -72,7 +68,7 @@ public class RegistroCliente extends JDialog {
 		contentPanel.add(lblNewLabel_2);
 		
 		JLabel lblNewLabel_3 = new JLabel("Direccion:");
-		lblNewLabel_3.setBounds(20, 162, 55, 14);
+		lblNewLabel_3.setBounds(20, 162, 64, 14);
 		contentPanel.add(lblNewLabel_3);
 		
 		textField = new JTextField();
@@ -89,10 +85,14 @@ public class RegistroCliente extends JDialog {
 		textField_2.setBounds(94, 159, 139, 20);
 		contentPanel.add(textField_2);
 		textField_2.setColumns(10);
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(10, 36, 254, 168);
+		contentPanel.add(panel);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			buttonPane.setBackground(Color.WHITE);
+			buttonPane.setBackground(new Color(176, 196, 222));
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
