@@ -40,6 +40,7 @@ public class ListadoTrabajador extends JDialog {
 	private DefaultTableModel model;
 	private Object[] row;
 	private JTable table;
+	
 
 	/**
 	 * Launch the application.
@@ -86,9 +87,17 @@ public class ListadoTrabajador extends JDialog {
 			table.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			table.setColumnSelectionAllowed(true);
 			table.setEnabled(false);
-			table.setModel(model);
 			scrollPane.setViewportView(table);
 			
+<<<<<<< HEAD
+=======
+			String[] header = {"ID", "Nombre", "Apellido", "Evaluacion"};
+			model = new DefaultTableModel();
+			model.setColumnIdentifiers(header);
+			table.setModel(model);
+			
+			
+>>>>>>> branch 'master' of https://github.com/Emiliox1526/ProyectoPOO.git
 			JPanel panel_1 = new JPanel();
 			panel_1.setBackground(SystemColor.menu);
 			panel_1.setBorder(new LineBorder(new Color(160, 82, 45), 2, true));
@@ -205,7 +214,7 @@ public class ListadoTrabajador extends JDialog {
 			}
 			table.setModel(model);
 		}
-
+ 
 		private void loadTrabajadoresbyNombre(String text) {
 			model.setRowCount(0);
 			row = new Object[model.getColumnCount()];
@@ -245,8 +254,12 @@ public class ListadoTrabajador extends JDialog {
 						row[1] = trabajador.getNombre();
 						row[2] = trabajador.getApellidos();
 						row[3] = trabajador.getEvaluacionAnual();
+						model.addRow(row);
 				} 
 				table.setModel(model);
+				
+				
+				
 		}
 	}
 
