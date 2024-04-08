@@ -25,6 +25,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import logico.Diseñador;
+import logico.Empresa;
 import logico.Jefe;
 import logico.Planificador;
 import logico.Programador;
@@ -425,6 +426,7 @@ public class RegistroTrabajador extends JDialog {
 							String cant = jefeSpinner.getValue().toString();
 							t = new Jefe(id, nombre, Apellido, direccion, Sexo, fecha , "Cumplidor"  , Integer.parseInt(cant));
 							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
+							
 						}
 						if(rbtDesign.isSelected()){
 							String cant = DiseniadorSpinner.getValue().toString();
@@ -440,6 +442,7 @@ public class RegistroTrabajador extends JDialog {
 							t = new Planificador(id, nombre, Apellido, direccion, Sexo, fecha, "Cumplidor"  , Integer.parseInt(cant));
 							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
 						}
+						Empresa.getInstance().ingresarTrabajador(t);
 						clean();
 						
 					}

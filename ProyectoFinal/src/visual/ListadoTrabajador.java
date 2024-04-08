@@ -22,6 +22,7 @@ import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.border.LineBorder;
 import javax.swing.border.SoftBevelBorder;
@@ -75,12 +76,7 @@ public class ListadoTrabajador extends JDialog {
 			panel.setLayout(new BorderLayout(0, 0));
 			
 			JScrollPane scrollPane = new JScrollPane();
-			panel.add(scrollPane);
-			
-			String[] header = {"ID", "Nombre", "Apellido", "Evaluacion"};
-			
-			model = new DefaultTableModel();
-			model.setColumnIdentifiers(header);
+			panel.add(scrollPane, BorderLayout.CENTER);
 			table = new JTable();
 			table.setBackground(SystemColor.textHighlightText);
 			table.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -88,6 +84,11 @@ public class ListadoTrabajador extends JDialog {
 			table.setEnabled(false);
 			table.setModel(model);
 			scrollPane.setViewportView(table);
+			
+			String[] header = {"ID", "Nombre", "Apellido", "Evaluacion"};
+			
+			model = new DefaultTableModel();
+			model.setColumnIdentifiers(header);
 			
 			JPanel panel_1 = new JPanel();
 			panel_1.setBackground(SystemColor.menu);
@@ -216,7 +217,7 @@ public class ListadoTrabajador extends JDialog {
 					row[3] = trabajador.getEvaluacionAnual();
 				}
 			}
-			
+			table.setModel(model);
 		}
 
 		private void loadTrabajadoresbyNombre(String text) {
@@ -232,6 +233,7 @@ public class ListadoTrabajador extends JDialog {
 					row[3] = trabajador.getEvaluacionAnual();
 				}
 			}
+			table.setModel(model);
 		}
 		
 		private void loadTrabajadoresbyId(String cedula) {
@@ -246,18 +248,20 @@ public class ListadoTrabajador extends JDialog {
 					row[3] = trabajador.getEvaluacionAnual();
 				}
 			}
+			table.setModel(model);
 		}
 			
-			private void loadTrabajadores() {
+		private void loadTrabajadores() {
 				model.setRowCount(0);
 				row = new Object[model.getColumnCount()];
-				for (Trabajador trabajador : Empresa.getInstance().getMisTrabajadores()) {
+				ArrayList<Trabajador> trabajadores  = Empresa.getInstance().getMisTrabajadores();
+				for (Trabajador trabajador : trabajadores) {
 						row[0] = trabajador.getCedula();
 						row[1] = trabajador.getNombre();
 						row[2] = trabajador.getApellidos();
 						row[3] = trabajador.getEvaluacionAnual();
 				} 
-			
+				table.setModel(model);
 		}
 	}
 
