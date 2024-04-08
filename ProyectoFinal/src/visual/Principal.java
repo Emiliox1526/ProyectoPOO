@@ -197,6 +197,7 @@ public class Principal extends JFrame {
 																					txtUser.setText(Control.getLoginUser().getUserName());
 																					if(Control.getLoginUser().getTipo().equals("Administrador")) {
 																						btnAdministracion.setEnabled(true);
+																						lblAdministracion.setEnabled(true);
 																					}
 																				}
                                                                                 
