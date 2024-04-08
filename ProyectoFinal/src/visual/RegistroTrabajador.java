@@ -1,5 +1,5 @@
 package visual;
-
+//Backup
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
@@ -45,6 +45,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class RegistroTrabajador extends JDialog {
+	int backup = 0;
 	private JTextField Cedula;
 	private JTextField Nombre;
 	private JTextField textField;
