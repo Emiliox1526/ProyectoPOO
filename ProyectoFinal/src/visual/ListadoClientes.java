@@ -56,9 +56,9 @@ public class ListadoClientes extends JDialog {
 	 */
 	public ListadoClientes() {
 		setResizable(false);
-		setBounds(100, 100, 479, 388);
+		setBounds(100, 100, 485, 388);
 		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBackground(Color.WHITE);
+		contentPanel.setBackground(new Color(175, 238, 238));
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
@@ -72,30 +72,18 @@ public class ListadoClientes extends JDialog {
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(SystemColor.menu);
 		panel_1.setBorder(new LineBorder(new Color(160, 82, 45), 2, true));
-		panel_1.setBounds(10, 11, 442, 302);
+		panel_1.setBounds(20, 28, 438, 274);
 		contentPanel.add(panel_1);
 		panel_1.setLayout(null);
 		{
-			JLabel lblNewLabel = new JLabel("Trabajadores\r\n");
-			lblNewLabel.setBounds(10, 0, 91, 25);
-			panel_1.add(lblNewLabel);
-			lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 15));
-		}
-		{
-			JSeparator separator = new JSeparator();
-			separator.setForeground(new Color(0, 0, 0));
-			separator.setBounds(10, 23, 429, 2);
-			panel_1.add(separator);
-		}
-		{
 			JLabel lblNewLabel_1 = new JLabel("Buscar por:");
-			lblNewLabel_1.setBounds(10, 36, 82, 14);
+			lblNewLabel_1.setBounds(10, 11, 82, 14);
 			panel_1.add(lblNewLabel_1);
 			lblNewLabel_1.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 		}
 		{
 			JLabel lblNewLabel_2 = new JLabel("ID:");
-			lblNewLabel_2.setBounds(10, 61, 30, 14);
+			lblNewLabel_2.setBounds(10, 49, 30, 14);
 			panel_1.add(lblNewLabel_2);
 			lblNewLabel_2.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 		}
@@ -106,22 +94,8 @@ public class ListadoClientes extends JDialog {
 			lblNewLabel_3.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 		}
 		
-		
-		JButton btnNuevo = new JButton("Nuevo");
-		btnNuevo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				RegistroCliente c = new RegistroCliente();
-				c.setModal(true);
-				c.setVisible(true);
-			}
-		});
-		btnNuevo.setBounds(285, 36, 89, 42);
-		panel_1.add(btnNuevo);
-		btnNuevo.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
-		btnNuevo.setBackground(new Color(0, 255, 255));
-		
 		JButton btnBuscar = new JButton("Buscar");
-		btnBuscar.setBounds(285, 83, 89, 23);
+		btnBuscar.setBounds(296, 55, 89, 45);
 		panel_1.add(btnBuscar);
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -134,7 +108,7 @@ public class ListadoClientes extends JDialog {
 		btnBuscar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 117, 419, 155);
+		panel.setBounds(10, 111, 419, 155);
 		panel_1.add(panel);
 		panel.setLayout(new BorderLayout(0, 0));
 		
@@ -149,7 +123,7 @@ public class ListadoClientes extends JDialog {
 		scrollPane.setViewportView(table);
 		
 		id = new JTextField();
-		id.setBounds(131, 59, 128, 20);
+		id.setBounds(131, 47, 128, 20);
 		panel_1.add(id);
 		id.setColumns(10);
 		
@@ -160,14 +134,15 @@ public class ListadoClientes extends JDialog {
 		
 		{
 			JPanel buttonPane = new JPanel();
-			buttonPane.setBounds(0, 324, 473, 35);
+			buttonPane.setBounds(0, 313, 473, 35);
 			contentPanel.add(buttonPane);
 			buttonPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-			buttonPane.setBackground(Color.WHITE);
+			buttonPane.setBackground(new Color(176, 196, 222));
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			{
 				
 				JButton cancelButton = new JButton("Cerrar\r\n");
+				cancelButton.setForeground(new Color(255, 255, 255));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						dispose();
@@ -177,6 +152,12 @@ public class ListadoClientes extends JDialog {
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
+		}
+		{
+			JLabel lblNewLabel = new JLabel("Clientes");
+			lblNewLabel.setBounds(20, 11, 91, 18);
+			contentPanel.add(lblNewLabel);
+			lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 15));
 		}
 		loadClientes();
 	}

@@ -425,21 +425,23 @@ public class RegistroTrabajador extends JDialog {
 						if(rbtJefe.isSelected()){
 							String cant = jefeSpinner.getValue().toString();
 							t = new Jefe(id, nombre, Apellido, direccion, Sexo, fecha , "Cumplidor"  , Integer.parseInt(cant));
+							Empresa.getInstance().ingresarTrabajador(t);
 							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
-							
 						}
 						if(rbtDesign.isSelected()){
 							String cant = DiseniadorSpinner.getValue().toString();
 							t = new Diseñador(id, nombre, Apellido, direccion, Sexo, fecha  , "Cumplidor" , Integer.parseInt(cant));
+							Empresa.getInstance().ingresarTrabajador(t);
 							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
 						}
 						if(rbtProgramador.isSelected()){
-							
 							t = new Programador(id, nombre, Apellido, direccion, Sexo, fecha, "Cumplidor"  , listaAgregados);
+							Empresa.getInstance().ingresarTrabajador(t);
 							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
 						}if(rbtPlanificador.isSelected()){
 							String cant = DiseniadorSpinner.getValue().toString();
 							t = new Planificador(id, nombre, Apellido, direccion, Sexo, fecha, "Cumplidor"  , Integer.parseInt(cant));
+							Empresa.getInstance().ingresarTrabajador(t);
 							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
 						}
 						Empresa.getInstance().ingresarTrabajador(t);
@@ -461,9 +463,6 @@ public class RegistroTrabajador extends JDialog {
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						dispose();
-						ListadoTrabajador l = new ListadoTrabajador();
-						l.setModal(true);
-						l.setVisible(true);
 					}
 				});
 				cancelButton.setBackground(new Color(255, 99, 71));

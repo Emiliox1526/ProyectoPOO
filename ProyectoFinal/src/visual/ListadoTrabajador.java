@@ -77,6 +77,10 @@ public class ListadoTrabajador extends JDialog {
 			
 			JScrollPane scrollPane = new JScrollPane();
 			panel.add(scrollPane, BorderLayout.CENTER);
+			String[] header = {"ID", "Nombre", "Apellido", "Evaluacion"};
+			
+			model = new DefaultTableModel();
+			model.setColumnIdentifiers(header);
 			table = new JTable();
 			table.setBackground(SystemColor.textHighlightText);
 			table.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -84,11 +88,6 @@ public class ListadoTrabajador extends JDialog {
 			table.setEnabled(false);
 			table.setModel(model);
 			scrollPane.setViewportView(table);
-			
-			String[] header = {"ID", "Nombre", "Apellido", "Evaluacion"};
-			
-			model = new DefaultTableModel();
-			model.setColumnIdentifiers(header);
 			
 			JPanel panel_1 = new JPanel();
 			panel_1.setBackground(SystemColor.menu);
@@ -147,28 +146,15 @@ public class ListadoTrabajador extends JDialog {
 			panel_1.add(EvalAnual);
 			EvalAnual.setBackground(Color.WHITE);
 			
-			JButton btnNuevo = new JButton("Nuevo");
-			btnNuevo.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					RegistroTrabajador t = new RegistroTrabajador();
-					t.setModal(true);
-					t.setVisible(true);
-				}
-			});
-			btnNuevo.setBounds(285, 48, 89, 42);
-			panel_1.add(btnNuevo);
-			btnNuevo.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
-			btnNuevo.setBackground(new Color(0, 255, 255));
-			
 			JButton btnBuscar = new JButton("Buscar");
-			btnBuscar.setBounds(285, 105, 89, 23);
+			btnBuscar.setBounds(285, 61, 89, 42);
 			panel_1.add(btnBuscar);
 			btnBuscar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 
 						loadTrabajadoresbyId(Id.getText());
-						loadTrabajadoresbyNombre(Id.getText());
-						loadTrabajadoresbyApellido(Id.getText());
+						loadTrabajadoresbyNombre(nombre.getText());
+						loadTrabajadoresbyApellido(Apellido.getText());
 				}
 
 			});
@@ -221,7 +207,6 @@ public class ListadoTrabajador extends JDialog {
 		}
 
 		private void loadTrabajadoresbyNombre(String text) {
-			// TODO Auto-generated method stub
 			model.setRowCount(0);
 			row = new Object[model.getColumnCount()];
 			Trabajador t = Empresa.getInstance().BuscarTrabajadorById(text);

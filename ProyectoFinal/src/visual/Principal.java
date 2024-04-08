@@ -154,6 +154,12 @@ public class Principal extends JFrame {
                                                                                 btnProyecto.setIcon(new ImageIcon(proyectoImage));                                  
                                                                                 btnProyecto.setHorizontalAlignment(SwingConstants.CENTER);
                                                                                 JButton btnAdministracion = new JButton("");
+                                                                                btnAdministracion.addActionListener(new ActionListener() {
+                                                                                	public void actionPerformed(ActionEvent e) {
+                                                                                		MenuAdmin m = new MenuAdmin(control);
+                                                                                		m.setVisible(true);
+                                                                                	}
+                                                                                });
                                                                                 btnAdministracion.setEnabled(false);
                                                                                 btnAdministracion.setForeground(Color.WHITE);
                                                                                 btnAdministracion.setBackground(Color.WHITE);
@@ -170,8 +176,8 @@ public class Principal extends JFrame {
                                                                                 panel_3.add(panel_4);
                                                                                 
                                                                                 JLabel lblAdministracion = new JLabel("ADMINISTRACION");
-                                                                                lblAdministracion.setForeground(new Color(255, 255, 255));
                                                                                 lblAdministracion.setEnabled(false);
+                                                                                lblAdministracion.setForeground(new Color(255, 255, 255));
                                                                                 lblAdministracion.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
                                                                                 panel_4.add(lblAdministracion);
                                                                                 

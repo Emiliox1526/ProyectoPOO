@@ -45,7 +45,7 @@ public class RegistroCliente extends JDialog {
 	 * Create the dialog.
 	 */
 	public RegistroCliente() {
-		setBounds(100, 100, 290, 306);
+		setBounds(100, 100, 290, 291);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(176, 224, 230));
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -101,8 +101,8 @@ public class RegistroCliente extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						
 						Cliente cliente = new Cliente(textField.getText(), textField_1.getText(), textField_2.getText() ,0 );
-						JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informaci n", JOptionPane.INFORMATION_MESSAGE);
 						loadCliente(cliente);
+						JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informaci n", JOptionPane.INFORMATION_MESSAGE);
 						clean();
 					}
 				});
@@ -115,6 +115,7 @@ public class RegistroCliente extends JDialog {
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						dispose();
+						
 					}
 				});
 				cancelButton.setBackground(new Color(255, 99, 71));
