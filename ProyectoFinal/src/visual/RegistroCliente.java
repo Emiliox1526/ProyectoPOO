@@ -100,10 +100,14 @@ public class RegistroCliente extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
-						Cliente cliente = new Cliente(textField.getText(), textField_1.getText(), textField_2.getText() ,0 );
-						loadCliente(cliente);
-						JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informaci n", JOptionPane.INFORMATION_MESSAGE);
-						clean();
+						if (!textField.getText().isEmpty() && !textField_1.getText().isEmpty() && !textField_2.getText().isEmpty()) {
+							Cliente cliente = new Cliente(textField.getText(), textField_1.getText(), textField_2.getText() ,0 );
+							loadCliente(cliente);
+							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informaci n", JOptionPane.INFORMATION_MESSAGE);
+							clean();
+						} else {
+							JOptionPane.showMessageDialog(null,"Favor de llenar todos los campos" ,"Error", JOptionPane.ERROR_MESSAGE);
+						}
 					}
 				});
 				okButton.setBackground(new Color(0, 255, 0));
