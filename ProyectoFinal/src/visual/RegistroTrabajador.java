@@ -416,45 +416,42 @@ public class RegistroTrabajador extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
-						Trabajador t = null;
 						String id = Cedula.getText();
 						String nombre = Nombre.getText();
-						String Apellido = textField.getText();
+						String apellido = textField.getText();
 						String direccion = Direccion.getText();
-						String Sexo = comboBox.getSelectedItem().toString();
+						String sexo = comboBox.getSelectedItem().toString();
 						java.util.Date utilDate = dateChooser.getDate();
-						java.sql.Date fecha = new java.sql.Date(utilDate.getTime());
 						
-						if(rbtJefe.isSelected()){
-							String cant = jefeSpinner.getValue().toString();
-							t = new Jefe(id, nombre, Apellido, direccion, Sexo, fecha , "Cumplidor"  , Integer.parseInt(cant));
-							Empresa.getInstance().ingresarTrabajador(t);
-							
-						}
-						if(rbtDesign.isSelected()){
-							String cant = DiseniadorSpinner.getValue().toString();
-							t = new Diseñador(id, nombre, Apellido, direccion, Sexo, fecha  , "Cumplidor" , Integer.parseInt(cant));
-							Empresa.getInstance().ingresarTrabajador(t);
-							
-						}
-						if(rbtProgramador.isSelected()){
-							t = new Programador(id, nombre, Apellido, direccion, Sexo, fecha, "Cumplidor"  , listaAgregados);
-							Empresa.getInstance().ingresarTrabajador(t);
-							
-						}if(rbtPlanificador.isSelected()){
-							String cant = DiseniadorSpinner.getValue().toString();
-							t = new Planificador(id, nombre, Apellido, direccion, Sexo, fecha, "Cumplidor"  , Integer.parseInt(cant));
-							Empresa.getInstance().ingresarTrabajador(t);
-							
-						}
+						 if (id.isEmpty() || nombre.isEmpty() || apellido.isEmpty() || direccion.isEmpty() || sexo.equals("<Seleccione>") || utilDate == null) {
+					            JOptionPane.showMessageDialog(null, "Favor de llenar todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+					        } else {
+					            java.sql.Date fecha = new java.sql.Date(utilDate.getTime());
+					            Trabajador t = null;
+					            
+					            if (rbtJefe.isSelected()) {
+					                int cantidad = (int) jefeSpinner.getValue();
+					                t = new Jefe(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", cantidad);
+					            } else if (rbtDesign.isSelected()) {
+					                int añosExperiencia = (int) DiseniadorSpinner.getValue();
+					                t = new Diseñador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", añosExperiencia);
+					            } else if (rbtProgramador.isSelected()) {
+					                t = new Programador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", listaAgregados);
+					            } else if (rbtPlanificador.isSelected()) {
+					                int frecuenciaPlanificacion = (int) PlanificadorSpinner.getValue();
+					                t = new Planificador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", frecuenciaPlanificacion);
+					            }
+					            
+					            if (t != null) {
+					                Empresa.getInstance().ingresarTrabajador(t);
+					                Empresa.guardarEmpresa(Empresa.getInstance(), "controlador.dat");
+					                JOptionPane.showMessageDialog(null, "Registro Satisfactorio", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+					                clean();
+					            }
+					        }
+					    }
+					});
 						
-						Empresa.getInstance().ingresarTrabajador(t);
-						Empresa.guardarEmpresa(Empresa.getInstance(), "controlador.dat");
-						JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
-						clean();
-						
-					}
-				});
 				okButton.setBounds(376, 7, 89, 34);
 				panel_2.add(okButton);
 				okButton.setBackground(Color.GREEN);
