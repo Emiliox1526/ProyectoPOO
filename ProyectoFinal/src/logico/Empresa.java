@@ -1,10 +1,12 @@
 package logico;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -229,13 +231,46 @@ public class Empresa implements Serializable {
 		
 		return au;
 	}
-	public static void guardarEmpresa(Empresa empresa, String archivo) {
+	/*public static void guardarEmpresa(Empresa empresa, String archivo) {
         try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(archivo))) {
             outputStream.writeObject(empresa);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }*/
+	
+	public static void guardarEmpresa(Empresa empresa, String archivo) {
+        try {
+            ObjectOutputStream out = null;
+            File file = new File(archivo);
+            
+            if (file.exists()) {
+                out = empresa.new AppendingObjectOutputStream(new FileOutputStream(archivo, true)) {
+                    protected void writeStreamHeader() throws IOException {
+                        reset();
+                    }
+                };
+            } else {
+                out = new ObjectOutputStream(new FileOutputStream(archivo));
+            }
+
+            out.writeObject(empresa);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+class AppendingObjectOutputStream extends ObjectOutputStream {
+    public AppendingObjectOutputStream(OutputStream out) throws IOException {
+        super(out);
+    }
+
+    @Override
+    protected void writeStreamHeader() throws IOException {
+        reset();
+    }
+}
 
 	public static Empresa cargarEmpresa(String archivo) {
 	        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(archivo))) {

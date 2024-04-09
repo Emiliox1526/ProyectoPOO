@@ -207,6 +207,7 @@ public class ListadoTrabajador extends JDialog {
 					row[1] = trabajador.getNombre();
 					row[2] = trabajador.getApellidos();
 					row[3] = trabajador.getEvaluacionAnual();
+					model.addRow(row);
 				}
 			}
 			table.setModel(model);
@@ -222,6 +223,7 @@ public class ListadoTrabajador extends JDialog {
 					row[1] = trabajador.getNombre();
 					row[2] = trabajador.getApellidos();
 					row[3] = trabajador.getEvaluacionAnual();
+					model.addRow(row);
 				}
 			}
 			table.setModel(model);
@@ -237,6 +239,7 @@ public class ListadoTrabajador extends JDialog {
 					row[1] = trabajador.getNombre();
 					row[2] = trabajador.getApellidos();
 					row[3] = trabajador.getEvaluacionAnual();
+					model.addRow(row);
 				}
 			}
 			table.setModel(model);
@@ -247,6 +250,7 @@ public class ListadoTrabajador extends JDialog {
 		    Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
 		    if(empresa != null) {
 		    	for (Trabajador trabajador : empresa.getMisTrabajadores()) {
+		    		System.out.println("Cargando trabajador: " + trabajador.getNombre());
 				    model.addRow(new Object[]{
 				        trabajador.getCedula(),
 				        trabajador.getNombre(),
@@ -254,8 +258,8 @@ public class ListadoTrabajador extends JDialog {
 				        trabajador.getEvaluacionAnual()
 				    });
 				}
+		    	table.setModel(model);
 		    }
-			
 		}
 
 	}
