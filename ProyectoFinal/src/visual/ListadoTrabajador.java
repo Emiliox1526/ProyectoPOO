@@ -22,6 +22,7 @@ import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.border.LineBorder;
@@ -40,6 +41,7 @@ public class ListadoTrabajador extends JDialog {
 	private DefaultTableModel model;
 	private Object[] row;
 	private JTable table;
+	
 	
 
 	/**
@@ -61,6 +63,7 @@ public class ListadoTrabajador extends JDialog {
 
 	
 		public ListadoTrabajador() {
+			
 		setResizable(false);
 			setBounds(100, 100, 479, 456);
 			getContentPane().setLayout(new BorderLayout());
@@ -240,21 +243,21 @@ public class ListadoTrabajador extends JDialog {
 		}
 			
 		private void loadTrabajadores() {
-				model.setRowCount(0);
-				row = new Object[model.getColumnCount()];
-				ArrayList<Trabajador> trabajadores  = Empresa.getInstance().getMisTrabajadores();
-				for (Trabajador trabajador : trabajadores) {
-						row[0] = trabajador.getCedula();
-						row[1] = trabajador.getNombre();
-						row[2] = trabajador.getApellidos();
-						row[3] = trabajador.getEvaluacionAnual();
-						model.addRow(row);
-				} 
-				table.setModel(model);
-				
-				
-				
+		    model.setRowCount(0);
+		    Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
+		    if(empresa != null) {
+		    	for (Trabajador trabajador : empresa.getMisTrabajadores()) {
+				    model.addRow(new Object[]{
+				        trabajador.getCedula(),
+				        trabajador.getNombre(),
+				        trabajador.getApellidos(),
+				        trabajador.getEvaluacionAnual()
+				    });
+				}
+		    }
+			
 		}
+
 	}
 
 

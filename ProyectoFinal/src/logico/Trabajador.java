@@ -1,10 +1,11 @@
 package logico;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
 
-public class Trabajador {
-	
+public class Trabajador  implements Serializable {
+	private static final long serialVersionUID = 1L;
 	static LocalDate fechaActual = LocalDate.now();
 	protected String cedula;
 	protected String nombre;

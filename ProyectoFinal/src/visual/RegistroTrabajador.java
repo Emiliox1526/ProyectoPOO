@@ -42,6 +42,9 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 public class RegistroTrabajador extends JDialog {
 	int backup = 0;
@@ -415,7 +418,7 @@ public class RegistroTrabajador extends JDialog {
 						
 						Trabajador t = null;
 						String id = Cedula.getText();
-						String nombre = Nombre.getName();
+						String nombre = Nombre.getText();
 						String Apellido = textField.getText();
 						String direccion = Direccion.getText();
 						String Sexo = comboBox.getSelectedItem().toString();
@@ -426,25 +429,28 @@ public class RegistroTrabajador extends JDialog {
 							String cant = jefeSpinner.getValue().toString();
 							t = new Jefe(id, nombre, Apellido, direccion, Sexo, fecha , "Cumplidor"  , Integer.parseInt(cant));
 							Empresa.getInstance().ingresarTrabajador(t);
-							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
+							
 						}
 						if(rbtDesign.isSelected()){
 							String cant = DiseniadorSpinner.getValue().toString();
 							t = new Diseñador(id, nombre, Apellido, direccion, Sexo, fecha  , "Cumplidor" , Integer.parseInt(cant));
 							Empresa.getInstance().ingresarTrabajador(t);
-							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
+							
 						}
 						if(rbtProgramador.isSelected()){
 							t = new Programador(id, nombre, Apellido, direccion, Sexo, fecha, "Cumplidor"  , listaAgregados);
 							Empresa.getInstance().ingresarTrabajador(t);
-							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
+							
 						}if(rbtPlanificador.isSelected()){
 							String cant = DiseniadorSpinner.getValue().toString();
 							t = new Planificador(id, nombre, Apellido, direccion, Sexo, fecha, "Cumplidor"  , Integer.parseInt(cant));
 							Empresa.getInstance().ingresarTrabajador(t);
-							JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
+							
 						}
+						
 						Empresa.getInstance().ingresarTrabajador(t);
+						Empresa.guardarEmpresa(Empresa.getInstance(), "controlador.dat");
+						JOptionPane.showMessageDialog(null,"Registro Satisfactorio" ,"Informacion", JOptionPane.INFORMATION_MESSAGE);
 						clean();
 						
 					}

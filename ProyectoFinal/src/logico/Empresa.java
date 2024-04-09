@@ -1,10 +1,18 @@
 package logico;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 
-public class Empresa {
+public class Empresa implements Serializable {
 	
+
+	private static final long serialVersionUID = 1L;
 	private ArrayList<Cliente>misClientes;
 	private ArrayList<Contrato>misContratos;
 	private ArrayList<Trabajador>misTrabajadores;
@@ -181,29 +189,6 @@ public class Empresa {
 		return penalizacion;
 	}
 	
-	/*public float CalcularPenalizacion(String idProyecto) {
-	
-		float penalizacion = 0;		
-		for (Proyecto proyecto : misProyectos) {
-	        if (proyecto.getId().equalsIgnoreCase(idProyecto)) {
-	            Date fechaEntregaEsperada;
-	            if (proyecto.getFechaProrroga() == null) {
-	                fechaEntregaEsperada = (Date) proyecto.getFechaEntregaInicial();
-	            } else {
-	                fechaEntregaEsperada = (Date) proyecto.getFechaProrroga();
-	            }
-
-	            long tiempoEsperado = fechaEntregaEsperada.getTime();
-	            long tiempoReal = proyecto.getFechaEntregaFinal().getTime();
-	            long diferenciaMilisegundos = tiempoReal - tiempoEsperado;
-	            long diferenciaDias = diferenciaMilisegundos / (1000 * 60 * 60 * 24);
-	            // Calcular la penalización como el 1% de cada día de retraso
-	            penalizacion = diferenciaDias * 0.01f;
-	        }
-	    }
-	    return penalizacion;
-	}*/
-	
 	public Trabajador BuscarTrabajadorById(String id){
 		
 		Trabajador au = null;
@@ -244,5 +229,21 @@ public class Empresa {
 		
 		return au;
 	}
+	public static void guardarEmpresa(Empresa empresa, String archivo) {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(archivo))) {
+            outputStream.writeObject(empresa);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+	public static Empresa cargarEmpresa(String archivo) {
+	        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(archivo))) {
+	            return (Empresa) inputStream.readObject();
+	        } catch (IOException | ClassNotFoundException e) {
+	            e.printStackTrace();
+	            return null;
+	        }
+	    }
 
 }

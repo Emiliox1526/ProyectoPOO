@@ -1,9 +1,11 @@
 package logico;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 
-public class Programador extends Trabajador {
+public class Programador extends Trabajador{
+	
 	ArrayList<String> lenguajeDeProgramacion = new ArrayList<>();
 
 	public Programador(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
