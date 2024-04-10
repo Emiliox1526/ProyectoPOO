@@ -1,8 +1,10 @@
 package logico;
 
+import java.io.Serializable;
 import java.sql.Date;
 
-public class Jefe extends Trabajador {
+public class Jefe extends Trabajador implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private int cantTrabajadores;
 
 	public Jefe(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,

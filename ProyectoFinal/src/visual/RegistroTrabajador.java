@@ -443,13 +443,17 @@ public class RegistroTrabajador extends JDialog {
 					            }
 					            
 					            if (t != null) {
-					                Empresa.getInstance().ingresarTrabajador(t);
-					                Empresa.guardarEmpresa(Empresa.getInstance(), "controlador.dat");
+					                Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
+					                if (empresa == null) {
+					                    empresa = new Empresa();
+					                }
+					                empresa.ingresarTrabajador(t);
+					                Empresa.guardarEmpresa(empresa, "controlador.dat");
 					                JOptionPane.showMessageDialog(null, "Registro Satisfactorio", "Informacion", JOptionPane.INFORMATION_MESSAGE);
 					                clean();
 					            }
 					        }
-					    }
+					    } 
 					});
 						
 				okButton.setBounds(376, 7, 89, 34);

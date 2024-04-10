@@ -10,7 +10,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import logico.Diseñador;
 import logico.Empresa;
+import logico.Jefe;
+import logico.Planificador;
+import logico.Programador;
 import logico.Trabajador;
 
 import java.awt.Color;
@@ -31,16 +35,18 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.MatteBorder;
 import java.awt.SystemColor;
+import javax.swing.DefaultComboBoxModel;
 
 public class ListadoTrabajador extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField Id;
-	private JTextField nombre;
+	private JTextField lblNombre;
 	private JTextField Apellido;
 	private DefaultTableModel model;
 	private Object[] row;
 	private JTable table;
+	Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
 	
 	
 
@@ -65,59 +71,43 @@ public class ListadoTrabajador extends JDialog {
 		public ListadoTrabajador() {
 			
 		setResizable(false);
-			setBounds(100, 100, 479, 456);
+			setBounds(100, 100, 652, 466);
 			getContentPane().setLayout(new BorderLayout());
 			contentPanel.setBackground(new Color(230, 230, 250));
 			contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 			getContentPane().add(contentPanel, BorderLayout.CENTER);
 			contentPanel.setLayout(null);
 			setLocationRelativeTo(null);
-			
-			JPanel panel = new JPanel();
-			panel.setBorder(new LineBorder(new Color(30, 144, 255), 2, true));
-			panel.setBounds(20, 195, 419, 155);
-			contentPanel.add(panel);
-			panel.setLayout(new BorderLayout(0, 0));
-			
-			JScrollPane scrollPane = new JScrollPane();
-			panel.add(scrollPane, BorderLayout.CENTER);
-			String[] header = {"ID", "Nombre", "Apellido", "Evaluacion"};
+			String[] header = {"ID", "Nombre", "Apellido", "Evaluacion","Rol","Dato del rol"};
 			
 			model = new DefaultTableModel();
 			model.setColumnIdentifiers(header);
-			table = new JTable();
-			table.setBackground(SystemColor.textHighlightText);
-			table.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			table.setColumnSelectionAllowed(true);
-			table.setEnabled(false);
-			scrollPane.setViewportView(table);
-			table.setModel(model);
 			
 			
 
 			JPanel panel_1 = new JPanel();
 			panel_1.setBackground(SystemColor.menu);
 			panel_1.setBorder(new LineBorder(new Color(160, 82, 45), 2, true));
-			panel_1.setBounds(10, 35, 442, 333);
+			panel_1.setBounds(10, 35, 612, 344);
 			contentPanel.add(panel_1);
 			panel_1.setLayout(null);
 			{
-				JLabel lblNewLabel_1 = new JLabel("Buscar por:");
-				lblNewLabel_1.setBounds(10, 11, 82, 14);
-				panel_1.add(lblNewLabel_1);
-				lblNewLabel_1.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+				JLabel lblBuscar = new JLabel("Buscar por:");
+				lblBuscar.setBounds(10, 11, 82, 14);
+				panel_1.add(lblBuscar);
+				lblBuscar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 			}
 			{
-				JLabel lblNewLabel_2 = new JLabel("ID:");
-				lblNewLabel_2.setBounds(10, 36, 30, 14);
-				panel_1.add(lblNewLabel_2);
-				lblNewLabel_2.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+				JLabel lblCedula = new JLabel("Cedula:");
+				lblCedula.setBounds(10, 36, 96, 14);
+				panel_1.add(lblCedula);
+				lblCedula.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 			}
 			{
-				JLabel lblNewLabel_3 = new JLabel("Nombre(s):");
-				lblNewLabel_3.setBounds(10, 61, 96, 14);
-				panel_1.add(lblNewLabel_3);
-				lblNewLabel_3.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+				JLabel lblNombre = new JLabel("Nombre(s):");
+				lblNombre.setBounds(10, 61, 96, 14);
+				panel_1.add(lblNombre);
+				lblNombre.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 			}
 			{
 				JLabel lblApellidos = new JLabel("Apellido(s):");
@@ -126,46 +116,131 @@ public class ListadoTrabajador extends JDialog {
 				lblApellidos.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 			}
 			{
-				JLabel lblNewLabel_4 = new JLabel("Evaluacion anual:");
-				lblNewLabel_4.setBounds(10, 114, 119, 14);
-				panel_1.add(lblNewLabel_4);
-				lblNewLabel_4.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+				JLabel lblEvaluacion = new JLabel("Evaluacion anual:");
+				lblEvaluacion.setBounds(10, 114, 119, 14);
+				panel_1.add(lblEvaluacion);
+				lblEvaluacion.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
 			}
+			JComboBox rolTrabajador = new JComboBox();
+			rolTrabajador.setModel(new DefaultComboBoxModel(new String[] {"<Seleccione>", "Jefe", "Programador", "Dise\u00F1ador", "Planificador"}));
+			rolTrabajador.setBackground(Color.WHITE);
+			rolTrabajador.setBounds(135, 137, 289, 20);
+			panel_1.add(rolTrabajador);
 			
 			Id = new JTextField();
-			Id.setBounds(135, 34, 114, 20);
+			Id.setBounds(135, 34, 289, 20);
 			panel_1.add(Id);
 			Id.setColumns(10);
 			
-			nombre = new JTextField();
-			nombre.setBounds(135, 59, 114, 20);
-			panel_1.add(nombre);
-			nombre.setColumns(10);
+			lblNombre = new JTextField();
+			lblNombre.setBounds(135, 59, 289, 20);
+			panel_1.add(lblNombre);
+			lblNombre.setColumns(10);
 			
 			Apellido = new JTextField();
-			Apellido.setBounds(135, 87, 114, 20);
+			Apellido.setBounds(135, 87, 289, 20);
 			panel_1.add(Apellido);
 			Apellido.setColumns(10);
 			
 			JComboBox EvalAnual = new JComboBox();
-			EvalAnual.setBounds(135, 112, 114, 20);
+			EvalAnual.setModel(new DefaultComboBoxModel(new String[] {"<Seleccione>", "Destacado", "Cumplidor", "Incumplidor"}));
+			EvalAnual.setBounds(135, 112, 289, 20);
 			panel_1.add(EvalAnual);
 			EvalAnual.setBackground(Color.WHITE);
 			
 			JButton btnBuscar = new JButton("Buscar");
-			btnBuscar.setBounds(285, 61, 89, 42);
+			btnBuscar.setBounds(452, 33, 89, 42);
 			panel_1.add(btnBuscar);
 			btnBuscar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
+					Id.setEnabled(false);
+				    lblNombre.setEnabled(false);
+				    Apellido.setEnabled(false);
+				    EvalAnual.setEnabled(false);
+				    rolTrabajador.setEnabled(false);
 
-						loadTrabajadoresbyId(Id.getText());
-						loadTrabajadoresbyNombre(nombre.getText());
-						loadTrabajadoresbyApellido(Apellido.getText());
+				    model.setRowCount(0);
+
+				    String id = Id.getText();
+				    String nombre = lblNombre.getText();
+				    String apellido = Apellido.getText();
+				    String evalAnual = EvalAnual.getSelectedItem().toString();
+				    String rol = rolTrabajador.getSelectedItem().toString();
+
+				    for (Trabajador trabajador : empresa.getMisTrabajadores()) {
+				        if ((id.isEmpty() || trabajador.getCedula().equalsIgnoreCase(id))
+				                && (nombre.isEmpty() || trabajador.getNombre().equalsIgnoreCase(nombre))
+				                && (apellido.isEmpty() || trabajador.getApellidos().equalsIgnoreCase(apellido))
+				                && ("<Seleccione>".equals(evalAnual) || trabajador.getEvaluacionAnual().equalsIgnoreCase(evalAnual))
+				                && ("<Seleccione>".equals(rol) || trabajador.getClass().getSimpleName().equalsIgnoreCase(rol))) {
+				            row[0] = trabajador.getCedula();
+				            row[1] = trabajador.getNombre();
+				            row[2] = trabajador.getApellidos();
+				            row[3] = trabajador.getEvaluacionAnual();
+				            row[4] = trabajador.getClass().getSimpleName();
+				            if (trabajador instanceof Jefe) {
+				                row[5] = ((Jefe) trabajador).getCantTrabajadores() + " Trabajadores";
+				            } else if (trabajador instanceof Programador) {
+				                row[5] = ((Programador) trabajador).getLenguajeDeProgramacion();
+				            } else if (trabajador instanceof Planificador) {
+				                row[5] = ((Planificador) trabajador).getFrecuenciaDePlanificacion() + " Frecuencia";
+				            } else if (trabajador instanceof Diseñador) {
+				                row[5] = ((Diseñador) trabajador).getCantAgnoExp() + " Años exp";
+				            }
+				            model.addRow(row);
+				        }
+				    }
+
+				    
 				}
 
 			});
 			btnBuscar.setBackground(new Color(51, 204, 153));
 			btnBuscar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
+			
+			JButton btnReiniciar = new JButton("Reiniciar");
+			btnReiniciar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Id.setEnabled(true);
+				    lblNombre.setEnabled(true);
+				    Apellido.setEnabled(true);
+				    EvalAnual.setEnabled(true);
+				    rolTrabajador.setEnabled(true);
+				    Id.setText("");
+				    lblNombre.setText("");
+				    Apellido.setText("");
+				    EvalAnual.setSelectedIndex(0);
+				    rolTrabajador.setSelectedIndex(0);
+					loadTrabajadores();
+				}
+			});
+			btnReiniciar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
+			btnReiniciar.setBackground(new Color(240, 128, 128));
+			btnReiniciar.setBounds(452, 84, 89, 27);
+			panel_1.add(btnReiniciar);
+			
+			JPanel panel = new JPanel();
+			panel.setBounds(10, 178, 585, 155);
+			panel_1.add(panel);
+			panel.setBorder(new LineBorder(new Color(30, 144, 255), 2, true));
+			panel.setLayout(new BorderLayout(0, 0));
+			
+			JScrollPane scrollPane = new JScrollPane();
+			panel.add(scrollPane, BorderLayout.CENTER);
+			table = new JTable();
+			table.setBackground(SystemColor.textHighlightText);
+			table.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			table.setColumnSelectionAllowed(true);
+			table.setEnabled(false);
+			scrollPane.setViewportView(table);
+			table.setModel(model);
+			
+			JLabel lblRol = new JLabel("Rol de trabajador:");
+			lblRol.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+			lblRol.setBounds(10, 139, 131, 14);
+			panel_1.add(lblRol);
+			
+			
 			{
 				JLabel lblNewLabel = new JLabel("Trabajadores\r\n");
 				lblNewLabel.setBounds(10, 11, 91, 25);
@@ -196,72 +271,45 @@ public class ListadoTrabajador extends JDialog {
 			loadTrabajadores();
 		}
 		
-		private void loadTrabajadoresbyApellido(String text) {
-			// TODO Auto-generated method stub
-			model.setRowCount(0);
-			row = new Object[model.getColumnCount()];
-			Trabajador t = Empresa.getInstance().BuscarTrabajadorById(text);
-			for (Trabajador trabajador : Empresa.getInstance().getMisTrabajadores()) {
-				if(t.getApellidos().equalsIgnoreCase(trabajador.getApellidos())) {
-					row[0] = trabajador.getCedula();
-					row[1] = trabajador.getNombre();
-					row[2] = trabajador.getApellidos();
-					row[3] = trabajador.getEvaluacionAnual();
-					model.addRow(row);
-				}
-			}
-			table.setModel(model);
-		}
- 
-		private void loadTrabajadoresbyNombre(String text) {
-			model.setRowCount(0);
-			row = new Object[model.getColumnCount()];
-			Trabajador t = Empresa.getInstance().BuscarTrabajadorById(text);
-			for (Trabajador trabajador : Empresa.getInstance().getMisTrabajadores()) {
-				if(t.getNombre().equalsIgnoreCase(trabajador.getNombre())) {
-					row[0] = trabajador.getCedula();
-					row[1] = trabajador.getNombre();
-					row[2] = trabajador.getApellidos();
-					row[3] = trabajador.getEvaluacionAnual();
-					model.addRow(row);
-				}
-			}
-			table.setModel(model);
-		}
 		
-		private void loadTrabajadoresbyId(String cedula) {
-			model.setRowCount(0);
-			row = new Object[model.getColumnCount()];
-			Trabajador t = Empresa.getInstance().BuscarTrabajadorById(cedula);
-			for (Trabajador trabajador : Empresa.getInstance().getMisTrabajadores()) {
-				if(t.getCedula().equalsIgnoreCase(trabajador.getCedula())) {
-					row[0] = trabajador.getCedula();
-					row[1] = trabajador.getNombre();
-					row[2] = trabajador.getApellidos();
-					row[3] = trabajador.getEvaluacionAnual();
-					model.addRow(row);
-				}
-			}
-			table.setModel(model);
-		}
 			
 		private void loadTrabajadores() {
 		    model.setRowCount(0);
-		    Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
-		    if(empresa != null) {
-		    	for (Trabajador trabajador : empresa.getMisTrabajadores()) {
-		    		System.out.println("Cargando trabajador: " + trabajador.getNombre());
-				    model.addRow(new Object[]{
-				        trabajador.getCedula(),
-				        trabajador.getNombre(),
-				        trabajador.getApellidos(),
-				        trabajador.getEvaluacionAnual()
-				    });
-				}
-		    	table.setModel(model);
+		    row = new Object[model.getColumnCount()];
+		    
+		    if (empresa != null) {
+		        ArrayList<Trabajador> trabajadores = empresa.getMisTrabajadores();
+		        if (trabajadores != null && !trabajadores.isEmpty()) {
+		            
+		            for (Trabajador trabajador : trabajadores) {
+		                System.out.println("Cargando trabajador: " + trabajador.getNombre());
+		                row[0] = trabajador.getCedula();
+		                row[1] = trabajador.getNombre();
+		                row[2] = trabajador.getApellidos();
+		                row[3] = trabajador.getEvaluacionAnual();
+		                row[4] = trabajador.getClass().getSimpleName();
+		                if (trabajador instanceof Jefe) {
+		                	row[5] =((Jefe) trabajador).getCantTrabajadores() + " Trabajadores";
+						}
+		                else if(trabajador instanceof Programador) {
+		                	row[5] =((Programador) trabajador).getLenguajeDeProgramacion();
+		                } 
+		                else if(trabajador instanceof Planificador) {
+		                	row[5] =((Planificador) trabajador).getFrecuenciaDePlanificacion() + " Frecuencia" ;
+		                }
+		                else if(trabajador instanceof Diseñador) {
+		                	row[5] =((Diseñador) trabajador).getCantAgnoExp() + " Años exp";
+		                }
+		                
+		                model.addRow(row);
+		                
+		                
+		            }
+		                 
+		            table.setModel(model);
+		        }
 		    }
 		}
-
 	}
 
 

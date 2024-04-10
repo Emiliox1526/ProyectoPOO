@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 
-public class Programador extends Trabajador{
+public class Programador extends Trabajador implements Serializable{
+	private static final long serialVersionUID = 1L;
 	
 	ArrayList<String> lenguajeDeProgramacion = new ArrayList<>();
 

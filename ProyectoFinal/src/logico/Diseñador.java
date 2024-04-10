@@ -1,9 +1,10 @@
 package logico;
 
+import java.io.Serializable;
 import java.sql.Date;
 
-public class Diseñador extends Trabajador {
-
+public class Diseñador extends Trabajador implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private int cantAgnoExp;
 
 	

@@ -1,5 +1,6 @@
 package logico;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -161,6 +162,7 @@ public class Empresa implements Serializable {
 	        }
 	    }
 	}
+
 	
 	public void ProrrogarFecha(String idProyecto,Date fechaProrroga) {
 		
@@ -231,54 +233,32 @@ public class Empresa implements Serializable {
 		
 		return au;
 	}
-	/*public static void guardarEmpresa(Empresa empresa, String archivo) {
-        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(archivo))) {
-            outputStream.writeObject(empresa);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
-	
 	public static void guardarEmpresa(Empresa empresa, String archivo) {
-        try {
-            ObjectOutputStream out = null;
-            File file = new File(archivo);
-            
-            if (file.exists()) {
-                out = empresa.new AppendingObjectOutputStream(new FileOutputStream(archivo, true)) {
-                    protected void writeStreamHeader() throws IOException {
-                        reset();
-                    }
-                };
-            } else {
-                out = new ObjectOutputStream(new FileOutputStream(archivo));
-            }
-
-            out.writeObject(empresa);
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-class AppendingObjectOutputStream extends ObjectOutputStream {
-    public AppendingObjectOutputStream(OutputStream out) throws IOException {
-        super(out);
-    }
-
-    @Override
-    protected void writeStreamHeader() throws IOException {
-        reset();
-    }
-}
+	    try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(archivo))) {
+	        outputStream.writeObject(empresa);
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
 
 	public static Empresa cargarEmpresa(String archivo) {
-	        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(archivo))) {
-	            return (Empresa) inputStream.readObject();
-	        } catch (IOException | ClassNotFoundException e) {
-	            e.printStackTrace();
-	            return null;
+	    Empresa empresa = null;
+	    try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(archivo))) {
+	        Object obj;
+	        while ((obj = in.readObject()) != null) {
+	            if (obj instanceof Empresa) {
+	                empresa = (Empresa) obj;
+	            }
 	        }
+	    } catch (EOFException e) {
+	        System.out.println("Archivo cargado");
+	    } catch (IOException | ClassNotFoundException e) {
+	        e.printStackTrace();
 	    }
+	    return empresa;
+	}
+
+
+
 
 }
