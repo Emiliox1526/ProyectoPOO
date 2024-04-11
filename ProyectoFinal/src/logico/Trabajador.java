@@ -5,6 +5,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 
 public class Trabajador  implements Serializable {
+	//*/***/***/*/*
+	/**///backup
 	private static final long serialVersionUID = 1L;
 	static LocalDate fechaActual = LocalDate.now();
 	protected String cedula;
