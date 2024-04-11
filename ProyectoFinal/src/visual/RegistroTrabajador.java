@@ -431,15 +431,15 @@ public class RegistroTrabajador extends JDialog {
 					            
 					            if (rbtJefe.isSelected()) {
 					                int cantidad = (int) jefeSpinner.getValue();
-					                t = new Jefe(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", cantidad);
+					                t = new Jefe(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", cantidad,0,0);
 					            } else if (rbtDesign.isSelected()) {
 					                int añosExperiencia = (int) DiseniadorSpinner.getValue();
-					                t = new Diseñador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", añosExperiencia);
+					                t = new Diseñador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", añosExperiencia,0,0);
 					            } else if (rbtProgramador.isSelected()) {
-					                t = new Programador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", listaAgregados);
+					                t = new Programador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", listaAgregados,0,0);
 					            } else if (rbtPlanificador.isSelected()) {
 					                int frecuenciaPlanificacion = (int) PlanificadorSpinner.getValue();
-					                t = new Planificador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", frecuenciaPlanificacion);
+					                t = new Planificador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", frecuenciaPlanificacion,0,0);
 					            }
 					            
 					            if (t != null) {

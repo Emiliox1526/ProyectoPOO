@@ -8,8 +8,8 @@ public class Jefe extends Trabajador implements Serializable{
 	private int cantTrabajadores;
 
 	public Jefe(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
-			java.util.Date date, String evaluacionAnual, int cantTrabajadores) {
-		super(cedula, nombre, apellidos, direccionParticular, sexo, date, evaluacionAnual);
+			java.util.Date date, String evaluacionAnual, int cantTrabajadores,int cantProyectosFallidos, int cantProyectos) {
+		super(cedula, nombre, apellidos, direccionParticular, sexo, date, evaluacionAnual, cantProyectos, cantProyectos);
 		this.cantTrabajadores = cantTrabajadores;
 	}
 

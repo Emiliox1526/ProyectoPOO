@@ -9,8 +9,8 @@ public class Diseñador extends Trabajador implements Serializable{
 
 	
 	public Diseñador(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
-			java.util.Date fecha, String evaluacionAnual, int cantAgnoExp) {
-		super(cedula, nombre, apellidos, direccionParticular, sexo, fecha, evaluacionAnual);
+			java.util.Date fecha, String evaluacionAnual, int cantAgnoExp,int cantProyectosFallidos, int cantProyectos) {
+		super(cedula, nombre, apellidos, direccionParticular, sexo, fecha, evaluacionAnual, cantProyectos, cantProyectos);
 		this.cantAgnoExp = cantAgnoExp;
 	}
 

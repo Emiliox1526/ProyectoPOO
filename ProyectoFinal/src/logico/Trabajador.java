@@ -14,8 +14,10 @@ public class Trabajador  implements Serializable {
 	protected String sexo;
 	protected java.util.Date FechaDeNacimiento;
 	protected String evaluacionAnual;
+	protected int cantProyectosFallidos;
+	protected int cantProyectosTotal;
 	public Trabajador(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
-			java.util.Date date, String evaluacionAnual) {
+			java.util.Date date, String evaluacionAnual,int cantProyectosFallidos, int cantProyectos) {
 		super();
 		this.cedula = cedula;
 		this.nombre = nombre;
@@ -24,6 +26,8 @@ public class Trabajador  implements Serializable {
 		this.sexo = sexo;
 		FechaDeNacimiento = date;
 		this.evaluacionAnual = evaluacionAnual;
+		this.cantProyectosFallidos = cantProyectosFallidos;
+		this.cantProyectosTotal = cantProyectos;
 	}
 	public String getCedula() {
 		return cedula;
@@ -68,6 +72,7 @@ public class Trabajador  implements Serializable {
 		this.evaluacionAnual = evaluacionAnual;
 	}
 	
+	
 	int calcularEdad(){
 		int edadanios = 0;
 		int edadDias = 0;
@@ -85,5 +90,30 @@ public class Trabajador  implements Serializable {
 		return edad;
 		
 	}
-	
+	public int getCantProyectosFallidos() {
+		return cantProyectosFallidos;
+	}
+	public void setCantProyectosFallidos(int cantProyectosFallidos) {
+		this.cantProyectosFallidos = cantProyectosFallidos;
+	}
+	public int getCantProyectosTotal() {
+		return cantProyectosTotal;
+	}
+	public void setCantProyectosTotal(int cantProyectosTotal) {
+		this.cantProyectosTotal = cantProyectosTotal;
+	}
+	String calcularEvaluacionAnual(){
+		float porcentaje = ((getCantProyectosFallidos()/getCantProyectosTotal())*100);
+		String evaluacion = null;
+		if(porcentaje >= 0 && porcentaje <= 30) {//Destacado//
+			evaluacion = "Destacado";
+		}
+		if(porcentaje >= 31 && porcentaje <= 60) {//Cumplido//
+			evaluacion = "Cumplidor";
+		}
+		if(porcentaje >= 61 && porcentaje <= 100) {//Incumplidor//
+			evaluacion = "Incumplidor";
+		}
+		return evaluacion;
+	}
 }
