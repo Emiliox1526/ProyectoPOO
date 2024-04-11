@@ -153,11 +153,7 @@ public class ListadoTrabajador extends JDialog {
 			panel_1.add(btnBuscar);
 			btnBuscar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					Id.setEnabled(false);
-				    lblNombre.setEnabled(false);
-				    Apellido.setEnabled(false);
-				    EvalAnual.setEnabled(false);
-				    rolTrabajador.setEnabled(false);
+					
 
 				    model.setRowCount(0);
 
@@ -189,6 +185,7 @@ public class ListadoTrabajador extends JDialog {
 				            }
 				            model.addRow(row);
 				        }
+				        
 				    }
 
 				    

@@ -243,6 +243,14 @@ public class Empresa implements Serializable {
 
 	public static Empresa cargarEmpresa(String archivo) {
 	    Empresa empresa = null;
+	    File file = new File(archivo);
+	    if (!file.exists()) {
+	        empresa = new Empresa();
+	        guardarEmpresa(empresa, archivo);
+	        System.out.println("Archivo creado: " + archivo);
+	        return empresa;
+	    }
+
 	    try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(archivo))) {
 	        Object obj;
 	        while ((obj = in.readObject()) != null) {

@@ -1,17 +1,23 @@
 package logico;
 
-public class Cliente {
+import java.io.Serializable;
+
+public class Cliente implements Serializable{
 	
+
+	private static final long serialVersionUID = 1L;
 	private String id;
 	private String nombre;
+	private String apellido;
 	private String direccion;
 	private int cantProyectos;
 	private boolean maxProyectos;
 	
-	public Cliente(String id, String nombre, String direccion, int cantProyectos) {
+	public Cliente(String id, String nombre,String apellido, String direccion, int cantProyectos) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
+		this.setApellido(apellido);
 		this.direccion = direccion;
 		this.cantProyectos = cantProyectos;
 		this.maxProyectos = false;
@@ -55,6 +61,14 @@ public class Cliente {
 
 	public void setMaxProyectos(boolean maxProyectos) {
 		this.maxProyectos = maxProyectos;
+	}
+
+	public String getApellido() {
+		return apellido;
+	}
+
+	public void setApellido(String apellido) {
+		this.apellido = apellido;
 	}
 	
 	

@@ -68,6 +68,8 @@ public class MenuAdmin extends JFrame {
         Image proyectoImage = proyectoIcon.getImage().getScaledInstance(120, 122, Image.SCALE_SMOOTH);
         ImageIcon adminIcon = new ImageIcon(Principal.class.getResource("/images/Admin.png"));
         Image adminImage = adminIcon.getImage().getScaledInstance(120, 122, Image.SCALE_SMOOTH);
+        ImageIcon exitIcon = new ImageIcon(Principal.class.getResource("/images/ExitButton.png"));
+        Image exitImage = exitIcon.getImage().getScaledInstance(120, 122, Image.SCALE_SMOOTH);
 
         JLabel lblNewLabel = new JLabel("Menu Administracion");
         lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
@@ -155,20 +157,23 @@ public class MenuAdmin extends JFrame {
                                                                                 btnProyecto.setBackground(Color.WHITE);
                                                                                 btnProyecto.setIcon(new ImageIcon(proyectoImage));                                  
                                                                                 btnProyecto.setHorizontalAlignment(SwingConstants.CENTER);
-                                                                                JButton btnAdministracion = new JButton("");
-                                                                                btnAdministracion.addActionListener(new ActionListener() {
+                                                                                JButton btnExit = new JButton("");
+                                                                                btnExit.addActionListener(new ActionListener() {
                                                                                 	public void actionPerformed(ActionEvent arg0) {
                                                                                 		Principal p = new Principal(control);
                                                                                 		p.setVisible(true);
                                                                                 		dispose();
                                                                                 	}
                                                                                 });
-                                                                                btnAdministracion.setForeground(Color.WHITE);
-                                                                                btnAdministracion.setBackground(Color.WHITE);
-                                                                                btnAdministracion.setHorizontalAlignment(SwingConstants.CENTER);
-                                                                                btnAdministracion.setBounds(520, 87, 120, 122);
+                                                                                btnExit.setBounds(520, 87, 120, 122);
                                                                                 
-                                                                                panel_3.add(btnAdministracion);
+                                                                                btnExit.setForeground(Color.WHITE);
+                                                                                btnExit.setBackground(Color.WHITE);
+                                                                                btnExit.setHorizontalAlignment(SwingConstants.CENTER);
+                                                                                btnExit.setIcon(new ImageIcon(exitImage));
+                                                                               
+                                                                               
+                                                                                panel_3.add(btnExit);
                                                                                 
                                                                                 JPanel panel_4 = new JPanel();
                                                                                 panel_4.setBackground(new Color(102, 204, 204));
@@ -196,7 +201,7 @@ public class MenuAdmin extends JFrame {
 																				} else {
 																					txtUser.setText(Control.getLoginUser().getUserName());
 																					if(Control.getLoginUser().getTipo().equals("Administrador")) {
-																						btnAdministracion.setEnabled(true);
+																						btnExit.setEnabled(true);
 																					}
 																				}
                                                                                 
