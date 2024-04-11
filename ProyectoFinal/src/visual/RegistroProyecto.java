@@ -42,9 +42,6 @@ public class RegistroProyecto extends JDialog {
 	private JTable tableTrabajadoresAgregados;
 	Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
 	int backup =0;
-	//Comentario para que puedan hacer backup
-	//sincero
-	//eliminar luego
 	private static DefaultTableModel model;
 	private static DefaultTableModel modelAgregado;
 	private JTextField txtIdCliente;
@@ -93,6 +90,18 @@ public class RegistroProyecto extends JDialog {
 						dispose();
 					}
 				});
+				
+				JButton btnRegistrar = new JButton("Registrar");
+				btnRegistrar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						
+						
+						clean();
+					}
+				});
+				btnRegistrar.setForeground(new Color(255, 255, 255));
+				btnRegistrar.setBackground(Color.GREEN);
+				buttonPane.add(btnRegistrar);
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
@@ -180,14 +189,26 @@ public class RegistroProyecto extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 					if (indexSeleccionadoTrabajadores != -1) {
 			            Trabajador trabajadorAgregado = listaTrabajadores.get(indexSeleccionadoTrabajadores);
-			            listaAgregados.add(trabajadorAgregado);
+			            if (puedeAgregarTrabajador(trabajadorAgregado)) {
+			                listaAgregados.add(trabajadorAgregado);
+			                listaTrabajadores.remove(indexSeleccionadoTrabajadores);
+			                loadTrabajadores();
+			            } else {
+			                JOptionPane.showMessageDialog(null, "No se puede agregar más trabajadores de este tipo", "Error", JOptionPane.ERROR_MESSAGE);
+			            }
+			        } else {
+			            JOptionPane.showMessageDialog(null, "Seleccione un trabajador para agregar", "Error", JOptionPane.ERROR_MESSAGE);
+			        }
+			    }
+			});
+			          /*  listaAgregados.add(trabajadorAgregado);
 			            listaTrabajadores.remove(indexSeleccionadoTrabajadores);
 			            loadTrabajadores();
 			        } else {
 			            JOptionPane.showMessageDialog(null, "Seleccione un trabajador para agregar", "Error", JOptionPane.ERROR_MESSAGE);
 			        }
 				}
-			});
+			});*/
 			btnAgregar.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
 			panel.add(btnAgregar);
 			
@@ -201,7 +222,7 @@ public class RegistroProyecto extends JDialog {
 			            listaAgregados.remove(indexSeleccionadoAgregados);
 			            loadTrabajadores();
 			        } else {
-			            JOptionPane.showMessageDialog(null, "Seleccione un trabajador para agregar", "Error", JOptionPane.ERROR_MESSAGE);
+			            JOptionPane.showMessageDialog(null, "Seleccione un trabajador para quitar", "Error", JOptionPane.ERROR_MESSAGE);
 			        }
 				}
 			});
@@ -387,5 +408,42 @@ public class RegistroProyecto extends JDialog {
 			}		
 		}
 		return aux;
+	}
+	
+	private boolean puedeAgregarTrabajador(Trabajador trabajador) {
+		
+		 int contJefes = 0;
+		 int contDiseñadores = 0;
+		 int contProgramadores = 0;
+		 int contPlanificadores = 0;
+		    for (Trabajador t : listaAgregados) {
+		        if (t instanceof Jefe) {
+		            contJefes++;
+		        } else if (t instanceof Diseñador) {
+		            contDiseñadores++;
+		        } else if (t instanceof Programador) {
+		            contProgramadores++;
+		        } else if (t instanceof Planificador) {
+		            contPlanificadores++;
+		        }
+		    }
+		    if (trabajador instanceof Jefe) {
+		        return contJefes == 0 && listaAgregados.size() < 5;
+		    } else if (trabajador instanceof Diseñador) {
+		        return contDiseñadores == 0 && listaAgregados.size() < 5; 
+		    } else if (trabajador instanceof Programador) {
+		        return contProgramadores < 3 && listaAgregados.size() < 5;
+		    } else if (trabajador instanceof Planificador) {
+		        return contPlanificadores == 0 && (contProgramadores >= 2 || contProgramadores == 1 && contPlanificadores == 0) && listaAgregados.size() < 5;
+		    }
+		    return true;
+		}
+	
+	void clean() {
+		txtidProyecto.setText("P-"+Empresa.getInstance().idProyecto);
+		txtidContrato.setText("C-"+Empresa.getInstance().idContrato);
+		txtIdCliente.setText("");
+		txtNombre.setText("");
+		txtApellido.setText("");
 	}
 }
