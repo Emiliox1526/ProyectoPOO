@@ -3,12 +3,13 @@ package logico;
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 
 public class Trabajador  implements Serializable {
 	//*/***/***/*/*
 	/**///backup
 	private static final long serialVersionUID = 1L;
-	static LocalDate fechaActual = LocalDate.now();
 	protected String cedula;
 	protected String nombre;
 	protected String apellidos;
@@ -75,19 +76,14 @@ public class Trabajador  implements Serializable {
 	}
 	
 	
-	int calcularEdad(){
-		int edadanios = 0;
-		int edadDias = 0;
-		int edad = 0;
+	public int calcularEdad(){
 		
-		edadanios = fechaActual.getYear() - FechaDeNacimiento.getYear();
-		edadDias = fechaActual.getDayOfYear() - FechaDeNacimiento.getDay();
-		
-		if (edadDias < 0) {
-			edad = edadanios + 1;
-		}else {
-			edad = edadanios;
-		}
+		int edad;
+		LocalDate fechaNac = getFechaDeNacimiento().toLocalDate() ;
+		LocalDate ahora = LocalDate.now();
+
+		Period periodo = Period.between(fechaNac, ahora);
+		edad = periodo.getYears();
 		
 		return edad;
 		

@@ -78,7 +78,7 @@ public class ListadoTrabajador extends JDialog {
 			getContentPane().add(contentPanel, BorderLayout.CENTER);
 			contentPanel.setLayout(null);
 			setLocationRelativeTo(null);
-			String[] header = {"ID", "Nombre", "Apellido", "Evaluacion","Rol","Dato del rol"};
+			String[] header = {"ID", "Nombre", "Apellido","Edad","Evaluacion","Rol","Dato del rol"};
 			
 			model = new DefaultTableModel();
 			model.setColumnIdentifiers(header);
@@ -172,16 +172,17 @@ public class ListadoTrabajador extends JDialog {
 				            row[0] = trabajador.getCedula();
 				            row[1] = trabajador.getNombre();
 				            row[2] = trabajador.getApellidos();
-				            row[3] = trabajador.getEvaluacionAnual();
-				            row[4] = trabajador.getClass().getSimpleName();
+				            row[3] = trabajador.calcularEdad();
+				            row[4] = trabajador.getEvaluacionAnual();
+				            row[5] = trabajador.getClass().getSimpleName();
 				            if (trabajador instanceof Jefe) {
-				                row[5] = ((Jefe) trabajador).getCantTrabajadores() + " Trabajadores";
+				                row[6] = ((Jefe) trabajador).getCantTrabajadores() + " Trabajadores";
 				            } else if (trabajador instanceof Programador) {
-				                row[5] = ((Programador) trabajador).getLenguajeDeProgramacion();
+				                row[6] = ((Programador) trabajador).getLenguajeDeProgramacion();
 				            } else if (trabajador instanceof Planificador) {
-				                row[5] = ((Planificador) trabajador).getFrecuenciaDePlanificacion() + " Frecuencia";
+				                row[6] = ((Planificador) trabajador).getFrecuenciaDePlanificacion() + " Frecuencia";
 				            } else if (trabajador instanceof Diseñador) {
-				                row[5] = ((Diseñador) trabajador).getCantAgnoExp() + " Años exp";
+				                row[6] = ((Diseñador) trabajador).getCantAgnoExp() + " Años exp";
 				            }
 				            model.addRow(row);
 				        }
@@ -283,19 +284,20 @@ public class ListadoTrabajador extends JDialog {
 		                row[0] = trabajador.getCedula();
 		                row[1] = trabajador.getNombre();
 		                row[2] = trabajador.getApellidos();
-		                row[3] = trabajador.getEvaluacionAnual();
-		                row[4] = trabajador.getClass().getSimpleName();
+		                row[3] = trabajador.calcularEdad();
+		                row[4] = trabajador.getEvaluacionAnual();
+		                row[5] = trabajador.getClass().getSimpleName();
 		                if (trabajador instanceof Jefe) {
-		                	row[5] =((Jefe) trabajador).getCantTrabajadores() + " Trabajadores";
+		                	row[6] =((Jefe) trabajador).getCantTrabajadores() + " Trabajadores";
 						}
 		                else if(trabajador instanceof Programador) {
-		                	row[5] =((Programador) trabajador).getLenguajeDeProgramacion();
+		                	row[6] =((Programador) trabajador).getLenguajeDeProgramacion();
 		                } 
 		                else if(trabajador instanceof Planificador) {
-		                	row[5] =((Planificador) trabajador).getFrecuenciaDePlanificacion() + " Frecuencia" ;
+		                	row[6] =((Planificador) trabajador).getFrecuenciaDePlanificacion() + " Frecuencia" ;
 		                }
 		                else if(trabajador instanceof Diseñador) {
-		                	row[5] =((Diseñador) trabajador).getCantAgnoExp() + " Años exp";
+		                	row[6] =((Diseñador) trabajador).getCantAgnoExp() + " Años exp";
 		                }
 		                
 		                model.addRow(row);
