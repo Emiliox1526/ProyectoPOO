@@ -220,6 +220,18 @@ public class Empresa implements Serializable {
 		
 		return au;
 	}
+	
+	public Proyecto BuscarProyectoById(String id) {
+		Proyecto au = null;
+		
+		for (Proyecto proyecto : misProyectos) {
+			if(proyecto.getId().equalsIgnoreCase(id)) {
+				au = proyecto;
+			}
+		}
+		
+		return au;
+	}
 
 	public Cliente BuscarClienteById(String nombre) {
 		Cliente au = null;
