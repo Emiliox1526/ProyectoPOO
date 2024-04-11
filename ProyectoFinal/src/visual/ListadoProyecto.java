@@ -155,10 +155,7 @@ public class ListadoProyecto extends JDialog {
 			        	row[0] = proyecto.getId().toString();
 		                row[1] = proyecto.getCliente().getNombre().toString()+" "+proyecto.getCliente().getApellido().toString();
 		                row[2] = proyecto.getFechaInicio().toString();
-		                if(proyecto.getFechaProrroga() == null && proyecto.isPenalizado() == false) {
-		                	row[3] = proyecto.getFechaEntregaInicial().toString();
-		                }else {
-		                	row[3] = proyecto.getFechaEntregaFinal().toString();
+		                row[3] = proyecto.getFechaEntregaFinal().toString();
 		                }
 		                if(proyecto.getFechaProrroga() == null) {
 		                	row[4] = "No";
