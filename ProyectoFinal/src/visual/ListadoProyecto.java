@@ -68,7 +68,7 @@ public class ListadoProyecto extends JDialog {
 	 */
 	public ListadoProyecto() {
 		setResizable(false);
-		setBounds(100, 100, 652, 466);
+		setBounds(100, 100, 675, 466);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(230, 230, 250));
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -85,7 +85,7 @@ public class ListadoProyecto extends JDialog {
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(SystemColor.menu);
 		panel_1.setBorder(new LineBorder(new Color(160, 82, 45), 2, true));
-		panel_1.setBounds(10, 35, 612, 344);
+		panel_1.setBounds(10, 35, 636, 344);
 		contentPanel.add(panel_1);
 		panel_1.setLayout(null);
 		{
@@ -131,7 +131,7 @@ public class ListadoProyecto extends JDialog {
 		
 		
 		JButton btnBuscar = new JButton("Buscar");
-		btnBuscar.setBounds(452, 33, 89, 42);
+		btnBuscar.setBounds(434, 33, 89, 42);
 		panel_1.add(btnBuscar);
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -191,11 +191,11 @@ public class ListadoProyecto extends JDialog {
 		});
 		btnReiniciar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
 		btnReiniciar.setBackground(new Color(240, 128, 128));
-		btnReiniciar.setBounds(452, 84, 89, 27);
+		btnReiniciar.setBounds(434, 84, 89, 27);
 		panel_1.add(btnReiniciar);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 145, 585, 188);
+		panel.setBounds(10, 145, 616, 188);
 		panel_1.add(panel);
 		panel.setBorder(new LineBorder(new Color(30, 144, 255), 2, true));
 		panel.setLayout(new BorderLayout(0, 0));
@@ -209,6 +209,19 @@ public class ListadoProyecto extends JDialog {
 		table.setEnabled(false);
 		scrollPane.setViewportView(table);
 		table.setModel(model);
+		
+		JButton btnProrroga = new JButton("Prorrogar");
+		btnProrroga.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				VentanaProrroga p = new VentanaProrroga();
+				dispose();
+				p.setModal(true);
+				p.setVisible(true);
+			}
+		});
+		btnProrroga.setBackground(new Color(50, 205, 50));
+		btnProrroga.setBounds(533, 36, 93, 75);
+		panel_1.add(btnProrroga);
 		
 		
 		{

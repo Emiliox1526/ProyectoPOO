@@ -237,6 +237,9 @@ public class VentanaProrroga extends JDialog {
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						dispose();
+						ListadoProyecto l = new ListadoProyecto();
+						l.setModal(true);
+						l.setVisible(true);
 					}
 				});
 				cancelButton.setActionCommand("btnCerrar");
