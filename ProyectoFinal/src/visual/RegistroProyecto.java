@@ -22,9 +22,11 @@ import javax.swing.JTable;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import com.toedter.calendar.JDateChooser;
 import logico.Cliente;
 import logico.Contrato;
 import logico.Diseñador;
@@ -95,6 +97,17 @@ public class RegistroProyecto extends JDialog {
 
 				
 				JButton btnReg = new JButton("Registrar");
+				btnReg.setBackground(Color.GREEN);
+				btnReg.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						java.util.Date fechaI = dateChooser.getDate();
+						java.util.Date fechaF = dChooserFinal.getDate();
+						Contrato contrato = new Contrato(txtidContrato.getText().toString(), cliente.getId(), cliente.getNombre(), fechaF , fechaI);
+						empresa.getInstance().ingresarContrato(contrato);
+						Proyecto proyecto = new Proyecto(txtidProyecto.getText().toString(), cliente, listaAgregados, contrato, fechaI, fechaF, null, null, false);
+						empresa.getInstance().ingresarProyecto(proyecto);
+					}
+				});
 				buttonPane.add(btnReg);
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
