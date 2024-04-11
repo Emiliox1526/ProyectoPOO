@@ -41,7 +41,10 @@ public class RegistroProyecto extends JDialog {
 	private JTable tableTrabajadores;
 	private JTable tableTrabajadoresAgregados;
 	Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
-	
+	int backup =0;
+	//Comentario para que puedan hacer backup
+	//sincero
+	//eliminar luego
 	private static DefaultTableModel model;
 	private static DefaultTableModel modelAgregado;
 	private JTextField txtIdCliente;
