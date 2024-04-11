@@ -198,28 +198,34 @@ public class VentanaProrroga extends JDialog {
 				        
 				        if (proyecto != null) {
 				            Date fechaActual = new Date();
-				            if (proyecto.getFechaEntregaFinal().after(fechaActual)) { 
-				                if (rdbtnDia.isSelected()) {
-				                    try {
-				                        int diasProrroga = (int) spnDias.getValue();
-				                        Calendar calendar = Calendar.getInstance();
-				                        calendar.setTime(proyecto.getFechaEntregaFinal());
-				                        calendar.add(Calendar.DAY_OF_MONTH, diasProrroga);
-				                        Date nuevaFechaEntregaFinal = calendar.getTime();
+				            if (!proyecto.isPenalizado()) { 
+				                if (proyecto.getFechaEntregaFinal().after(fechaActual)) { 
+				                    if (rdbtnDia.isSelected()) {
+				                        try {
+				                            int diasProrroga = (int) spnDias.getValue();
+				                            Calendar calendar = Calendar.getInstance();
+				                            calendar.setTime(proyecto.getFechaEntregaFinal());
+				                            calendar.add(Calendar.DAY_OF_MONTH, diasProrroga);
+				                            Date nuevaFechaEntregaFinal = calendar.getTime();
+				                            proyecto.setFechaEntregaFinal(nuevaFechaEntregaFinal);
+				                            proyecto.setPenalizado(true);
+				                            JOptionPane.showMessageDialog(null, "Prorroga realizada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+				                        } catch (NumberFormatException ex) {
+				                            JOptionPane.showMessageDialog(null, "Por favor, ingrese una cantidad válida de días.", "Error", JOptionPane.ERROR_MESSAGE);
+				                        }
+				                    } else if (rdbtnFecha.isSelected()) {
+				                        Date nuevaFechaEntregaFinal = dateFecha.getDate();
 				                        proyecto.setFechaEntregaFinal(nuevaFechaEntregaFinal);
+				                        proyecto.setPenalizado(true);
 				                        JOptionPane.showMessageDialog(null, "Prorroga realizada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-				                    } catch (NumberFormatException ex) {
-				                        JOptionPane.showMessageDialog(null, "Por favor, ingrese una cantidad válida de días.", "Error", JOptionPane.ERROR_MESSAGE);
+				                    } else {
+				                        JOptionPane.showMessageDialog(null, "Por favor, seleccione una opción de prorroga.", "Error", JOptionPane.ERROR_MESSAGE);
 				                    }
-				                } else if (rdbtnFecha.isSelected()) {
-				                    Date nuevaFechaEntregaFinal = dateFecha.getDate();
-				                    proyecto.setFechaEntregaFinal(nuevaFechaEntregaFinal);
-				                    JOptionPane.showMessageDialog(null, "Prorroga realizada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 				                } else {
-				                    JOptionPane.showMessageDialog(null, "Por favor, seleccione una opción de prorroga.", "Error", JOptionPane.ERROR_MESSAGE);
+				                    JOptionPane.showMessageDialog(null, "No se puede realizar la prórroga porque la fecha de entrega ya ha pasado.", "Error", JOptionPane.ERROR_MESSAGE);
 				                }
 				            } else {
-				                JOptionPane.showMessageDialog(null, "No se puede realizar la prórroga porque la fecha de entrega ya ha pasado.", "Error", JOptionPane.ERROR_MESSAGE);
+				                JOptionPane.showMessageDialog(null, "No se puede realizar la prórroga porque el proyecto ya está penalizado.", "Error", JOptionPane.ERROR_MESSAGE);
 				            }
 				        } else {
 				            JOptionPane.showMessageDialog(null, "Proyecto no encontrado para el ID: " + idProyecto, "Error", JOptionPane.ERROR_MESSAGE);
