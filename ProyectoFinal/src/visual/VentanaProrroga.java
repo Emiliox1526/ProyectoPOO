@@ -38,7 +38,9 @@ public class VentanaProrroga extends JDialog {
 	private JTextField txtNombreCliente;
 	private JTextField txtFechaInicio;
 	private JTextField txtFechaFinal;
+	
 	private final ButtonGroup buttonGroup = new ButtonGroup();
+	Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
 
 	/**
 	 * Launch the application.
@@ -114,7 +116,6 @@ public class VentanaProrroga extends JDialog {
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String idProyecto = txtIdProyecto.getText();
-				Empresa empresa = Empresa.getInstance();
 				Proyecto proyecto = empresa.BuscarProyectoById(idProyecto);
 				 if (proyecto != null) {
 			            txtIdCliente.setText(proyecto.getCliente().getId());
