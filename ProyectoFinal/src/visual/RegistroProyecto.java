@@ -35,16 +35,16 @@ public class RegistroProyecto extends JDialog {
 	private JTextField txtidContrato;
 	private JTable tableTrabajadores;
 	private JTable tableTrabajadoresAgregados;
-	private int indexTrabajadores = -1;
-	private int indexTrabajadoresAgregados = -1;
-	ArrayList<String> listaTrabajadores = new ArrayList<>();
-	ArrayList<String> listaTrabajadoresAgregados = new ArrayList<>();
+	ArrayList<Trabajador> listaTrabajadores = new ArrayList<>();
 	private static DefaultTableModel model;
 	private static DefaultTableModel modelAgregado;
 	private JTextField txtIdCliente;
 	private JTextField txtNombre;
 	private JTextField txtApellido;
 	private Cliente cliente = null;
+	private int indexSeleccionadoTrabajadores = -1;
+	private int indexSeleccionadoAgregados = -1;
+	ArrayList<Trabajador> listaAgregados = new ArrayList<>();
 	
 
 	/**
@@ -64,6 +64,9 @@ public class RegistroProyecto extends JDialog {
 	 * Create the dialog.
 	 */
 	public RegistroProyecto() {
+		for(Trabajador trabajador: Empresa.getInstance().getMisTrabajadores()) {
+			listaTrabajadores.add(trabajador);
+		}
 		setBounds(100, 100, 659, 563);
 		getContentPane().setLayout(new BorderLayout());
 		{
@@ -71,13 +74,9 @@ public class RegistroProyecto extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
 				JButton cancelButton = new JButton("Cerrar");
+				cancelButton.setBackground(new Color(255, 99, 71));
+				cancelButton.setForeground(new Color(255, 255, 255));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						dispose();
@@ -159,7 +158,7 @@ public class RegistroProyecto extends JDialog {
 			tableTrabajadores.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					indexTrabajadores = tableTrabajadores.getSelectedRow();
+					indexSeleccionadoTrabajadores = tableTrabajadores.getSelectedRow();
 				}
 			});
 			tableTrabajadores.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
@@ -179,7 +178,7 @@ public class RegistroProyecto extends JDialog {
 			tableTrabajadoresAgregados.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					indexTrabajadoresAgregados = tableTrabajadoresAgregados.getSelectedRow();
+					indexSeleccionadoAgregados = tableTrabajadoresAgregados.getSelectedRow();
 				}
 			});
 			tableTrabajadoresAgregados.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
@@ -191,10 +190,30 @@ public class RegistroProyecto extends JDialog {
 			panelTrabajadores.add(panel);
 			
 			JButton btnAgregar = new JButton("Agregar");
+			btnAgregar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Trabajador TrabajadorAgregado = listaTrabajadores.get(indexSeleccionadoTrabajadores);
+		            if (listaAgregados.size() < 5) {
+		                listaAgregados.add(TrabajadorAgregado);
+		                listaTrabajadores.remove(indexSeleccionadoTrabajadores);
+		                loadTrabajadores();
+		            } else {
+		                JOptionPane.showMessageDialog(null, "No se permiten mas de 3 lenguajes", "Error", JOptionPane.ERROR_MESSAGE);
+		            }
+				}
+			});
 			btnAgregar.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
 			panel.add(btnAgregar);
 			
 			JButton btnQuitar = new JButton("Quitar");
+			btnQuitar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					Trabajador trabajadorEliminado = listaAgregados.get(indexSeleccionadoAgregados);
+					listaTrabajadores.add(trabajadorEliminado);
+		            listaAgregados.remove(indexSeleccionadoAgregados);
+		            loadTrabajadores();
+				}
+			});
 			btnQuitar.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
 			panel.add(btnQuitar);
 			
@@ -264,6 +283,23 @@ public class RegistroProyecto extends JDialog {
 			lblNombreVentana.setBounds(12, 13, 126, 25);
 			panelprincipal.add(lblNombreVentana);
 		}
+		loadTrabajadores();
+	}
+	
+	private void loadTrabajadores() {
+
+	    model.setRowCount(0);
+	    for (Trabajador trabajador : listaTrabajadores) {
+	        model.addRow(new Object[]{trabajador});
+	    }
+	    tableTrabajadores.setModel(model);
+
+
+	    modelAgregado.setRowCount(0);
+	    for (Trabajador Tagregado : listaAgregados) {
+	        modelAgregado.addRow(new Object[]{Tagregado});
+	    }
+	    tableTrabajadoresAgregados.setModel(modelAgregado);
 	}
 	
 	private Cliente buscarCliente(String id) {
