@@ -155,7 +155,10 @@ public class ListadoProyecto extends JDialog {
 			        	row[0] = proyecto.getId().toString();
 		                row[1] = proyecto.getCliente().getNombre().toString()+" "+proyecto.getCliente().getApellido().toString();
 		                row[2] = proyecto.getFechaInicio().toString();
-		                row[3] = proyecto.getFechaEntregaFinal().toString();
+		                if(proyecto.getFechaProrroga() == null && proyecto.isPenalizado() == false) {
+		                	row[3] = proyecto.getFechaEntregaInicial().toString();
+		                }else {
+		                	row[3] = proyecto.getFechaEntregaFinal().toString();
 		                }
 		                if(proyecto.getFechaProrroga() == null) {
 		                	row[4] = "No";
@@ -265,28 +268,23 @@ public class ListadoProyecto extends JDialog {
 	            
 	            for (Proyecto proyecto : proyectos) {
 	                System.out.println(proyecto.getCliente().getNombre()+" "+ proyecto.getCliente().getApellido());
-	                row[0] = proyecto.getId();
-	                row[1] = proyecto.getCliente().getNombre() + " " + proyecto.getCliente().getApellido();
-	                if (proyecto.getFechaInicio() != null) {
-	                    row[2] = dateFormat.format(proyecto.getFechaInicio());
-	                } else {
-	                    row[2] = "";
-	                } 
-	                if (proyecto.getFechaEntregaFinal() != null) {
-	                    row[3] = dateFormat.format(proyecto.getFechaEntregaFinal());
-	                } else {
-	                    row[3] = "";
+	                row[0] = proyecto.getId().toString();
+	                row[1] = proyecto.getCliente().getNombre().toString()+" "+proyecto.getCliente().getApellido().toString();
+	                row[2] = dateFormat.format(proyecto.getFechaInicio());
+	                if(proyecto.getFechaProrroga() == null && proyecto.isPenalizado() == false) {
+	                	row[3] = dateFormat.format(proyecto.getFechaEntregaInicial());
+	                }else {
+	                	row[3] = dateFormat.format(proyecto.getFechaEntregaFinal());
 	                }
-	                row[3] = proyecto.getFechaEntregaFinal();
 	                if(proyecto.getFechaProrroga() == null) {
 	                	row[4] = "No";
 	                }else {
 	                	row[4] = proyecto.getFechaProrroga().toString();
 	                }
-	                if(proyecto.isPenalizado()) {
-	                	row[5] = "Si";
-	                }else {
-	                	row[5] = "No";
+	                if (proyecto.isPenalizado()) {
+	                    row[5] = "Si";
+	                } else {
+	                    row[5] = "No";
 	                }
 	                model.addRow(row);
 	                
