@@ -39,12 +39,15 @@ import logico.Trabajador;
 import javax.swing.border.LineBorder;
 
 public class RegistroProyecto extends JDialog {
+	protected static final JOptionPane OptionPane = null;
 	private JTextField txtidProyecto;
 	private JTextField txtidContrato;
 	private JTable tableTrabajadores;
 	private JTable tableTrabajadoresAgregados;
 	Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
 	int backup =0;
+	private JDateChooser dChooserInicio;
+    private JDateChooser dChooserFinal;
 	private static DefaultTableModel model;
 	private static DefaultTableModel modelAgregado;
 	private JTextField txtIdCliente;
@@ -100,12 +103,23 @@ public class RegistroProyecto extends JDialog {
 				btnReg.setBackground(Color.GREEN);
 				btnReg.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						java.util.Date fechaI = dateChooser.getDate();
+						java.util.Date fechaI = dChooserInicio.getDate();
 						java.util.Date fechaF = dChooserFinal.getDate();
 						Contrato contrato = new Contrato(txtidContrato.getText().toString(), cliente.getId(), cliente.getNombre(), fechaF , fechaI);
-						empresa.getInstance().ingresarContrato(contrato);
+						
 						Proyecto proyecto = new Proyecto(txtidProyecto.getText().toString(), cliente, listaAgregados, contrato, fechaI, fechaF, null, null, false);
-						empresa.getInstance().ingresarProyecto(proyecto);
+						
+						if (contrato != null && proyecto != null) {
+							Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
+			                if (empresa == null) {
+			                    empresa = new Empresa();
+			                }
+							empresa.ingresarContrato(contrato);
+							empresa.ingresarProyecto(proyecto);
+							Empresa.guardarEmpresa(empresa, "controlador.dat");
+							OptionPane.showMessageDialog(null, "Proyecto registrado", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+						}
+						
 					}
 				});
 				buttonPane.add(btnReg);
@@ -163,11 +177,11 @@ public class RegistroProyecto extends JDialog {
 			lblfechaEntrega.setBounds(12, 177, 120, 14);
 			panelDatos.add(lblfechaEntrega);
 			
-			JDateChooser dChooserInicio = new JDateChooser();
+			dChooserInicio = new JDateChooser();
 			dChooserInicio.setBounds(150, 141, 205, 20);
 			panelDatos.add(dChooserInicio);
-			
-			JDateChooser dChooserFinal = new JDateChooser();
+
+			dChooserFinal = new JDateChooser();
 			dChooserFinal.setBounds(150, 174, 205, 20);
 			panelDatos.add(dChooserFinal);
 			
@@ -294,14 +308,15 @@ public class RegistroProyecto extends JDialog {
 			JButton btnBuscar = new JButton("Buscar");
 			btnBuscar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-				String id = txtIdCliente.getText();
-				if (buscarCliente (id) != null) {
-					cliente = buscarCliente(id);
-					txtNombre.setText(cliente.getNombre());
-					txtApellido.setText(cliente.getApellido());
-				} else {
-					JOptionPane.showMessageDialog(null,"Cliente no encontrado para la cedula: " + id+ ". Puede crear el cliente en el botón de agregar nuevo" ,"Error", JOptionPane.ERROR_MESSAGE);
-				}
+					String id = txtIdCliente.getText();
+					cliente = empresa.BuscarClienteByID(id);
+					if (cliente != null) {
+					    txtNombre.setText(cliente.getNombre());
+					    txtApellido.setText(cliente.getApellido());
+					} else {
+					    JOptionPane.showMessageDialog(null,"Cliente no encontrado para la cedula: " + id+ ". Puede crear el cliente en el botón de agregar nuevo" ,"Error", JOptionPane.ERROR_MESSAGE);
+					}
+
 				}
 
 			});

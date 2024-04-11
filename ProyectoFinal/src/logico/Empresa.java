@@ -208,17 +208,17 @@ public class Empresa implements Serializable {
 		
 	}
 
-	public Cliente BuscarClienteByNombre(String id) {
-		Cliente au = null;
+	public Cliente BuscarClienteByID(String id) {
+		Cliente aux = null;
 		
 		for (Cliente cliente : misClientes) {
 			if(cliente.getId().equalsIgnoreCase(id)) {
-				au = cliente;
+				aux = cliente;
 			}
 		}
 		
 		
-		return au;
+		return aux;
 	}
 	
 	public Proyecto BuscarProyectoById(String id) {
@@ -233,17 +233,17 @@ public class Empresa implements Serializable {
 		return au;
 	}
 
-	public Cliente BuscarClienteById(String nombre) {
-		Cliente au = null;
+	public Cliente BuscarClienteByNombre(String nombre) {
+		Cliente aux = null;
 		
 		for (Cliente cliente : misClientes) {
 			if(cliente.getNombre().equalsIgnoreCase(nombre)) {
-				au = cliente;
+				aux = cliente;
 			}
 		}
 		
 		
-		return au;
+		return aux;
 	}
 	public static void guardarEmpresa(Empresa empresa, String archivo) {
 	    try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(archivo))) {

@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -55,7 +56,10 @@ public class ListadoProyecto extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
+			
 			ListadoProyecto dialog = new ListadoProyecto();
+			
+			dialog.loadProyectos();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -161,12 +165,13 @@ public class ListadoProyecto extends JDialog {
 		                }else {
 		                	row[4] = proyecto.getFechaProrroga().toString();
 		                }
-		                if(proyecto.isPenalizado()) {
-		                	row[5] = "Si";
-		                }else {
-		                	row[5] = "No";
-			            model.addRow(row);
-			        }
+		                if (proyecto.isPenalizado()) {
+		                    row[5] = "Si";
+		                } else {
+		                    row[5] = "No";
+		                }
+		                model.addRow(row);
+			        
 			        
 			    }
 
@@ -253,23 +258,29 @@ public class ListadoProyecto extends JDialog {
 	}
 	
 	private void loadProyectos() {
-		model.setRowCount(0);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+	    model.setRowCount(0);
 	    row = new Object[model.getColumnCount()];
 	    
 	    if (empresa != null) {
-	        ArrayList<Proyecto> Proyectos = empresa.getMisProyectos();
-	        if (Proyectos != null && !Proyectos.isEmpty()) {
+	        ArrayList<Proyecto> proyectos = empresa.getMisProyectos();
+	        if (proyectos != null && !proyectos.isEmpty()) {
 	            
-	            for (Proyecto proyecto : Proyectos) {
-	                System.out.println("Cargando Proyecto: " + proyecto.getId());
-	                row[0] = proyecto.getId().toString();
-	                row[1] = proyecto.getCliente().getNombre().toString()+" "+proyecto.getCliente().getApellido().toString();
-	                row[2] = proyecto.getFechaInicio().toString();
-	                if(proyecto.getFechaProrroga() == null && proyecto.isPenalizado() == false) {
-	                	row[3] = proyecto.getFechaEntregaInicial().toString();
-	                }else {
-	                	row[3] = proyecto.getFechaEntregaFinal().toString();
+	            for (Proyecto proyecto : proyectos) {
+	                System.out.println(proyecto.getCliente().getNombre()+" "+ proyecto.getCliente().getApellido());
+	                row[0] = proyecto.getId();
+	                row[1] = proyecto.getCliente().getNombre() + " " + proyecto.getCliente().getApellido();
+	                if (proyecto.getFechaInicio() != null) {
+	                    row[2] = dateFormat.format(proyecto.getFechaInicio());
+	                } else {
+	                    row[2] = "";
+	                } 
+	                if (proyecto.getFechaEntregaFinal() != null) {
+	                    row[3] = dateFormat.format(proyecto.getFechaEntregaFinal());
+	                } else {
+	                    row[3] = "";
 	                }
+	                row[3] = proyecto.getFechaEntregaFinal();
 	                if(proyecto.getFechaProrroga() == null) {
 	                	row[4] = "No";
 	                }else {
@@ -280,11 +291,12 @@ public class ListadoProyecto extends JDialog {
 	                }else {
 	                	row[5] = "No";
 	                }
-	                
 	                model.addRow(row);
-	                }
+	                
+	            }
+	                 
 	            table.setModel(model);
-	    	}
+	        }
 	    }
 		
 	}

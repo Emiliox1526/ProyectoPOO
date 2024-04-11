@@ -69,7 +69,7 @@ public class MenuAdmin extends JFrame {
         ImageIcon adminIcon = new ImageIcon(Principal.class.getResource("/images/Admin.png"));
         Image adminImage = adminIcon.getImage().getScaledInstance(120, 122, Image.SCALE_SMOOTH);
         ImageIcon exitIcon = new ImageIcon(Principal.class.getResource("/images/ExitButton.png"));
-        Image exitImage = exitIcon.getImage().getScaledInstance(120, 122, Image.SCALE_SMOOTH);
+        Image exitImage = exitIcon.getImage().getScaledInstance(120-15, 122-15, Image.SCALE_SMOOTH);
 
         JLabel lblNewLabel = new JLabel("Menu Administracion");
         lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
@@ -151,6 +151,13 @@ public class MenuAdmin extends JFrame {
                                                                         panel_2.add(lblProyectos_1);
                                                                         
                                                                                 JButton btnProyecto = new JButton("");
+                                                                                btnProyecto.addActionListener(new ActionListener() {
+                                                                                	public void actionPerformed(ActionEvent e) {
+                                                                                		RegistroProyecto registroProyecto = new RegistroProyecto();
+                                                                                		registroProyecto.setModal(true);
+                                                                                		registroProyecto.setVisible(true);
+                                                                                	}
+                                                                                });
                                                                                 btnProyecto.setBounds(367, 87, 120, 122);
                                                                                 panel_3.add(btnProyecto);
                                                                                 btnProyecto.setForeground(Color.WHITE);

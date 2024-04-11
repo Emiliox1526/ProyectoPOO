@@ -208,6 +208,7 @@ public class ListadoClientes extends JDialog {
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						dispose();
+						
 					}
 				});
 				buttonPane.setLayout(null);

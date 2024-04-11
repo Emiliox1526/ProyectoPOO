@@ -210,6 +210,7 @@ public class VentanaProrroga extends JDialog {
 				                            proyecto.setFechaEntregaFinal(nuevaFechaEntregaFinal);
 				                            proyecto.setPenalizado(true);
 				                            JOptionPane.showMessageDialog(null, "Prorroga realizada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+				                            Empresa.guardarEmpresa(empresa, "controlador.dat");
 				                        } catch (NumberFormatException ex) {
 				                            JOptionPane.showMessageDialog(null, "Por favor, ingrese una cantidad válida de días.", "Error", JOptionPane.ERROR_MESSAGE);
 				                        }

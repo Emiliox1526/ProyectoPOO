@@ -96,6 +96,7 @@ public class Principal extends JFrame {
                                 		ListadoClientes c = new ListadoClientes();
                                 		c.setModal(true);
                                 		c.setVisible(true);
+                                		
                                 	}
                                 	
                                 });
@@ -147,6 +148,14 @@ public class Principal extends JFrame {
                                                                         panel_2.add(lblProyectos_1);
                                                                         
                                                                                 JButton btnProyecto = new JButton("");
+                                                                                btnProyecto.addActionListener(new ActionListener() {
+                                                                                	public void actionPerformed(ActionEvent e) {
+                                                                                		ListadoProyecto listadoProyecto = new ListadoProyecto();
+                                                                                		listadoProyecto.setModal(true);
+                                                                                		listadoProyecto.setVisible(true);
+                                                                                		
+                                                                                	}
+                                                                                });
                                                                                 btnProyecto.setBounds(367, 87, 120, 122);
                                                                                 panel_3.add(btnProyecto);
                                                                                 btnProyecto.setForeground(Color.WHITE);
@@ -158,6 +167,7 @@ public class Principal extends JFrame {
                                                                                 	public void actionPerformed(ActionEvent e) {
                                                                                 		MenuAdmin m = new MenuAdmin(control);
                                                                                 		m.setVisible(true);
+                                                                                		
                                                                                 	}
                                                                                 });
                                                                                 btnAdministracion.setEnabled(false);
