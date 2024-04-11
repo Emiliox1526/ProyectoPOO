@@ -32,6 +32,7 @@ import logico.Empresa;
 import logico.Jefe;
 import logico.Planificador;
 import logico.Programador;
+import logico.Proyecto;
 import logico.Trabajador;
 import javax.swing.border.LineBorder;
 
@@ -91,17 +92,10 @@ public class RegistroProyecto extends JDialog {
 					}
 				});
 				
-				JButton btnRegistrar = new JButton("Registrar");
-				btnRegistrar.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						
-						
-						clean();
-					}
-				});
-				btnRegistrar.setForeground(new Color(255, 255, 255));
-				btnRegistrar.setBackground(Color.GREEN);
-				buttonPane.add(btnRegistrar);
+
+				
+				JButton btnReg = new JButton("Registrar");
+				buttonPane.add(btnReg);
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
@@ -300,8 +294,14 @@ public class RegistroProyecto extends JDialog {
 			});
 			btnBuscar.setBounds(410, 41, 120, 25);
 			panelDatos.add(btnBuscar);
+	
 			
 			JButton btnNewButton_1 = new JButton("Agregar Nuevo");
+			btnNewButton_1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					
+				}
+			});
 			btnNewButton_1.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
@@ -339,6 +339,8 @@ public class RegistroProyecto extends JDialog {
 			lblNombreVentana.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 15));
 			lblNombreVentana.setBounds(12, 13, 126, 25);
 			panelprincipal.add(lblNombreVentana);
+			
+			
 		}
 		loadTrabajadores();
 	}
@@ -438,12 +440,4 @@ public class RegistroProyecto extends JDialog {
 		    }
 		    return true;
 		}
-	
-	void clean() {
-		txtidProyecto.setText("P-"+Empresa.getInstance().idProyecto);
-		txtidContrato.setText("C-"+Empresa.getInstance().idContrato);
-		txtIdCliente.setText("");
-		txtNombre.setText("");
-		txtApellido.setText("");
-	}
 }
