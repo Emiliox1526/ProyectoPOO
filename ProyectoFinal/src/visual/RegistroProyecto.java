@@ -27,15 +27,21 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import logico.Cliente;
 import logico.Contrato;
+import logico.Diseñador;
 import logico.Empresa;
+import logico.Jefe;
+import logico.Planificador;
+import logico.Programador;
 import logico.Trabajador;
+import javax.swing.border.LineBorder;
 
 public class RegistroProyecto extends JDialog {
 	private JTextField txtidProyecto;
 	private JTextField txtidContrato;
 	private JTable tableTrabajadores;
 	private JTable tableTrabajadoresAgregados;
-	ArrayList<Trabajador> listaTrabajadores = new ArrayList<>();
+	Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
+	
 	private static DefaultTableModel model;
 	private static DefaultTableModel modelAgregado;
 	private JTextField txtIdCliente;
@@ -44,7 +50,11 @@ public class RegistroProyecto extends JDialog {
 	private Cliente cliente = null;
 	private int indexSeleccionadoTrabajadores = -1;
 	private int indexSeleccionadoAgregados = -1;
+	private Object[] rowTrabajadores;
+	private Object[] rowAgregado;
+	ArrayList<Trabajador> listaTrabajadores = empresa.getMisTrabajadores();
 	ArrayList<Trabajador> listaAgregados = new ArrayList<>();
+	
 	
 
 	/**
@@ -64,10 +74,8 @@ public class RegistroProyecto extends JDialog {
 	 * Create the dialog.
 	 */
 	public RegistroProyecto() {
-		for(Trabajador trabajador: Empresa.getInstance().getMisTrabajadores()) {
-			listaTrabajadores.add(trabajador);
-		}
-		setBounds(100, 100, 659, 563);
+		
+		setBounds(100, 100, 754, 563);
 		getContentPane().setLayout(new BorderLayout());
 		{
 			JPanel buttonPane = new JPanel();
@@ -93,7 +101,7 @@ public class RegistroProyecto extends JDialog {
 			panelprincipal.setBackground(new Color(230,230,250));
 			
 			JPanel panelDatos = new JPanel();
-			panelDatos.setBounds(12, 44, 618, 437);
+			panelDatos.setBounds(12, 44, 702, 437);
 			panelprincipal.add(panelDatos);
 			panelDatos.setLayout(null);
 			
@@ -104,7 +112,7 @@ public class RegistroProyecto extends JDialog {
 			
 			txtidProyecto = new JTextField();
 			txtidProyecto.setEditable(false);
-			txtidProyecto.setBounds(150, 10, 150, 20);
+			txtidProyecto.setBounds(150, 10, 205, 20);
 			txtidProyecto.setText("P-"+Empresa.getInstance().idProyecto);
 			panelDatos.add(txtidProyecto);
 			txtidProyecto.setColumns(10);
@@ -122,7 +130,7 @@ public class RegistroProyecto extends JDialog {
 			txtidContrato = new JTextField();
 			txtidContrato.setEditable(false);
 			txtidContrato.setColumns(10);
-			txtidContrato.setBounds(150, 108, 150, 20);
+			txtidContrato.setBounds(150, 108, 205, 20);
 			txtidContrato.setText("C-"+Empresa.getInstance().idContrato);
 			panelDatos.add(txtidContrato);
 			
@@ -137,44 +145,102 @@ public class RegistroProyecto extends JDialog {
 			panelDatos.add(lblfechaEntrega);
 			
 			JDateChooser dChooserInicio = new JDateChooser();
-			dChooserInicio.setBounds(150, 141, 150, 20);
+			dChooserInicio.setBounds(150, 141, 205, 20);
 			panelDatos.add(dChooserInicio);
 			
 			JDateChooser dChooserFinal = new JDateChooser();
-			dChooserFinal.setBounds(150, 174, 150, 20);
+			dChooserFinal.setBounds(150, 174, 205, 20);
 			panelDatos.add(dChooserFinal);
 			
 			JPanel panelTrabajadores = new JPanel();
+			panelTrabajadores.setBorder(new LineBorder(new Color(30, 144, 255), 2, true));
 			panelTrabajadores.setBackground(new Color(175, 238, 238));
-			panelTrabajadores.setBounds(12, 222, 594, 202);
+			panelTrabajadores.setBounds(12, 224, 680, 202);
 			panelDatos.add(panelTrabajadores);
 			panelTrabajadores.setLayout(null);
-			
-			JScrollPane scrollPane = new JScrollPane();
-			scrollPane.setBounds(12, 13, 270, 140);
-			panelTrabajadores.add(scrollPane, BorderLayout.CENTER);
-			
-			tableTrabajadores = new JTable();
-			tableTrabajadores.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					indexSeleccionadoTrabajadores = tableTrabajadores.getSelectedRow();
-				}
-			});
-			tableTrabajadores.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
-			scrollPane.setColumnHeaderView(tableTrabajadores);
-			String [] headers = {"Cedula", "Nombre", "Apellido", "Rol","Dato del Rol"};
+			String [] headers = {"Rol","Cedula", "Nombre", "Apellido","Evaluacion","Dato de rol"};
 			model = new DefaultTableModel();
 			model.setColumnIdentifiers(headers);
 			String [] headersAgregados = {"Cedula", "Nombre", "Apellido", "Rol","Dato del Rol"};
 			modelAgregado = new DefaultTableModel();
 			modelAgregado.setColumnIdentifiers(headersAgregados);
-					
+			
+			JPanel panel = new JPanel();
+			panel.setBorder(new LineBorder(new Color(30, 144, 255), 2));
+			panel.setBackground(new Color(135, 206, 250));
+			panel.setBounds(0, 166, 680, 36);
+			panelTrabajadores.add(panel);
+			
+			JButton btnAgregar = new JButton("Agregar");
+			btnAgregar.setBackground(new Color(154, 205, 50));
+			btnAgregar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (indexSeleccionadoTrabajadores != -1) {
+			            Trabajador trabajadorAgregado = listaTrabajadores.get(indexSeleccionadoTrabajadores);
+			            listaAgregados.add(trabajadorAgregado);
+			            listaTrabajadores.remove(indexSeleccionadoTrabajadores);
+			            loadTrabajadores();
+			        } else {
+			            JOptionPane.showMessageDialog(null, "Seleccione un trabajador para agregar", "Error", JOptionPane.ERROR_MESSAGE);
+			        }
+				}
+			});
+			btnAgregar.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
+			panel.add(btnAgregar);
+			
+			JButton btnQuitar = new JButton("Quitar");
+			btnQuitar.setBackground(new Color(205, 92, 92));
+			btnQuitar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					if (indexSeleccionadoAgregados != -1) {
+			            Trabajador trabajadorEliminado = listaAgregados.get(indexSeleccionadoAgregados);
+			            listaTrabajadores.add(trabajadorEliminado);
+			            listaAgregados.remove(indexSeleccionadoAgregados);
+			            loadTrabajadores();
+			        } else {
+			            JOptionPane.showMessageDialog(null, "Seleccione un trabajador para agregar", "Error", JOptionPane.ERROR_MESSAGE);
+			        }
+				}
+			});
+			btnQuitar.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
+			panel.add(btnQuitar);
+			
+			JPanel panel_1 = new JPanel();
+			panel_1.setBorder(new LineBorder(new Color(30, 144, 255), 2, true));
+			panel_1.setBackground(new Color(30, 144, 255));
+			panel_1.setBounds(10, 13, 331, 140);
+			panelTrabajadores.add(panel_1);
+			panel_1.setLayout(new BorderLayout(0, 0));
+			
+			JScrollPane scrollPane = new JScrollPane();
+			panel_1.add(scrollPane, BorderLayout.CENTER);
+
+			
+			tableTrabajadores = new JTable();
+			tableTrabajadores.setBorder(new LineBorder(new Color(0, 0, 0)));
+			tableTrabajadores.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					indexSeleccionadoTrabajadores = tableTrabajadores.getSelectedRow();
+					System.out.println(tableTrabajadores.getSelectedRow());
+				}
+			});
+			
+			tableTrabajadores.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
+			scrollPane.setColumnHeaderView(tableTrabajadores);
+			
+			JPanel panel_2 = new JPanel();
+			panel_2.setBorder(new LineBorder(new Color(30, 144, 255), 2));
+			panel_2.setBackground(new Color(100, 149, 237));
+			panel_2.setBounds(351, 13, 319, 142);
+			panelTrabajadores.add(panel_2);
+			panel_2.setLayout(new BorderLayout(0, 0));
+			
 			JScrollPane scrollPane_1 = new JScrollPane();
-			scrollPane_1.setBounds(312, 13, 270, 140);
-			panelTrabajadores.add(scrollPane_1);
+			panel_2.add(scrollPane_1, BorderLayout.CENTER);
 			
 			tableTrabajadoresAgregados = new JTable();
+			tableTrabajadoresAgregados.setBorder(new LineBorder(new Color(30, 144, 255)));
 			tableTrabajadoresAgregados.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
@@ -184,47 +250,14 @@ public class RegistroProyecto extends JDialog {
 			tableTrabajadoresAgregados.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
 			scrollPane_1.setColumnHeaderView(tableTrabajadoresAgregados);
 			
-			JPanel panel = new JPanel();
-			panel.setBackground(new Color(135, 206, 250));
-			panel.setBounds(0, 166, 594, 36);
-			panelTrabajadores.add(panel);
-			
-			JButton btnAgregar = new JButton("Agregar");
-			btnAgregar.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Trabajador TrabajadorAgregado = listaTrabajadores.get(indexSeleccionadoTrabajadores);
-		            if (listaAgregados.size() < 5) {
-		                listaAgregados.add(TrabajadorAgregado);
-		                listaTrabajadores.remove(indexSeleccionadoTrabajadores);
-		                loadTrabajadores();
-		            } else {
-		                JOptionPane.showMessageDialog(null, "No se permiten mas de 3 lenguajes", "Error", JOptionPane.ERROR_MESSAGE);
-		            }
-				}
-			});
-			btnAgregar.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
-			panel.add(btnAgregar);
-			
-			JButton btnQuitar = new JButton("Quitar");
-			btnQuitar.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					Trabajador trabajadorEliminado = listaAgregados.get(indexSeleccionadoAgregados);
-					listaTrabajadores.add(trabajadorEliminado);
-		            listaAgregados.remove(indexSeleccionadoAgregados);
-		            loadTrabajadores();
-				}
-			});
-			btnQuitar.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
-			panel.add(btnQuitar);
-			
 			JLabel lblTrabajadores = new JLabel("Trabajadores");
 			lblTrabajadores.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-			lblTrabajadores.setBounds(243, 202, 120, 14);
+			lblTrabajadores.setBounds(312, 209, 120, 14);
 			panelDatos.add(lblTrabajadores);
 			
 			txtIdCliente = new JTextField();
 			txtIdCliente.setColumns(10);
-			txtIdCliente.setBounds(150, 43, 150, 20);
+			txtIdCliente.setBounds(150, 43, 205, 20);
 			panelDatos.add(txtIdCliente);
 			
 			JButton btnBuscar = new JButton("Buscar");
@@ -241,7 +274,7 @@ public class RegistroProyecto extends JDialog {
 				}
 
 			});
-			btnBuscar.setBounds(312, 40, 120, 25);
+			btnBuscar.setBounds(410, 41, 120, 25);
 			panelDatos.add(btnBuscar);
 			
 			JButton btnNewButton_1 = new JButton("Agregar Nuevo");
@@ -253,7 +286,7 @@ public class RegistroProyecto extends JDialog {
 					c.setVisible(true);
 				}
 			});
-			btnNewButton_1.setBounds(440, 40, 120, 25);
+			btnNewButton_1.setBounds(546, 41, 120, 25);
 			panelDatos.add(btnNewButton_1);
 			
 			JLabel lblNombre = new JLabel("Nombre(s):");
@@ -287,20 +320,61 @@ public class RegistroProyecto extends JDialog {
 	}
 	
 	private void loadTrabajadores() {
-
 	    model.setRowCount(0);
-	    for (Trabajador trabajador : listaTrabajadores) {
-	        model.addRow(new Object[]{trabajador});
-	    }
-	    tableTrabajadores.setModel(model);
+	    rowTrabajadores = new Object[model.getColumnCount()];
 
+	    if (empresa != null) {
+	        if (listaTrabajadores != null && !listaTrabajadores.isEmpty()) {
 
-	    modelAgregado.setRowCount(0);
-	    for (Trabajador Tagregado : listaAgregados) {
-	        modelAgregado.addRow(new Object[]{Tagregado});
+	            for (Trabajador trabajador : listaTrabajadores) {
+	                System.out.println("Cargando trabajador: " + trabajador.getNombre());
+	                rowTrabajadores[0] = trabajador.getClass().getSimpleName();
+	                rowTrabajadores[1] = trabajador.getCedula();
+	                rowTrabajadores[2] = trabajador.getNombre();
+	                rowTrabajadores[3] = trabajador.getApellidos();
+	                rowTrabajadores[4] = trabajador.getEvaluacionAnual();
+	                if (trabajador instanceof Jefe) {
+	                    rowTrabajadores[5] = ((Jefe) trabajador).getCantTrabajadores() + " Trabajadores";
+	                } else if (trabajador instanceof Programador) {
+	                    rowTrabajadores[5] = ((Programador) trabajador).getLenguajeDeProgramacion();
+	                } else if (trabajador instanceof Planificador) {
+	                    rowTrabajadores[5] = ((Planificador) trabajador).getFrecuenciaDePlanificacion() + " Frecuencia";
+	                } else if (trabajador instanceof Diseñador) {
+	                    rowTrabajadores[5] = ((Diseñador) trabajador).getCantAgnoExp() + " Años exp";
+	                }
+
+	                model.addRow(rowTrabajadores);
+
+	            }
+
+	            tableTrabajadores.setModel(model);
+	        }
+
+	        modelAgregado.setRowCount(0);
+	        for (Trabajador trabajadorAgregado : listaAgregados) {
+	            System.out.println("Cargando trabajador agregado: " + trabajadorAgregado.getNombre());
+	            rowAgregado = new Object[modelAgregado.getColumnCount()];
+	            rowAgregado[0] = trabajadorAgregado.getCedula();
+	            rowAgregado[1] = trabajadorAgregado.getNombre();
+	            rowAgregado[2] = trabajadorAgregado.getApellidos();
+	            rowAgregado[3] = trabajadorAgregado.getClass().getSimpleName(); 
+	            if (trabajadorAgregado instanceof Jefe) {
+	                rowAgregado[4] = ((Jefe) trabajadorAgregado).getCantTrabajadores() + " Trabajadores";
+	            } else if (trabajadorAgregado instanceof Programador) {
+	                rowAgregado[4] = ((Programador) trabajadorAgregado).getLenguajeDeProgramacion();
+	            } else if (trabajadorAgregado instanceof Planificador) {
+	                rowAgregado[4] = ((Planificador) trabajadorAgregado).getFrecuenciaDePlanificacion() + " Frecuencia";
+	            } else if (trabajadorAgregado instanceof Diseñador) {
+	                rowAgregado[4] = ((Diseñador) trabajadorAgregado).getCantAgnoExp() + " Años exp";
+	            }
+
+	            modelAgregado.addRow(rowAgregado);
+	        }
+
+	        tableTrabajadoresAgregados.setModel(modelAgregado);
 	    }
-	    tableTrabajadoresAgregados.setModel(modelAgregado);
 	}
+
 	
 	private Cliente buscarCliente(String id) {
 		Cliente aux = null;
