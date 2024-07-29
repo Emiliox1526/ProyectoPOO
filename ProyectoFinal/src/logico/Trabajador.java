@@ -15,12 +15,12 @@ public class Trabajador  implements Serializable {
 	protected String apellidos;
 	protected String direccionParticular;
 	protected String sexo;
-	protected java.util.Date FechaDeNacimiento;
+	protected Date FechaDeNacimiento;
 	protected String evaluacionAnual;
 	protected int cantProyectosFallidos;
 	protected int cantProyectosTotal;
 	public Trabajador(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
-			java.util.Date date, String evaluacionAnual,int cantProyectosFallidos, int cantProyectos) {
+			Date date, String evaluacionAnual,int cantProyectosFallidos, int cantProyectos) {
 		super();
 		this.cedula = cedula;
 		this.nombre = nombre;

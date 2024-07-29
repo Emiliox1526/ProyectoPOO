@@ -1,96 +1,47 @@
 package visual;
 
-
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JSeparator;
-import java.awt.Color;
-import java.awt.EventQueue;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
-import java.awt.Font;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import logico.Control;
 import logico.User;
 
-import javax.swing.JTextField;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
 public class VentanaLogin extends JDialog {
 
-	 private final JPanel contentPanel = new JPanel();
-	    private JTextField txtUsuario;
-	    private JPasswordField txtContraseña;
+    private final JPanel contentPanel = new JPanel();
+    private JTextField txtUsuario;
+    private JPasswordField txtContraseña;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				FileInputStream empresa;
-				FileOutputStream empresa2;
-				ObjectInputStream empresaRead;
-				ObjectOutputStream empresaWrite;
-				try {
-					empresa = new FileInputStream ("empresa.dat");
-					empresaRead = new ObjectInputStream(empresa);
-					Control temp = (Control)empresaRead.readObject();
-					Control.setControl(temp);
-					empresa.close();
-					empresaRead.close();
-				} catch (FileNotFoundException e) {
-					try {
-						empresa2 = new  FileOutputStream("empresa.dat");
-						empresaWrite = new ObjectOutputStream(empresa2);
-						User aux = new User("Administrador","Admin", "Admin");
-						Control.getInstance().regUser(aux);
-						empresaWrite.writeObject(Control.getInstance());
-						empresa2.close();
-						empresaWrite.close();
-					} catch (FileNotFoundException e1) {
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-					}
-				} catch (IOException e) {
-					
-					
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				try {
-					VentanaLogin frame = new VentanaLogin();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                Control control = Control.getInstance(); // Asegúrate de inicializar el control
+                try {
+                    VentanaLogin frame = new VentanaLogin();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
-	/**
-	 * Create the dialog.
-	 */
-	public VentanaLogin() {
+    public VentanaLogin() {
         setResizable(false);
         setBounds(100, 100, 535, 327);
         getContentPane().setLayout(new BorderLayout());
@@ -116,15 +67,15 @@ public class VentanaLogin extends JDialog {
 
         JButton btnNewButton = new JButton("Login");
         btnNewButton.setActionCommand("OK");
-		getRootPane().setDefaultButton(btnNewButton);
+        getRootPane().setDefaultButton(btnNewButton);
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (Control.getInstance().confirmLogin(txtUsuario.getText(), new String(txtContraseña.getPassword()))) {  
+                if (Control.getInstance().confirmLogin(txtUsuario.getText(), txtContraseña.getText())) {
                     Principal frame = new Principal(Control.getInstance());
                     dispose();
                     frame.setVisible(true);
                 } else {
-                	JOptionPane.showMessageDialog(VentanaLogin.this,"No se encontro el usuario " + txtUsuario.getText() + " en el sistema", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(VentanaLogin.this, "No se encontró el usuario " + txtUsuario.getText() + " en el sistema", "Error de inicio de sesión", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
@@ -171,16 +122,6 @@ public class VentanaLogin extends JDialog {
         JSeparator separator = new JSeparator();
         separator.setBounds(-20, 31, 567, 12);
         contentPanel.add(separator);
-        separator.setForeground(new Color(255, 255, 255));
-
-        JPanel panel_2 = new JPanel();
-        panel_2.setBackground(new Color(105, 105, 105));
-        panel_2.setBounds(0, 0, 529, 33);
-        contentPanel.add(panel_2);
-
-        JPanel buttonPane = new JPanel();
-        getContentPane().add(buttonPane, BorderLayout.SOUTH);
-        buttonPane.setLayout(null);
+        separator.setForeground(new Color(255, 250, 240));
     }
 }
-

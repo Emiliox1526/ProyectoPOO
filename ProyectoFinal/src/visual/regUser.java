@@ -118,8 +118,6 @@ public class regUser extends JDialog {
                             oos.writeObject(Control.getInstance());
                             JOptionPane.showMessageDialog(regUser.this, "Usuario " + usuarioRegistrado.getUserName() + " registrado exitosamente", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
                         } catch (IOException ex) {
-                            ex.printStackTrace();
-                            JOptionPane.showMessageDialog(regUser.this, "Error al guardar en archivo", "Error", JOptionPane.ERROR_MESSAGE);
                         }
                         VentanaLogin frame = new VentanaLogin();
                         dispose();

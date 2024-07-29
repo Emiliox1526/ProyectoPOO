@@ -13,13 +13,12 @@ public class Cliente implements Serializable{
 	private int cantProyectos;
 	private boolean maxProyectos;
 	
-	public Cliente(String id, String nombre,String apellido, String direccion, int cantProyectos) {
+	public Cliente(String id, String nombre,String apellido, String direccion) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.setApellido(apellido);
 		this.direccion = direccion;
-		this.cantProyectos = cantProyectos;
 		this.maxProyectos = false;
 	}
 
@@ -45,14 +44,6 @@ public class Cliente implements Serializable{
 
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
-	}
-
-	public int getCantProyectos() {
-		return cantProyectos;
-	}
-
-	public void setCantProyectos(int cantProyectos) {
-		this.cantProyectos = cantProyectos;
 	}
 
 	public boolean isMaxProyectos() {

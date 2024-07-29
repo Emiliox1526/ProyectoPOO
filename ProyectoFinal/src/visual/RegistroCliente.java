@@ -1,26 +1,26 @@
 package visual;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
-import java.awt.Font;
-import javax.swing.JSeparator;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.border.TitledBorder;
-
-import logico.Cliente;
-import logico.Empresa;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
+import logico.Conect;
+import logico.Cliente;
 
 public class RegistroCliente extends JDialog {
 
@@ -29,6 +29,7 @@ public class RegistroCliente extends JDialog {
     private JTextField txtNombre;
     private JTextField txtDir;
     private JTextField txtApellido;
+    private static String default_password = "12345";
 
     /**
      * Launch the application.
@@ -55,7 +56,6 @@ public class RegistroCliente extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
         setLocationRelativeTo(null);
-
 
         JLabel lblNewLabel = new JLabel("Registro cliente");
         lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 15));
@@ -111,64 +111,86 @@ public class RegistroCliente extends JDialog {
         lblNewLabel_2.setBounds(10, 31, 46, 14);
         panel.add(lblNewLabel_2);
         lblNewLabel_2.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-        {
-            JPanel buttonPane = new JPanel();
-            buttonPane.setBorder(new LineBorder(new Color(184, 134, 11), 2, true));
-            buttonPane.setBackground(new Color(100, 149, 237));
-            buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-            getContentPane().add(buttonPane, BorderLayout.SOUTH);
-            {
-                JButton okButton = new JButton("Registrar\r\n");
-                okButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
 
-                        if (!txtCedula.getText().isEmpty() && !txtNombre.getText().isEmpty() && !txtDir.getText().isEmpty()) {
-                            Cliente cliente = new Cliente(txtCedula.getText(), txtNombre.getText(),txtApellido.getText(), txtDir.getText(), 0);
-                            
-                            if (cliente != null) {
-                        		Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
-                                if (empresa == null) {
-                                    empresa = new Empresa();
-                                }
-                                empresa.ingresarCliente(cliente);
-                                Empresa.guardarEmpresa(empresa, "controlador.dat");
-                                
-                        	}
-                            JOptionPane.showMessageDialog(null, "Registro Satisfactorio", "Informacion", JOptionPane.INFORMATION_MESSAGE);
-                            clean();
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Favor de llenar todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
-                        }
+        JPanel buttonPane = new JPanel();
+        buttonPane.setBorder(new LineBorder(new Color(184, 134, 11), 2, true));
+        buttonPane.setBackground(new Color(100, 149, 237));
+        buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        getContentPane().add(buttonPane, BorderLayout.SOUTH);
+
+        JButton okButton = new JButton("Registrar\r\n");
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (!txtCedula.getText().isEmpty() && !txtNombre.getText().isEmpty() && !txtDir.getText().isEmpty()) {
+                    Cliente cliente = new Cliente(txtCedula.getText(), txtNombre.getText(), txtApellido.getText(), txtDir.getText());
+                    try {
+                        registrarClienteEnBaseDeDatos(cliente);
+                        JOptionPane.showMessageDialog(null, "Registro Satisfactorio", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+                        clean();
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(null, "Error al registrar el cliente: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        ex.printStackTrace();
                     }
-                });
-                okButton.setBackground(new Color(0, 255, 0));
-                buttonPane.add(okButton);
-                getRootPane().setDefaultButton(okButton);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Favor de llenar todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
-            {
-                JButton cancelButton = new JButton("Cerrar");
-                cancelButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent arg0) {
-                        dispose();
+        });
+        okButton.setBackground(new Color(0, 255, 0));
+        buttonPane.add(okButton);
+        getRootPane().setDefaultButton(okButton);
 
-                    }
-                });
-                cancelButton.setBackground(new Color(255, 99, 71));
-                cancelButton.setActionCommand("Cancel");
-                buttonPane.add(cancelButton);
+        JButton cancelButton = new JButton("Cerrar");
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                dispose();
+            }
+        });
+        cancelButton.setBackground(new Color(255, 99, 71));
+        cancelButton.setActionCommand("Cancel");
+        buttonPane.add(cancelButton);
+    }
+
+    void registrarClienteEnBaseDeDatos(Cliente cliente) throws SQLException {
+        String default_password = "default_password"; // Define tu contraseña predeterminada
+        String tipo_usuario = "cliente"; // Define el tipo de usuario
+
+        String sqlUsuario = "INSERT INTO Usuario (username, pass, tipo) VALUES (?, ?, ?)";
+        String sqlCliente = "INSERT INTO Cliente (nombre, apellido, direccion, username) VALUES (?, ?, ?, ?)";
+
+        try (Connection con = Conect.getConnection()) {
+            con.setAutoCommit(false); 
+
+            try (PreparedStatement pstUsuario = con.prepareStatement(sqlUsuario);
+                 PreparedStatement pstCliente = con.prepareStatement(sqlCliente)) {
+
+                
+                pstUsuario.setString(1, cliente.getId());
+                pstUsuario.setString(2, default_password);
+                pstUsuario.setString(3, "Cliente");
+                pstUsuario.executeUpdate();
+
+                
+                pstCliente.setString(1, cliente.getNombre());
+                pstCliente.setString(2, cliente.getApellido());
+                pstCliente.setString(3, cliente.getDireccion());
+                pstCliente.setString(4, cliente.getId());
+                pstCliente.executeUpdate();
+
+                con.commit(); 
+
+            } catch (SQLException e) {
+                con.rollback(); 
+                throw e;
             }
         }
     }
 
-    void loadCliente(Cliente cliente) {
-    	
-
-    }
 
     void clean() {
-        txtCedula.setText(" ");
-        txtNombre.setText(" ");
-        txtApellido.setText(" ");
-        txtDir.setText(" ");
+        txtCedula.setText("");
+        txtNombre.setText("");
+        txtApellido.setText("");
+        txtDir.setText("");
     }
 }
