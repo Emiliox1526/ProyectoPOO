@@ -25,6 +25,8 @@ public class Empresa implements Serializable {
     public int cantCliente;
     public int cantTrabajador;
 
+    private Connection con;
+
     public Empresa() {
         super();
         misClientes = new ArrayList<>();
@@ -34,7 +36,8 @@ public class Empresa implements Serializable {
         idContrato = 1;
         idProyecto = 1;
         idCliente = 1;
-        idTrabajador = 1; // Inicializa el idTrabajador
+        idTrabajador = 1; 
+        con = Conect.getConnection();
     }
 
     public static Empresa getInstance() {
@@ -197,8 +200,7 @@ public class Empresa implements Serializable {
     }
 
     private void loadClientes() {
-        try (Connection con = Conect.getConnection();
-             PreparedStatement stmt = con.prepareStatement("SELECT * FROM Cliente");
+        try (PreparedStatement stmt = con.prepareStatement("SELECT * FROM Cliente");
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -215,8 +217,7 @@ public class Empresa implements Serializable {
     }
 
     private void loadContratos() {
-        try (Connection con = Conect.getConnection();
-             PreparedStatement stmt = con.prepareStatement("SELECT * FROM Contrato");
+        try (PreparedStatement stmt = con.prepareStatement("SELECT * FROM Contrato");
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -235,8 +236,7 @@ public class Empresa implements Serializable {
     }
 
     private void loadProyectos() {
-        try (Connection con = Conect.getConnection();
-             PreparedStatement stmt = con.prepareStatement("SELECT * FROM Proyecto");
+        try (PreparedStatement stmt = con.prepareStatement("SELECT * FROM Proyecto");
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -266,8 +266,7 @@ public class Empresa implements Serializable {
         String sql = "SELECT t.* FROM Trabajador t "
                    + "JOIN Proyecto_Trabajador pt ON t.cedula = pt.cedula "
                    + "WHERE pt.id_proyecto = ?";
-        try (Connection con = Conect.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, idProyecto);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -288,8 +287,7 @@ public class Empresa implements Serializable {
     }
 
     private void loadTrabajadores() {
-        try (Connection con = Conect.getConnection();
-             PreparedStatement stmt = con.prepareStatement("SELECT * FROM Trabajador");
+        try (PreparedStatement stmt = con.prepareStatement("SELECT * FROM Trabajador");
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -307,15 +305,16 @@ public class Empresa implements Serializable {
         }
     }
 
-    private Cliente loadClienteById(int idCliente) {
+    private Cliente loadClienteById(int idProyecto) {
         Cliente cliente = null;
-        String sql = "SELECT * FROM Cliente WHERE id_cliente = ?";
-        try (Connection con = Conect.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setInt(1, idCliente);
+        String sql = "SELECT c.* FROM Cliente c "
+                   + "JOIN Proyecto_Cliente pc ON c.id_cliente = pc.id_cliente "
+                   + "WHERE pc.id_proyecto = ?";
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, idProyecto);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    String id = rs.getString("id_cliente");
+                	String id = rs.getString("id_cliente");
                     String nombre = rs.getString("nombre");
                     String apellido = rs.getString("apellido");
                     String direccion = rs.getString("direccion");
@@ -331,8 +330,7 @@ public class Empresa implements Serializable {
     private Contrato loadContratoByProyectoId(int idProyecto) {
         Contrato contrato = null;
         String sql = "SELECT * FROM Contrato WHERE id_proyecto = ?";
-        try (Connection con = Conect.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, idProyecto);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -341,8 +339,7 @@ public class Empresa implements Serializable {
                     String nombre = rs.getString("nombre");
                     Date fechaEntrega = rs.getDate("fechaEntrega");
                     Date fechaInicio = rs.getDate("fechaInicio");
-                    int id_proyecto = rs.getInt("id_proyecto");
-                    contrato = new Contrato(id, idCliente, nombre, fechaEntrega, fechaInicio, id_proyecto);
+                    contrato = new Contrato(id, idCliente, nombre, fechaEntrega, fechaInicio, idProyecto);
                 }
             }
         } catch (SQLException e) {
@@ -352,30 +349,12 @@ public class Empresa implements Serializable {
     }
 
     private void saveCliente(Cliente cliente) {
-        String sql = "INSERT INTO Cliente (id_cliente, nombre, apellido, direccion, username) VALUES (?, ?, ?, ?, ?)";
-        try (Connection con = Conect.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            
+        String sql = "INSERT INTO Cliente (id_cliente, nombre, apellido, direccion) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, cliente.getId());
             stmt.setString(2, cliente.getNombre());
             stmt.setString(3, cliente.getApellido());
             stmt.setString(4, cliente.getDireccion());
-            stmt.setString(5, cliente.getId());
-            
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private void deleteCliente(String idCliente) {
-        String sql = "DELETE FROM Cliente WHERE id_cliente = ?";
-        try (Connection con = Conect.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            
-            stmt.setString(1, idCliente);
-            
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -383,94 +362,83 @@ public class Empresa implements Serializable {
     }
 
     private void saveContrato(Contrato contrato) {
-        String sql = "INSERT INTO Contrato (id, fechaIni, fechaFin, id_proyecto) VALUES (?, ?, ?, ?)";
-        try (Connection con = Conect.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            
+        String sql = "INSERT INTO Contrato (id, id_cliente, nombre, fechaEntrega, fechaInicio, id_proyecto) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, contrato.getId());
-            stmt.setDate(2, new java.sql.Date(contrato.getFechaInicio().getTime()));
-            stmt.setDate(3, new java.sql.Date(contrato.getFechaEntrega().getTime()));
-            stmt.setInt(4, contrato.getId_proyecto()); 
+            stmt.setString(2, contrato.getIdCliente());
+            stmt.setString(3, contrato.getNombre());
+            stmt.setDate(4, contrato.getFechaEntrega());
+            stmt.setDate(5, contrato.getFechaInicio());
+            stmt.setInt(6, contrato.getId_proyecto());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
-
-    private void deleteContrato(String idContrato) {
-        String sql = "DELETE FROM Contrato WHERE id = ?";
-        try (Connection con = Conect.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            
-            stmt.setString(1, idContrato);
-            
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     private void saveProyecto(Proyecto proyecto) {
         String sql = "INSERT INTO Proyecto (id_proyecto, fechaInicio, fechaFin, fechaProrroga, isPenalizado) VALUES (?, ?, ?, ?, ?)";
-        try (Connection con = Conect.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, proyecto.getId());
-            stmt.setDate(2, new java.sql.Date(proyecto.getFechaInicio().getTime()));
-            stmt.setDate(3, new java.sql.Date(proyecto.getFechaEntregaFinal().getTime()));
-            stmt.setDate(4, proyecto.getFechaProrroga() != null ? new java.sql.Date(proyecto.getFechaProrroga().getTime()) : null);
+            stmt.setDate(2, proyecto.getFechaInicio());
+            stmt.setDate(3, proyecto.getFechaInicio());
+            stmt.setDate(4, proyecto.getFechaProrroga());
             stmt.setString(5, proyecto.isPenalizado() ? "s" : "n");
-            
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    private void saveTrabajador(Trabajador trabajador) {
+        String sql = "INSERT INTO Trabajador (cedula, nombre,apellido ,fechaNacimiento,sexo,direccion) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, trabajador.getCedula());
+            stmt.setString(2, trabajador.getNombre());
+            stmt.setString(3, trabajador.getApellidos());
+            stmt.setDate(4, trabajador.getFechaDeNacimiento());
+            stmt.setString(5, String.valueOf(trabajador.getSexo()));
+            stmt.setString(6, trabajador.getDireccionParticular());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteCliente(String idCliente) {
+        String sql = "DELETE FROM Cliente WHERE id_cliente = ?";
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, idCliente);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteContrato(String idContrato) {
+        String sql = "DELETE FROM Contrato WHERE id = ?";
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, idContrato);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void deleteProyecto(String idProyecto) {
         String sql = "DELETE FROM Proyecto WHERE id_proyecto = ?";
-        try (Connection con = Conect.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, idProyecto);
-            
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
-
-
-    private void saveTrabajador(Trabajador trabajador) {
-        String sql = "INSERT INTO Trabajador (cedula, nombre, fechaNacimiento, sexo, direccion, username) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection con = Conect.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            
-            stmt.setString(1, trabajador.getCedula());
-            stmt.setString(2, trabajador.getNombre());
-            stmt.setDate(3, new java.sql.Date(trabajador.getFechaDeNacimiento().getTime()));
-            stmt.setString(4, trabajador.getSexo());
-            stmt.setString(5, trabajador.getDireccionParticular());
-            stmt.setString(6, trabajador.getCedula());
-            
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     private void deleteTrabajador(String cedulaTrabajador) {
         String sql = "DELETE FROM Trabajador WHERE cedula = ?";
-        try (Connection con = Conect.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, cedulaTrabajador);
-            
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

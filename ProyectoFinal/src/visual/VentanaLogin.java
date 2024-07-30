@@ -40,7 +40,7 @@ public class VentanaLogin extends JDialog {
             }
         });
     }
-
+ 
     public VentanaLogin() {
         setResizable(false);
         setBounds(100, 100, 535, 327);

@@ -10,9 +10,11 @@ public class Programador extends Trabajador implements Serializable{
 	ArrayList<String> lenguajeDeProgramacion = new ArrayList<>();
 
 	public Programador(String cedula, String nombre, String apellidos, String direccionParticular, String sexo,
-	        Date fechaDeNacimiento, String evaluacionAnual, ArrayList<String> lenguajeDeProgramacion,int cantProyectosFallidos, int cantProyectos) {
-	    super(cedula, nombre, apellidos, direccionParticular, sexo, fechaDeNacimiento, evaluacionAnual, cantProyectosFallidos, cantProyectosFallidos);
-	    this.lenguajeDeProgramacion = lenguajeDeProgramacion;
+			Date date, String evaluacionAnual, int cantProyectosFallidos, int cantProyectos,
+			ArrayList<String> lenguajeDeProgramacion) {
+		super(cedula, nombre, apellidos, direccionParticular, sexo, date, evaluacionAnual, cantProyectosFallidos,
+				cantProyectos);
+		this.lenguajeDeProgramacion = lenguajeDeProgramacion;
 	}
 
 	public ArrayList<String> getLenguajeDeProgramacion() {

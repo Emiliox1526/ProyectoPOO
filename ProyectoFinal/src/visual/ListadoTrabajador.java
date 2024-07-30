@@ -1,22 +1,13 @@
 package visual;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.SystemColor;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
@@ -31,7 +22,6 @@ public class ListadoTrabajador extends JDialog {
     private JTextField txtNombre;
     private JTextField txtDireccion;
     private DefaultTableModel model;
-    private Object[] row;
     private JTable table;
 
     /**
@@ -62,7 +52,6 @@ public class ListadoTrabajador extends JDialog {
         setLocationRelativeTo(null);
 
         String[] header = {"Cédula", "Nombre", "Fecha de Nacimiento", "Sexo", "Dirección"};
-
         model = new DefaultTableModel();
         model.setColumnIdentifiers(header);
 
@@ -75,86 +64,51 @@ public class ListadoTrabajador extends JDialog {
 
         JLabel lblBuscar = new JLabel("Buscar por:");
         lblBuscar.setBounds(10, 11, 82, 14);
-        panel_1.add(lblBuscar);
         lblBuscar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+        panel_1.add(lblBuscar);
 
         JLabel lblCedula = new JLabel("Cédula:");
         lblCedula.setBounds(10, 36, 96, 14);
-        panel_1.add(lblCedula);
         lblCedula.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+        panel_1.add(lblCedula);
 
         JLabel lblNombre = new JLabel("Nombre:");
         lblNombre.setBounds(10, 61, 137, 14);
-        panel_1.add(lblNombre);
         lblNombre.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+        panel_1.add(lblNombre);
 
         JLabel lblDireccion = new JLabel("Dirección:");
         lblDireccion.setBounds(10, 89, 137, 14);
-        panel_1.add(lblDireccion);
         lblDireccion.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
+        panel_1.add(lblDireccion);
 
         txtCedula = new JTextField();
         txtCedula.setBounds(155, 34, 269, 20);
         panel_1.add(txtCedula);
-        txtCedula.setColumns(10);
 
         txtNombre = new JTextField();
         txtNombre.setBounds(155, 59, 269, 20);
         panel_1.add(txtNombre);
-        txtNombre.setColumns(10);
 
         txtDireccion = new JTextField();
         txtDireccion.setBounds(155, 87, 269, 20);
         panel_1.add(txtDireccion);
-        txtDireccion.setColumns(10);
 
         JButton btnBuscar = new JButton("Buscar");
         btnBuscar.setBounds(434, 33, 89, 42);
-        panel_1.add(btnBuscar);
+        btnBuscar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
+        btnBuscar.setBackground(new Color(51, 204, 153));
         btnBuscar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                model.setRowCount(0);
-
-                String cedula = txtCedula.getText();
-                String nombre = txtNombre.getText();
-                String direccion = txtDireccion.getText();
-
-                try {
-                    Connection con = Conect.getConnection();
-                    String sql = "SELECT t.cedula, t.nombre, t.fechaNacimiento, t.sexo, t.direccion " +
-                                 "FROM Trabajador t " +
-                                 "WHERE (t.cedula = ? OR ? = '') " +
-                                 "AND (t.nombre LIKE ? OR ? = '') " +
-                                 "AND (t.direccion LIKE ? OR ? = '')";
-
-                    PreparedStatement pst = con.prepareStatement(sql);
-                    pst.setString(1, cedula);
-                    pst.setString(2, cedula);
-                    pst.setString(3, "%" + nombre + "%");
-                    pst.setString(4, nombre);
-                    pst.setString(5, "%" + direccion + "%");
-                    pst.setString(6, direccion);
-
-                    ResultSet rs = pst.executeQuery();
-
-                    while (rs.next()) {
-                        row = new Object[model.getColumnCount()];
-                        row[0] = rs.getString("cedula");
-                        row[1] = rs.getString("nombre");
-                        row[2] = rs.getDate("fechaNacimiento").toString();
-                        row[3] = rs.getString("sexo");
-                        row[4] = rs.getString("direccion");
-                        model.addRow(row);
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                searchTrabajadores();
             }
         });
-        btnBuscar.setBackground(new Color(51, 204, 153));
-        btnBuscar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
+        panel_1.add(btnBuscar);
 
         JButton btnReiniciar = new JButton("Reiniciar");
+        btnReiniciar.setBounds(434, 84, 89, 27);
+        btnReiniciar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
+        btnReiniciar.setBackground(new Color(240, 128, 128));
         btnReiniciar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 txtCedula.setText("");
@@ -163,34 +117,29 @@ public class ListadoTrabajador extends JDialog {
                 loadTrabajadores();
             }
         });
-        btnReiniciar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
-        btnReiniciar.setBackground(new Color(240, 128, 128));
-        btnReiniciar.setBounds(434, 84, 89, 27);
         panel_1.add(btnReiniciar);
 
         JPanel panel = new JPanel();
         panel.setBounds(10, 145, 616, 188);
-        panel_1.add(panel);
         panel.setBorder(new LineBorder(new Color(30, 144, 255), 2, true));
         panel.setLayout(new BorderLayout(0, 0));
+        panel_1.add(panel);
 
         JScrollPane scrollPane = new JScrollPane();
         panel.add(scrollPane, BorderLayout.CENTER);
-        table = new JTable();
+        table = new JTable(model);
         table.setBackground(SystemColor.textHighlightText);
-        table.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-        table.setColumnSelectionAllowed(true);
+        table.setBorder(new MatteBorder(1, 1, 1, 1, Color.BLACK));
         table.setEnabled(false);
         scrollPane.setViewportView(table);
-        table.setModel(model);
 
         JLabel lblNewLabel = new JLabel("Trabajadores");
         lblNewLabel.setBounds(10, 11, 91, 25);
-        contentPanel.add(lblNewLabel);
         lblNewLabel.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 15));
+        contentPanel.add(lblNewLabel);
 
         JPanel buttonPane = new JPanel();
-        buttonPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+        buttonPane.setBorder(new MatteBorder(1, 1, 1, 1, Color.BLACK));
         buttonPane.setBackground(new Color(135, 206, 250));
         buttonPane.setLayout(new BorderLayout(0, 0));
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
@@ -206,17 +155,52 @@ public class ListadoTrabajador extends JDialog {
         buttonPane.add(cancelButton, BorderLayout.EAST);
     }
 
+    private void searchTrabajadores() {
+        model.setRowCount(0);
+        String cedula = txtCedula.getText();
+        String nombre = txtNombre.getText();
+        String direccion = txtDireccion.getText();
+
+        String sql = "SELECT t.cedula, t.nombre, t.fechaNacimiento, t.sexo, t.direccion " +
+                     "FROM Trabajador t " +
+                     "WHERE (t.cedula = ? OR ? = '') " +
+                     "AND (t.nombre LIKE ? OR ? = '') " +
+                     "AND (t.direccion LIKE ? OR ? = '')";
+
+        try (Connection con = Conect.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, cedula);
+            pst.setString(2, cedula);
+            pst.setString(3, "%" + nombre + "%");
+            pst.setString(4, nombre);
+            pst.setString(5, "%" + direccion + "%");
+            pst.setString(6, direccion);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    Object[] row = new Object[model.getColumnCount()];
+                    row[0] = rs.getString("cedula");
+                    row[1] = rs.getString("nombre");
+                    row[2] = rs.getDate("fechaNacimiento").toString();
+                    row[3] = rs.getString("sexo");
+                    row[4] = rs.getString("direccion");
+                    model.addRow(row);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void loadTrabajadores() {
         model.setRowCount(0);
-        try {
-            Connection con = Conect.getConnection();
-            String sql = "SELECT t.cedula, t.nombre, t.fechaNacimiento, t.sexo, t.direccion " +
-                         "FROM Trabajador t";
-            PreparedStatement pst = con.prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
+        String sql = "SELECT t.cedula, t.nombre, t.fechaNacimiento, t.sexo, t.direccion FROM Trabajador t";
 
+        try (Connection con = Conect.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                row = new Object[model.getColumnCount()];
+                Object[] row = new Object[model.getColumnCount()];
                 row[0] = rs.getString("cedula");
                 row[1] = rs.getString("nombre");
                 row[2] = rs.getDate("fechaNacimiento").toString();

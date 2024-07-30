@@ -31,7 +31,6 @@ public class ListadoProyecto extends JDialog {
     private JTextField txtNombreCliente;
     private JTextField txtApellidoCliente;
     private DefaultTableModel model;
-    private Object[] row;
     private JTable table;
 
     /**
@@ -60,8 +59,8 @@ public class ListadoProyecto extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
         setLocationRelativeTo(null);
-        String[] header = {"ID Proyecto", "Cliente", "Fecha de inicio", "Fecha de entrega", "Prorrogado", "Penalizado"};
 
+        String[] header = {"ID Proyecto", "Cliente", "Fecha de inicio", "Fecha de entrega", "Prorrogado", "Penalizado"};
         model = new DefaultTableModel();
         model.setColumnIdentifiers(header);
 
@@ -71,27 +70,27 @@ public class ListadoProyecto extends JDialog {
         panel_1.setBounds(10, 35, 636, 344);
         contentPanel.add(panel_1);
         panel_1.setLayout(null);
-        
+
         JLabel lblBuscar = new JLabel("Buscar por:");
         lblBuscar.setBounds(10, 11, 82, 14);
         panel_1.add(lblBuscar);
         lblBuscar.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-        
+
         JLabel lblId = new JLabel("ID Proyecto:");
         lblId.setBounds(10, 36, 96, 14);
         panel_1.add(lblId);
         lblId.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-        
+
         JLabel lblNombreCliente = new JLabel("Nombre del cliente:");
         lblNombreCliente.setBounds(10, 61, 137, 14);
         panel_1.add(lblNombreCliente);
         lblNombreCliente.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-        
+
         JLabel lblApellidoCliente = new JLabel("Apellido del cliente:");
         lblApellidoCliente.setBounds(10, 89, 137, 14);
         panel_1.add(lblApellidoCliente);
         lblApellidoCliente.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
-        
+
         txtId = new JTextField();
         txtId.setBounds(155, 34, 269, 20);
         panel_1.add(txtId);
@@ -139,7 +138,7 @@ public class ListadoProyecto extends JDialog {
                     ResultSet rs = pst.executeQuery();
 
                     while (rs.next()) {
-                        row = new Object[model.getColumnCount()];
+                        Object[] row = new Object[model.getColumnCount()];
                         row[0] = rs.getString("id_proyecto");
                         row[1] = rs.getString("nombre") + " " + rs.getString("apellido");
                         row[2] = rs.getDate("fechaInicio").toString();
@@ -209,7 +208,7 @@ public class ListadoProyecto extends JDialog {
         buttonPane.setBackground(new Color(135, 206, 250));
         buttonPane.setLayout(new BorderLayout(0, 0));
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
-        
+
         JButton cancelButton = new JButton("Cerrar");
         cancelButton.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 11));
         cancelButton.setBackground(new Color(255, 99, 71));
@@ -219,21 +218,24 @@ public class ListadoProyecto extends JDialog {
             }
         });
         buttonPane.add(cancelButton, BorderLayout.EAST);
+        
+        loadProyectos();
     }
 
-    public void loadProyectos() {
+    private void loadProyectos() {
         model.setRowCount(0);
         try {
             Connection con = Conect.getConnection();
             String sql = "SELECT p.id_proyecto, c.nombre, c.apellido, p.fechaInicio, p.fechaFin, p.fechaProrroga, p.isPenalizado " +
-                         "FROM Proyecto p " +
-                         "INNER JOIN Proyecto_Cliente pc ON p.id_proyecto = pc.id_proyecto " +
-                         "INNER JOIN Cliente c ON pc.id_cliente = c.id_cliente";
+                    "FROM Proyecto p " +
+                    "INNER JOIN Proyecto_Cliente pc ON p.id_proyecto = pc.id_proyecto " +
+                    "INNER JOIN Cliente c ON pc.id_cliente = c.id_cliente";
+
             PreparedStatement pst = con.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
-                row = new Object[model.getColumnCount()];
+                Object[] row = new Object[model.getColumnCount()];
                 row[0] = rs.getString("id_proyecto");
                 row[1] = rs.getString("nombre") + " " + rs.getString("apellido");
                 row[2] = rs.getDate("fechaInicio").toString();
