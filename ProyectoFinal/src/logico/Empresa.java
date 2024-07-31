@@ -341,8 +341,8 @@ public class Empresa implements Serializable {
             stmt.setString(1, contrato.getId());
             stmt.setInt(2, contrato.getIdCliente());
             stmt.setString(3, contrato.getNombre());
-            stmt.setDate(4, contrato.getFechaEntrega());
-            stmt.setDate(5, contrato.getFechaInicio());
+            stmt.setDate(4, (Date) contrato.getFechaEntrega());
+            stmt.setDate(5, (Date) contrato.getFechaInicio());
             stmt.setInt(6, contrato.getId_proyecto());
             stmt.executeUpdate();
         } catch (SQLException e) {

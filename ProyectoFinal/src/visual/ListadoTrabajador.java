@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -51,7 +53,7 @@ public class ListadoTrabajador extends JDialog {
         contentPanel.setLayout(null);
         setLocationRelativeTo(null);
 
-        String[] header = {"Cédula", "Nombre", "Fecha de Nacimiento", "Sexo", "Dirección"};
+        String[] header = {"Cédula", "Nombre", "Edad", "Sexo", "Dirección"};
         model = new DefaultTableModel();
         model.setColumnIdentifiers(header);
 
@@ -194,23 +196,38 @@ public class ListadoTrabajador extends JDialog {
     }
 
     public void loadTrabajadores() {
-        model.setRowCount(0);
-        String sql = "SELECT t.cedula, t.nombre, t.fechaNacimiento, t.sexo, t.direccion FROM Trabajador t";
+    	model.setRowCount(0);
+    	String sql = "SELECT t.cedula, t.nombre, t.fechaNacimiento, t.sexo, t.direccion FROM Trabajador t";
+    	String sql1 = "SELECT dbo.CalcularEdad(?) AS Edad";
 
-        try (Connection con = Conect.getConnection();
-             PreparedStatement pst = con.prepareStatement(sql);
-             ResultSet rs = pst.executeQuery()) {
-            while (rs.next()) {
-                Object[] row = new Object[model.getColumnCount()];
-                row[0] = rs.getString("cedula");
-                row[1] = rs.getString("nombre");
-                row[2] = rs.getDate("fechaNacimiento").toString();
-                row[3] = rs.getString("sexo");
-                row[4] = rs.getString("direccion");
-                model.addRow(row);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    	try (Connection con = Conect.getConnection();
+    	     PreparedStatement pst = con.prepareStatement(sql);
+    	     ResultSet rs = pst.executeQuery()) {
+    	    
+    	    while (rs.next()) {
+    	        Date fechaNacimiento = rs.getDate("fechaNacimiento");
+    	        
+    	        try (PreparedStatement pst1 = con.prepareStatement(sql1)) {
+    	            pst1.setDate(1, (java.sql.Date) fechaNacimiento);
+
+    	            try (ResultSet rs1 = pst1.executeQuery()) {
+    	                if (rs1.next()) {
+
+    	                    Object[] row = new Object[model.getColumnCount()];
+    	                    row[0] = rs.getString("cedula");
+    	                    row[1] = rs.getString("nombre");
+    	                    row[2] = rs1.getInt("Edad");  
+    	                    row[3] = rs.getString("sexo");
+    	                    row[4] = rs.getString("direccion");
+    	                    
+    	                    model.addRow(row);
+    	                }
+    	            }
+    	        }
+    	    }
+    	} catch (SQLException e) {
+    	    e.printStackTrace();
+    	}
+
     }
 }
