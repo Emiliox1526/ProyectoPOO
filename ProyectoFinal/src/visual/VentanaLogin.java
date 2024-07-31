@@ -30,7 +30,7 @@ public class VentanaLogin extends JDialog {
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Control control = Control.getInstance(); // Asegúrate de inicializar el control
+                Control control = Control.getInstance(); 
                 try {
                     VentanaLogin frame = new VentanaLogin();
                     frame.setVisible(true);

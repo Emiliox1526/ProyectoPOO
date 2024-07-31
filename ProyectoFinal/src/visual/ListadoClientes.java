@@ -90,7 +90,6 @@ public class ListadoClientes extends JDialog {
                 String id = txtId.getText();
                 String nombreCliente = nombre.getText();
                 String apellidoCliente = apellido.getText();
-                int cantidadProyectos = (int) spnCant.getValue();
 
                 model.setRowCount(0);
 
@@ -198,7 +197,7 @@ public class ListadoClientes extends JDialog {
 
     private void loadClientes() {
         model.setRowCount(0);
-        if (empresa.getInstance() != null) {
+        if (Empresa.getInstance() != null) {
             ArrayList<Cliente> clientes = Empresa.getInstance().getMisClientes();
             if (clientes != null && !clientes.isEmpty()) {
                 for (Cliente cliente : clientes) {

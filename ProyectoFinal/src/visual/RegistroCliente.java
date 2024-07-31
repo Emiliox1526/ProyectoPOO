@@ -152,8 +152,8 @@ public class RegistroCliente extends JDialog {
     }
 
     void registrarClienteEnBaseDeDatos(Cliente cliente) throws SQLException {
-        String default_password = "default_password"; // Define tu contraseña predeterminada
-        String tipo_usuario = "cliente"; // Define el tipo de usuario
+        String default_password = "default_password"; 
+        String tipo_usuario = "usuario";
 
         String sqlUsuario = "INSERT INTO Usuario (username, pass, tipo) VALUES (?, ?, ?)";
         String sqlCliente = "INSERT INTO Cliente (nombre, apellido, direccion, username) VALUES (?, ?, ?, ?)";
@@ -167,7 +167,7 @@ public class RegistroCliente extends JDialog {
                 
                 pstUsuario.setString(1, cliente.getId());
                 pstUsuario.setString(2, default_password);
-                pstUsuario.setString(3, "Cliente");
+                pstUsuario.setString(3, "Usuario");
                 pstUsuario.executeUpdate();
 
                 

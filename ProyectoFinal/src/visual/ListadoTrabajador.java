@@ -153,6 +153,7 @@ public class ListadoTrabajador extends JDialog {
             }
         });
         buttonPane.add(cancelButton, BorderLayout.EAST);
+        loadTrabajadores();
     }
 
     private void searchTrabajadores() {

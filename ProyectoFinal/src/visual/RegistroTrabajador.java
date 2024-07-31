@@ -23,6 +23,8 @@ import javax.swing.JComboBox;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import logico.Cliente;
+import logico.Conect;
 import logico.Diseñador;
 import logico.Empresa;
 import logico.Jefe;
@@ -32,7 +34,11 @@ import logico.Trabajador;
 
 import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import com.toedter.calendar.JDateChooser;
@@ -84,18 +90,23 @@ public class RegistroTrabajador extends JDialog {
 	 * Create the dialog.
 	 */
 	public RegistroTrabajador() {
+        
+        try (Connection con = Conect.getConnection()) {
+        try (PreparedStatement stmt = con.prepareStatement("SELECT nombre FROM LenguajeProgramacion");
+                ResultSet rs = stmt.executeQuery()) {
+
+               while (rs.next()) {
+                   String nombre = rs.getString("nombre");
+                   listaLenguajes.add(nombre);
+               }
+           } catch (SQLException e) {
+               e.printStackTrace();
+           }
+        }catch (SQLException e) {
+        	e.printStackTrace();
+        }
+        
 		setResizable(false);
-		listaLenguajes.add("JavaScript");
-		listaLenguajes.add("HTML");
-		listaLenguajes.add("Python");
-		listaLenguajes.add("SQL");
-		listaLenguajes.add("Java");
-		listaLenguajes.add("C#");
-		listaLenguajes.add("C");
-		listaLenguajes.add("NoSQL");
-		listaLenguajes.add("Rust");
-		listaLenguajes.add("Perl");
-		listaLenguajes.add("Swift");
 		getContentPane().setBackground(Color.WHITE);
 		setBounds(100, 100, 572, 510);
 		getContentPane().setLayout(new BorderLayout());
@@ -436,19 +447,19 @@ public class RegistroTrabajador extends JDialog {
 					                int añosExperiencia = (int) DiseniadorSpinner.getValue();
 					                t = new Diseñador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", añosExperiencia,0,0);
 					            } else if (rbtProgramador.isSelected()) {
-					                t = new Programador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", listaAgregados,0,0);
+					                t = new Programador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", 0,0,listaAgregados);
 					            } else if (rbtPlanificador.isSelected()) {
 					                int frecuenciaPlanificacion = (int) PlanificadorSpinner.getValue();
 					                t = new Planificador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", frecuenciaPlanificacion,0,0);
 					            }
 					            
 					            if (t != null) {
-					                Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
+					                Empresa empresa = Empresa.getInstance();
 					                if (empresa == null) {
 					                    empresa = new Empresa();
 					                }
 					                empresa.ingresarTrabajador(t);
-					                Empresa.guardarEmpresa(empresa, "controlador.dat");
+					                empresa.saveTrabajador(t);
 					                JOptionPane.showMessageDialog(null, "Registro Satisfactorio", "Informacion", JOptionPane.INFORMATION_MESSAGE);
 					                clean();
 					            }
