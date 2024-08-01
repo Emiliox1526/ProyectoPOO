@@ -79,19 +79,8 @@ public class VentanaLogin extends JDialog {
                 }
             }
         });
-        btnNewButton.setBounds(320, 11, 67, 23);
+        btnNewButton.setBounds(406, 11, 67, 23);
         panel_1.add(btnNewButton);
-
-        JButton btnRegistrar = new JButton("Registrar");
-        btnRegistrar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                regUser frame = new regUser();
-                dispose();
-                frame.setVisible(true);
-            }
-        });
-        btnRegistrar.setBounds(397, 11, 92, 23);
-        panel_1.add(btnRegistrar);
 
         JLabel lblNewLabel_1 = new JLabel("Usuario:");
         lblNewLabel_1.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 15));
@@ -103,7 +92,7 @@ public class VentanaLogin extends JDialog {
         lblContraseña.setBounds(22, 100, 99, 14);
         panel.add(lblContraseña);
 
-        txtUsuario = new JTextField();
+        txtUsuario = SSnew JTextField();
         txtUsuario.setBounds(97, 51, 380, 20);
         panel.add(txtUsuario);
         txtUsuario.setColumns(10);

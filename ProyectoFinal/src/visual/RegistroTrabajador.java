@@ -70,7 +70,7 @@ public class RegistroTrabajador extends JDialog {
 	private int indexSeleccionadoAgregados = -1;
 	ArrayList<String> listaLenguajes = new ArrayList<>();
 	ArrayList<String> listaAgregados = new ArrayList<>();
-	
+	private static Connection con;
 	
 
 	/**
@@ -421,6 +421,8 @@ public class RegistroTrabajador extends JDialog {
 			panel_2.setBounds(0, 425, 556, 45);
 			panel.add(panel_2);
 			panel_2.setLayout(null);
+			
+			
 			{
 				JButton okButton = new JButton("Registrar");
 				okButton.setForeground(new Color(255, 255, 255));
@@ -443,26 +445,103 @@ public class RegistroTrabajador extends JDialog {
 					            if (rbtJefe.isSelected()) {
 					                int cantidad = (int) jefeSpinner.getValue();
 					                t = new Jefe(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", cantidad,0,0);
+					                Empresa.getInstance().saveTrabajador(t);
+					                con = Conect.getConnection();
+					                String sql = "INSERT INTO Jefe (cedula, cantidad_trabajadores) VALUES (?, ?)";
+					                try (PreparedStatement stmt = con.prepareStatement(sql)) {
+					                	stmt.setString(1, t.getCedula());
+					                	stmt.setInt(2, cantidad);
+					                    stmt.executeUpdate();
+					                    clean();
+					                } catch (SQLException i) {
+					                    i.printStackTrace();
+					                }finally {
+					                    Conect.closeConnection();
+					                }
 					            } else if (rbtDesign.isSelected()) {
 					                int añosExperiencia = (int) DiseniadorSpinner.getValue();
 					                t = new Diseñador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", añosExperiencia,0,0);
+					                Empresa.getInstance().saveTrabajador(t);
+					                con = Conect.getConnection();
+					                String sql = "INSERT INTO Diseniador (cedula, anos_experiencia) VALUES (?, ?)";
+					                try (PreparedStatement stmt = con.prepareStatement(sql)) {
+					                	stmt.setString(1, t.getCedula());
+					                	stmt.setInt(2,añosExperiencia);
+					                    stmt.executeUpdate();
+					                clean();
+					                } catch (SQLException i) {
+					                    i.printStackTrace();
+					                }finally {
+					                    Conect.closeConnection();
+					                }
 					            } else if (rbtProgramador.isSelected()) {
-					                t = new Programador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", 0,0,listaAgregados);
+					            	t = new Programador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", 0, 0, listaAgregados);
+					            	Empresa.getInstance().saveTrabajador(t);
+
+					            	Connection con = null;
+					            	PreparedStatement stmt = null;
+
+					            	try {
+					            	    con = Conect.getConnection();
+
+					            	    String sql = "INSERT INTO Programador (cedula) VALUES (?)";
+					            	    stmt = con.prepareStatement(sql);
+					            	    stmt.setString(1, t.getCedula());
+					            	    stmt.executeUpdate();
+					            	    stmt.close();
+
+					            	    for (String lenguaje : listaAgregados) {
+					            	        String sqlBuscarLenguaje = "SELECT id FROM LenguajeProgramacion WHERE nombre = ?";
+					            	        stmt = con.prepareStatement(sqlBuscarLenguaje);
+					            	        stmt.setString(1, lenguaje);
+					            	        ResultSet rs = stmt.executeQuery();
+
+					            	        if (rs.next()) {
+					            	            int lenguajeId = rs.getInt("id");
+
+					            	            String sqlInsertarRelacion = "INSERT INTO Programador_lenguaje (cedula, id_lenguaje) VALUES (?, ?)";
+					            	            PreparedStatement stmtRelacion = con.prepareStatement(sqlInsertarRelacion);
+					            	            stmtRelacion.setString(1, t.getCedula());
+					            	            stmtRelacion.setInt(2, lenguajeId);
+					            	            stmtRelacion.executeUpdate();
+					            	            stmtRelacion.close();
+					            	        }
+					            	        rs.close();
+					            	        stmt.close();
+					            	    }
+					            	    clean();
+					            	} catch (SQLException i) {
+					            	    i.printStackTrace();
+					            	} finally {
+					            	    if (stmt != null) {
+					            	        try {
+					            	            stmt.close();
+					            	        } catch (SQLException i) {
+					            	            i.printStackTrace();
+					            	        }
+					            	    }
+					            	    Conect.closeConnection();
+					            	}
+
 					            } else if (rbtPlanificador.isSelected()) {
 					                int frecuenciaPlanificacion = (int) PlanificadorSpinner.getValue();
 					                t = new Planificador(id, nombre, apellido, direccion, sexo, fecha, "Cumplidor", frecuenciaPlanificacion,0,0);
-					            }
-					            
-					            if (t != null) {
-					                Empresa empresa = Empresa.getInstance();
-					                if (empresa == null) {
-					                    empresa = new Empresa();
+					                Empresa.getInstance().saveTrabajador(t);
+					                con = Conect.getConnection();
+					                String sql = "INSERT INTO Planificador (cedula) VALUES (?)";
+					                try (PreparedStatement stmt = con.prepareStatement(sql);
+					                	) {
+					                	stmt.setString(1, t.getCedula());
+					                	stmt.setInt(2, frecuenciaPlanificacion);
+					                    stmt.executeUpdate();
+					                    clean();
+					                } catch (SQLException i) {
+					                    i.printStackTrace();
+					                }finally {
+					                    Conect.closeConnection();
 					                }
-					                empresa.ingresarTrabajador(t);
-					                empresa.saveTrabajador(t);
-					                JOptionPane.showMessageDialog(null, "Registro Satisfactorio", "Informacion", JOptionPane.INFORMATION_MESSAGE);
-					                clean();
 					            }
+					           
 					        }
 					    } 
 					});

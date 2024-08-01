@@ -366,20 +366,44 @@ public class Empresa implements Serializable {
     }
 
     public void saveTrabajador(Trabajador trabajador) {
-    	con = Conect.getConnection();
-        String sql = "INSERT INTO Trabajador (cedula, nombre,apellido ,fechaNacimiento,sexo,direccion) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, trabajador.getCedula());
-            stmt.setString(2, trabajador.getNombre());
-            stmt.setString(3, trabajador.getApellidos());
-            stmt.setDate(4, trabajador.getFechaDeNacimiento());
-            stmt.setString(5, String.valueOf(trabajador.getSexo()));
-            stmt.setString(6, trabajador.getDireccionParticular());
-            stmt.executeUpdate();
+        String default_password = "12345";
+        String tipo_usuario = "Usuario";
+
+        String sqlUsuario = "INSERT INTO Usuario (username, pass, tipo) VALUES (?, ?, ?)";
+        String sqlTrabajador = "INSERT INTO Trabajador (cedula, nombre, apellido, fechaNacimiento, sexo, direccion, username) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection con = Conect.getConnection()) {
+            con.setAutoCommit(false);
+
+            try (PreparedStatement pstUsuario = con.prepareStatement(sqlUsuario);
+                 PreparedStatement pstTrabajador = con.prepareStatement(sqlTrabajador)) {
+
+                pstUsuario.setString(1, trabajador.getCedula());
+                pstUsuario.setString(2, default_password);
+                pstUsuario.setString(3, tipo_usuario);
+                pstUsuario.executeUpdate();
+
+                pstTrabajador.setString(1, trabajador.getCedula());
+                pstTrabajador.setString(2, trabajador.getNombre());
+                pstTrabajador.setString(3, trabajador.getApellidos());
+                pstTrabajador.setDate(4, trabajador.FechaDeNacimiento);
+                pstTrabajador.setString(5, String.valueOf(trabajador.getSexo()));
+                pstTrabajador.setString(6, trabajador.getDireccionParticular());
+                pstTrabajador.setString(7, trabajador.getCedula());
+                pstTrabajador.executeUpdate();
+
+                con.commit(); 
+
+            } catch (SQLException e) {
+                con.rollback();
+                e.printStackTrace();
+                throw e;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     private void deleteCliente(String idCliente) {
     	con = Conect.getConnection();
@@ -521,7 +545,7 @@ public class Empresa implements Serializable {
 	
 	
 
-	private Cliente buscarClientePorId(String string) {
+	public Cliente buscarClientePorId(String string) {
 		con = Conect.getConnection();
         Cliente cliente = null;
         try {

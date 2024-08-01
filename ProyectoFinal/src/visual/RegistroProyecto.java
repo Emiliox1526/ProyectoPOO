@@ -21,6 +21,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -102,26 +104,70 @@ public class RegistroProyecto extends JDialog {
 				JButton btnReg = new JButton("Registrar");
 				btnReg.setBackground(Color.GREEN);
 				btnReg.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						java.util.Date fechaI = dChooserInicio.getDate();
-						java.util.Date fechaF = dChooserFinal.getDate();
-						Contrato contrato = new Contrato(txtidContrato.getText().toString(), cliente.getId(), cliente.getNombre(), fechaF , fechaI);
-						
-						Proyecto proyecto = new Proyecto(txtidProyecto.getText().toString(), cliente, listaAgregados, contrato, fechaI, fechaF, null, null, false);
-						
-						if (contrato != null && proyecto != null) {
-							Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
-			                if (empresa == null) {
-			                    empresa = new Empresa();
-			                }
-							empresa.ingresarContrato(contrato);
-							empresa.ingresarProyecto(proyecto);
-							Empresa.guardarEmpresa(empresa, "controlador.dat");
-							OptionPane.showMessageDialog(null, "Proyecto registrado", "Informacion", JOptionPane.INFORMATION_MESSAGE);
-						}
-						
-					}
+				    public void actionPerformed(ActionEvent e) {
+				        java.util.Date fechaI = dChooserInicio.getDate();
+				        java.util.Date fechaF = dChooserFinal.getDate();
+				        Contrato contrato = new Contrato(txtidContrato.getText().toString(), cliente.getId(), cliente.getNombre(), fechaF, fechaI);
+
+				        Proyecto proyecto = new Proyecto(txtidProyecto.getText().toString(), cliente, listaAgregados, contrato, fechaI, fechaF, null, null, false);
+
+				        if (contrato != null && proyecto != null) {
+				            Empresa empresa = Empresa.cargarEmpresa("controlador.dat");
+				            if (empresa == null) {
+				                empresa = new Empresa();
+				            }
+
+				            // Guardar en la base de datos
+				            try (Connection con = Conect.getConnection()) {
+				                // Insertar en la tabla Proyecto
+				                String insertProyectoSQL = "INSERT INTO Proyecto (fechaInicio, fechaFin, fechaProrroga, isPenalizado) VALUES (?, ?, ?, ?)";
+				                try (PreparedStatement psProyecto = con.prepareStatement(insertProyectoSQL, Statement.RETURN_GENERATED_KEYS)) {
+				                    psProyecto.setDate(1, new java.sql.Date(fechaI.getTime()));
+				                    psProyecto.setDate(2, new java.sql.Date(fechaF.getTime()));
+				                    psProyecto.setNull(3, Types.DATE);
+				                    psProyecto.setString(4, "n");
+				                    psProyecto.executeUpdate();
+
+				                    // Obtener el id_proyecto generado
+				                    try (ResultSet rs = psProyecto.getGeneratedKeys()) {
+				                        if (rs.next()) {
+				                            int idProyecto = rs.getInt(1);
+
+				                            // Insertar en la tabla Proyecto_cliente
+				                            String insertProyectoClienteSQL = "INSERT INTO Proyecto_cliente (id_proyecto, dni) VALUES (?, ?)";
+				                            try (PreparedStatement psProyectoCliente = con.prepareStatement(insertProyectoClienteSQL)) {
+				                                psProyectoCliente.setInt(1, idProyecto);
+				                                psProyectoCliente.setInt(2, Integer.parseInt(cliente.getId())); // Asumiendo que cliente.getId() devuelve un String
+				                                psProyectoCliente.executeUpdate();
+				                            }
+
+				                            // Insertar en la tabla Proyecto_Trabajador
+				                            String insertProyectoTrabajadorSQL = "INSERT INTO Proyecto_Trabajador (id_proyecto, cedula) VALUES (?, ?)";
+				                            try (PreparedStatement psProyectoTrabajador = con.prepareStatement(insertProyectoTrabajadorSQL)) {
+				                                for (Trabajador trabajador : listaAgregados) {
+				                                    psProyectoTrabajador.setInt(1, idProyecto);
+				                                    psProyectoTrabajador.setString(2, trabajador.getCedula());
+				                                    psProyectoTrabajador.executeUpdate();
+				                                }
+				                            }
+
+				                            OptionPane.showMessageDialog(null, "Proyecto registrado", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+				                        }
+				                    }
+				                }
+				            } catch (SQLException ex) {
+				                ex.printStackTrace();
+				                OptionPane.showMessageDialog(null, "Error al registrar el proyecto", "Error", JOptionPane.ERROR_MESSAGE);
+				            }
+
+				            // Guardar en archivo
+				            empresa.ingresarContrato(contrato);
+				            empresa.ingresarProyecto(proyecto);
+				            Empresa.guardarEmpresa(empresa, "controlador.dat");
+				        }
+				    }
 				});
+
 				buttonPane.add(btnReg);
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
@@ -309,7 +355,7 @@ public class RegistroProyecto extends JDialog {
 			btnBuscar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String id = txtIdCliente.getText();
-					cliente = empresa.BuscarClienteByID(id);
+					cliente = empresa.buscarClientePorId(id);
 					if (cliente != null) {
 					    txtNombre.setText(cliente.getNombre());
 					    txtApellido.setText(cliente.getApellido());
@@ -375,58 +421,25 @@ public class RegistroProyecto extends JDialog {
 	
 	private void loadTrabajadores() {
 	    model.setRowCount(0);
-	    rowTrabajadores = new Object[model.getColumnCount()];
-
-	    if (empresa != null) {
-	        if (listaTrabajadores != null && !listaTrabajadores.isEmpty()) {
-
-	            for (Trabajador trabajador : listaTrabajadores) {
-	                System.out.println("Cargando trabajador: " + trabajador.getNombre());
-	                rowTrabajadores[0] = trabajador.getClass().getSimpleName();
-	                rowTrabajadores[1] = trabajador.getCedula();
-	                rowTrabajadores[2] = trabajador.getNombre();
-	                rowTrabajadores[3] = trabajador.getApellidos();
-	                rowTrabajadores[4] = trabajador.getEvaluacionAnual();
-	                if (trabajador instanceof Jefe) {
-	                    rowTrabajadores[5] = ((Jefe) trabajador).getCantTrabajadores() + " Trabajadores";
-	                } else if (trabajador instanceof Programador) {
-	                    rowTrabajadores[5] = ((Programador) trabajador).getLenguajeDeProgramacion();
-	                } else if (trabajador instanceof Planificador) {
-	                    rowTrabajadores[5] = ((Planificador) trabajador).getFrecuenciaDePlanificacion() + " Frecuencia";
-	                } else if (trabajador instanceof Diseñador) {
-	                    rowTrabajadores[5] = ((Diseñador) trabajador).getCantAgnoExp() + " Años exp";
-	                }
-
-	                model.addRow(rowTrabajadores);
-
-	            }
-
-	            tableTrabajadores.setModel(model);
-	        }
-
-	        modelAgregado.setRowCount(0);
-	        for (Trabajador trabajadorAgregado : listaAgregados) {
-	            System.out.println("Cargando trabajador agregado: " + trabajadorAgregado.getNombre());
-	            rowAgregado = new Object[modelAgregado.getColumnCount()];
-	            rowAgregado[0] = trabajadorAgregado.getCedula();
-	            rowAgregado[1] = trabajadorAgregado.getNombre();
-	            rowAgregado[2] = trabajadorAgregado.getApellidos();
-	            rowAgregado[3] = trabajadorAgregado.getClass().getSimpleName(); 
-	            if (trabajadorAgregado instanceof Jefe) {
-	                rowAgregado[4] = ((Jefe) trabajadorAgregado).getCantTrabajadores() + " Trabajadores";
-	            } else if (trabajadorAgregado instanceof Programador) {
-	                rowAgregado[4] = ((Programador) trabajadorAgregado).getLenguajeDeProgramacion();
-	            } else if (trabajadorAgregado instanceof Planificador) {
-	                rowAgregado[4] = ((Planificador) trabajadorAgregado).getFrecuenciaDePlanificacion() + " Frecuencia";
-	            } else if (trabajadorAgregado instanceof Diseñador) {
-	                rowAgregado[4] = ((Diseñador) trabajadorAgregado).getCantAgnoExp() + " Años exp";
-	            }
-
-	            modelAgregado.addRow(rowAgregado);
-	        }
-
-	        tableTrabajadoresAgregados.setModel(modelAgregado);
+	    rowTrabajadores = new Object[6];
+	    for (Trabajador trabajador : listaTrabajadores) {
+	        rowTrabajadores[0] = trabajador.getCedula();
+	        rowTrabajadores[1] = trabajador.getNombre();
+	        rowTrabajadores[2] = trabajador.getApellidos();
+	        rowTrabajadores[3] = trabajador.getEvaluacionAnual();
+	        model.addRow(rowTrabajadores);
 	    }
+	    tableTrabajadores.setModel(model);
+
+	    modelAgregado.setRowCount(0);
+	    rowAgregado = new Object[5];
+	    for (Trabajador trabajador : listaAgregados) {
+	        rowAgregado[0] = trabajador.getCedula();
+	        rowAgregado[1] = trabajador.getNombre();
+	        rowAgregado[2] = trabajador.getApellidos();
+	        modelAgregado.addRow(rowAgregado);
+	    }
+	    tableTrabajadoresAgregados.setModel(modelAgregado);
 	}
 
 	
