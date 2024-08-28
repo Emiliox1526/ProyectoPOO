@@ -5,8 +5,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 
 public class Proyecto implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private int id;  
+    private static final long serialVersionUID = 1L; 
     private Cliente cliente;
     private ArrayList<Trabajador> participantes;
     private Contrato contrato;
@@ -16,26 +15,17 @@ public class Proyecto implements Serializable {
     private Date fechaProrroga;
     private boolean isPenalizado;
 
-    public Proyecto(int id, Cliente cliente, ArrayList<Trabajador> participantes, Contrato contrato,
-                    Date fechaInicio, Date fechaEntregaInicial, Date fechaEntregaFinal, Date fechaProrroga,
+    public Proyecto(Cliente cliente, ArrayList<Trabajador> participantes, Contrato contrato,
+                    java.util.Date fechaI, java.util.Date fechaF, java.util.Date fechaF2, Date fechaProrroga,
                     boolean isPenalizado) {
-        this.id = id;
         this.cliente = cliente;
         this.participantes = participantes;
         this.contrato = contrato;
-        this.fechaInicio = fechaInicio;
-        this.fechaEntregaInicial = fechaEntregaInicial;
-        this.fechaEntregaFinal = fechaEntregaFinal;
+        this.fechaInicio = (Date) fechaI;
+        this.fechaEntregaInicial = (Date) fechaF;
+        this.fechaEntregaFinal = (Date) fechaF2;
         this.fechaProrroga = fechaProrroga;
         this.isPenalizado = isPenalizado;
-    }
-
-    public int getId() { 
-    	return id; 
-    }
-    
-    public void setId(int id) { 
-    	this.id = id;
     }
     
     public Cliente getCliente() { 

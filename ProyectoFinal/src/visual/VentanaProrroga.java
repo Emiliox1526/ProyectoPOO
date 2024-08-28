@@ -3,13 +3,9 @@ package visual;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
 import javax.swing.ButtonGroup;
@@ -19,9 +15,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.JSpinner;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import com.toedter.calendar.JDateChooser;
@@ -31,11 +27,8 @@ import logico.Cliente;
 
 public class VentanaProrroga extends JDialog {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private final JPanel contentPanel = new JPanel();
+    private static final long serialVersionUID = 1L;
+    private final JPanel contentPanel = new JPanel();
     private JTextField txtIdProyecto;
     private JTextField txtIdCliente;
     private JTextField txtNombreCliente;
@@ -55,6 +48,7 @@ public class VentanaProrroga extends JDialog {
     }
 
     public VentanaProrroga() {
+        setResizable(false);
         setBounds(100, 100, 450, 320);
         getContentPane().setLayout(new BorderLayout());
         contentPanel.setBackground(new Color(230, 230, 250));
@@ -69,7 +63,7 @@ public class VentanaProrroga extends JDialog {
         panel.setLayout(null);
 
         JSpinner spnDias = new JSpinner();
-        spnDias.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+        spnDias.setModel(new SpinnerNumberModel(1, 1, null, 1));
         spnDias.setBounds(186, 145, 97, 22);
         panel.add(spnDias);
 
@@ -106,17 +100,28 @@ public class VentanaProrroga extends JDialog {
         btnBuscar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String idProyecto = txtIdProyecto.getText();
-                Proyecto proyecto = empresa.BuscarProyectoById(idProyecto);
-                if (proyecto != null) {
-                    txtIdCliente.setText(proyecto.getCliente().getId());
-                    txtNombreCliente.setText(proyecto.getCliente().getNombre());
-                    txtFechaInicio.setText(proyecto.getFechaInicio().toString());
-                    txtFechaFinal.setText(proyecto.getFechaInicio().toString());
-                } else {
-                    JOptionPane.showMessageDialog(null, "Proyecto no encontrado para el ID: " + idProyecto, "Error", JOptionPane.ERROR_MESSAGE);
+                try {
+                    Proyecto proyecto = buscarProyectoPorId(idProyecto);
+                    if (proyecto != null) {
+                        Cliente cliente = proyecto.getCliente();
+                        if (cliente != null) {
+                            txtIdCliente.setText(cliente.getId());
+                            txtNombreCliente.setText(cliente.getNombre());
+                            txtFechaInicio.setText(proyecto.getFechaInicio().toString());
+                            txtFechaFinal.setText(proyecto.getFechaEntregaFinal().toString());
+                        } else {
+                            JOptionPane.showMessageDialog(null, "El proyecto no tiene un cliente asociado.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Proyecto no encontrado para el ID: " + idProyecto, "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error al buscar el proyecto.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
+
         btnBuscar.setBounds(186, 9, 97, 25);
         panel.add(btnBuscar);
 
@@ -165,68 +170,69 @@ public class VentanaProrroga extends JDialog {
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
         JButton btnProrrogar = new JButton("Prorrogar");
-        btnProrrogar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String idProyecto = txtIdProyecto.getText();
-                Proyecto proyecto = empresa.BuscarProyectoById(idProyecto);
 
-                if (proyecto != null) {
-                    Date fechaActual = new Date(System.currentTimeMillis());
-                    if (!proyecto.isPenalizado()) {
-                        if (proyecto.getFechaInicio().after(fechaActual)) {
-                            if (rdbtnDia.isSelected()) {
-                                try {
+
+btnProrrogar.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+        String idProyecto = txtIdProyecto.getText();
+        System.out.println("ID Proyecto: " + idProyecto);
+        System.out.println("Empresa instancia: " + empresa);
+        try {
+            Proyecto proyecto = buscarProyectoPorId(idProyecto);
+            System.out.println("Proyecto: " + proyecto);
+                    if (proyecto != null) {
+                        Date fechaActual = new Date(System.currentTimeMillis());
+                        if (!proyecto.isPenalizado() && proyecto.getFechaProrroga() == null) {
+                            if (proyecto.getFechaInicio().after(fechaActual)) {
+                                if (rdbtnDia.isSelected()) {
                                     int diasProrroga = (int) spnDias.getValue();
                                     Calendar calendar = Calendar.getInstance();
                                     calendar.setTime(proyecto.getFechaInicio());
                                     calendar.add(Calendar.DAY_OF_MONTH, diasProrroga);
-                                    Date nuevaFechaEntregaFinal = new Date(calendar.getTimeInMillis());
-                                    proyecto.setFechaInicio(nuevaFechaEntregaFinal);
-                                    proyecto.setPenalizado(true);
-                                    empresa.actualizarProyecto(proyecto);
-                                    JOptionPane.showMessageDialog(null, "Prorroga realizada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                                } catch (NumberFormatException ex) {
-                                    JOptionPane.showMessageDialog(null, "Por favor, ingrese una cantidad válida de días.", "Error", JOptionPane.ERROR_MESSAGE);
+                                    Date nuevaFechaFin = new Date(calendar.getTimeInMillis());
+                                    proyecto.setFechaProrroga(nuevaFechaFin);
+                                    actualizarProyecto(proyecto, Integer.parseInt(idProyecto));
+                                    JOptionPane.showMessageDialog(null, "Prórroga realizada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                                } else if (rdbtnFecha.isSelected()) {
+                                    Date nuevaFechaFin = new Date(dateFecha.getDate().getTime());
+                                    proyecto.setFechaProrroga(nuevaFechaFin);
+                                    actualizarProyecto(proyecto, Integer.parseInt(idProyecto));
+                                    JOptionPane.showMessageDialog(null, "Prórroga realizada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "Por favor, seleccione una opción de prórroga.", "Error", JOptionPane.ERROR_MESSAGE);
                                 }
-                            } else if (rdbtnFecha.isSelected()) {
-                                Date nuevaFechaEntregaFinal = new Date(dateFecha.getDate().getTime());
-                                proyecto.setFechaInicio(nuevaFechaEntregaFinal);
-                                proyecto.setPenalizado(true);
-                                empresa.actualizarProyecto(proyecto);
-                                JOptionPane.showMessageDialog(null, "Prorroga realizada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                             } else {
-                                JOptionPane.showMessageDialog(null, "Por favor, seleccione una opción de prorroga.", "Error", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(null, "No se puede realizar la prórroga porque la fecha de entrega ya ha pasado.", "Error", JOptionPane.ERROR_MESSAGE);
                             }
                         } else {
-                            JOptionPane.showMessageDialog(null, "No se puede realizar la prórroga porque la fecha de entrega ya ha pasado.", "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "No se puede realizar la prórroga porque el proyecto ya está penalizado o prorrogado.", "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     } else {
-                        JOptionPane.showMessageDialog(null, "No se puede realizar la prórroga porque el proyecto ya está penalizado.", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Proyecto no encontrado para el ID: " + idProyecto, "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Proyecto no encontrado para el ID: " + idProyecto, "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-        btnProrrogar.setBackground(Color.GREEN);
-        btnProrrogar.setForeground(new Color(255, 255, 255));
-        btnProrrogar.setActionCommand("OK");
-        buttonPane.add(btnProrrogar);
-        getRootPane().setDefaultButton(btnProrrogar);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al buscar el proyecto.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+});
 
-        JButton cancelButton = new JButton("Cerrar");
-        cancelButton.addActionListener(new ActionListener() {
+        buttonPane.add(btnProrrogar);
+        
+        JButton btnCancelar = new JButton("Cancelar");
+        btnCancelar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }
         });
-        cancelButton.setForeground(Color.RED);
-        cancelButton.setActionCommand("Cancel");
-        buttonPane.add(cancelButton);
+        buttonPane.add(btnCancelar);
+    }
 
-        JLabel lblTitle = new JLabel("Prórroga de Proyecto");
-        lblTitle.setFont(new Font("Tahoma", Font.BOLD, 18));
-        lblTitle.setBounds(115, 0, 210, 30);
-        contentPanel.add(lblTitle);
+    private Proyecto buscarProyectoPorId(String idProyecto) throws SQLException {
+        return Empresa.getInstance().BuscarProyectoById(idProyecto);
+    }
+
+    private void actualizarProyecto(Proyecto proyecto, int i) throws SQLException {
+        Empresa.getInstance().actualizarProyecto(proyecto, i);
     }
 }

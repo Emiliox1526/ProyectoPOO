@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.sql.Timestamp;
 
 public class Empresa implements Serializable {
 
@@ -16,11 +17,15 @@ public class Empresa implements Serializable {
     private ArrayList<Contrato> misContratos;
     private ArrayList<Trabajador> misTrabajadores;
     private ArrayList<Proyecto> misProyectos;
+    private ArrayList<User> misUsuarios;
+    private ArrayList<Log> misLogs;
     private static Empresa empresa = null;
     public int cantContrato;
     public int cantProyecto;
     public int cantCliente;
     public int cantTrabajador;
+    public int contratoid;
+    public int proyectoid;
 
     private static Connection con;
 
@@ -30,6 +35,8 @@ public class Empresa implements Serializable {
         misContratos = new ArrayList<>();
         misTrabajadores = new ArrayList<>();
         misProyectos = new ArrayList<>();
+        misUsuarios = new ArrayList<>();
+        misLogs = new ArrayList<>();
     }
 
     public static Empresa getInstance() { 
@@ -38,6 +45,17 @@ public class Empresa implements Serializable {
             con = Conect.getConnection();
         }
         return empresa;
+    }
+    
+    public ArrayList<Log> getMisLogs(){
+    	empresa.loadLog();
+		return misLogs;
+    }
+   
+
+	public ArrayList<User> getMisUsuarios(){
+    	empresa.loadUser();
+		return misUsuarios;
     }
 
     public ArrayList<Cliente> getMisClientes() {
@@ -59,9 +77,17 @@ public class Empresa implements Serializable {
     }
 
     public ArrayList<Trabajador> getMisTrabajadores() {
-    	empresa.loadClientes();
+        empresa.loadTrabajadores();
+        for (Trabajador trabajador : misTrabajadores) {
+            System.out.println("Trabajador: " + trabajador.getNombre() + " " + trabajador.getApellidos() +
+                               ", Cédula: " + trabajador.getCedula() +
+                               ", Dirección: " + trabajador.getDireccionParticular() +
+                               ", Sexo: " + trabajador.getSexo() +
+                               ", Fecha de Nacimiento: " + trabajador.getFechaDeNacimiento());
+        }
         return misTrabajadores;
     }
+
 
     public void setMisTrabajadores(ArrayList<Trabajador> misTrabajadores) {
         this.misTrabajadores = misTrabajadores;
@@ -156,6 +182,27 @@ public class Empresa implements Serializable {
         loadTrabajadores();
     }
 
+    private void loadLog() {
+        con = Conect.getConnection();
+        try (PreparedStatement stmt = con.prepareStatement("SELECT * FROM Control_usuario ORDER BY fecha_hora DESC");
+             ResultSet rs = stmt.executeQuery()) {
+            
+            while (rs.next()) {
+                String username = rs.getString("username");
+                String id = rs.getString("id");
+                Date timestamp = rs.getDate("fecha_hora"); 
+                Date fyh = new Date(timestamp.getTime());
+                
+                Log l = new Log(username, id, fyh);
+                misLogs.add(l);
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void loadClientes() {
     	con = Conect.getConnection();
         try (PreparedStatement stmt = con.prepareStatement("SELECT * FROM Cliente");
@@ -183,13 +230,12 @@ public class Empresa implements Serializable {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-            	String idContrato = rs.getString("id");
                 Date fechaIni = rs.getDate("fechaIni");
                 Date fechaFinC = rs.getDate("fechaFin");
                 String nombre = rs.getString("nombre");
                 int id_cliente = rs.getInt("id_cliente");
                 int id_proyecto = rs.getInt("id_proyecto");
-                Contrato contrato = new Contrato(idContrato, id_cliente, nombre, fechaIni, fechaFinC, id_proyecto);
+                Contrato contrato = new Contrato(id_cliente, nombre, fechaIni, fechaFinC, id_proyecto);
                 misContratos.add(contrato);
             }
         } catch (SQLException e) {
@@ -215,9 +261,26 @@ public class Empresa implements Serializable {
                 
                 ArrayList<Trabajador> participantes = loadTrabajadoresByProyectoId(idProyecto);
                 
-                Proyecto proyecto = new Proyecto(idProyecto, cliente, participantes, contrato, 
+                Proyecto proyecto = new Proyecto(cliente, participantes, contrato, 
                 fechaInicio, fechaInicio, fechaFin, fechaProrroga, isPenalizado);
                 misProyectos.add(proyecto);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void loadUser() {
+    	con = Conect.getConnection();
+        try (PreparedStatement stmt = con.prepareStatement("SELECT * FROM Usuario");
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String Username = rs.getString("username");
+                String pass = rs.getString("pass");
+                String tipo = rs.getString("tipo");
+                User usuario = new User(Username, pass, tipo);
+                misUsuarios.add(usuario);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -251,7 +314,7 @@ public class Empresa implements Serializable {
     }
 
     public void loadTrabajadores() {
-    	con = Conect.getConnection();
+        con = Conect.getConnection();
         try (PreparedStatement stmt = con.prepareStatement("SELECT * FROM Trabajador");
              ResultSet rs = stmt.executeQuery()) {
 
@@ -262,13 +325,96 @@ public class Empresa implements Serializable {
                 Date fechaNacimiento = rs.getDate("fechaNacimiento");
                 String sexo = rs.getString("sexo");
                 String direccion = rs.getString("direccion");
-                Trabajador trabajador = new Trabajador(cedula, nombre,apellidos ,direccion, sexo, fechaNacimiento," ", 0, 0);
-                misTrabajadores.add(trabajador);
+
+                String tipo = getTipoTrabajador(cedula);
+                Trabajador trabajador = null;
+
+                if(tipo == "Programador") {
+                        ArrayList<String> lenguajes = new ArrayList<>();
+                        try (PreparedStatement stmt1 = con.prepareStatement(
+                            "SELECT lp.nombre FROM Programador_Lenguaje pl " +
+                            "JOIN LenguajeProgramacion lp ON pl.id_lenguaje = lp.id " +
+                            "WHERE pl.cedula = ?")) {
+                            stmt1.setString(1, cedula);
+                            try (ResultSet rs1 = stmt1.executeQuery()) {
+                                while (rs1.next()) {
+                                    String lenguaje = rs1.getString("nombre");
+                                    lenguajes.add(lenguaje);
+                                }
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        trabajador = new Programador(cedula, nombre, apellidos, direccion, sexo, fechaNacimiento, " ", 0, 0, lenguajes);
+                }if(tipo == "Jefe") {
+                        int cantTrab = 0;
+                        try (PreparedStatement stmt1 = con.prepareStatement("SELECT * FROM Jefe WHERE cedula = ?")) {
+                            stmt1.setString(1, cedula);
+                            try (ResultSet rs1 = stmt1.executeQuery()) {
+                                if (rs1.next()) {
+                                    cantTrab = rs1.getInt("cantidad_trabajadores");
+                                }
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        trabajador = new Jefe(cedula, nombre, apellidos, direccion, sexo, fechaNacimiento, " ", 0, 0, cantTrab);
+                }if(tipo == "Planificador") {
+                        int frecuenciaPlanificacion = 0;
+                        try (PreparedStatement stmt1 = con.prepareStatement("SELECT * FROM Planificador WHERE cedula = ?")) {
+                            stmt1.setString(1, cedula);
+                            try (ResultSet rs1 = stmt1.executeQuery()) {
+                                if (rs1.next()) {
+                                    frecuenciaPlanificacion = rs1.getInt("frecuencia_planificacion");
+                                }
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        trabajador = new Planificador(cedula, nombre, apellidos, direccion, sexo, fechaNacimiento, " ", 0, 0, frecuenciaPlanificacion);
+                }if(tipo == "Diseniador") {
+                        int anosExperiencia = 0;
+                        try (PreparedStatement stmt1 = con.prepareStatement("SELECT * FROM Disenador WHERE cedula = ?")) {
+                            stmt1.setString(1, cedula);
+                            try (ResultSet rs1 = stmt1.executeQuery()) {
+                                if (rs1.next()) {
+                                    anosExperiencia = rs1.getInt("anos_experiencia");
+                                }
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        trabajador = new Diseñador(cedula, nombre, apellidos, direccion, sexo, fechaNacimiento, " ", 0, 0, anosExperiencia);
+                }
+
+                if (trabajador != null) {
+                    misTrabajadores.add(trabajador);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    private String getTipoTrabajador(String cedula) throws SQLException {
+        String tipo = null;
+        
+        String[] tipos = {"Programador", "Jefe", "Planificador", "Diseniador"};
+        for (String t : tipos) {
+            try (PreparedStatement stmt = con.prepareStatement("SELECT 1 FROM " + t + " WHERE cedula = ?")) {
+                stmt.setString(1, cedula);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        tipo = t;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return tipo;
+    }
+
 
     public Cliente loadClienteById(int idProyecto) {
     	con = Conect.getConnection();
@@ -303,13 +449,12 @@ public class Empresa implements Serializable {
             stmt.setInt(1, idProyecto);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                	String idContrato = rs.getString("id");
                     Date fechaIni = rs.getDate("fechaIni");
                     Date fechaFinC = rs.getDate("fechaFin");
                     String nombre = rs.getString("nombre");
                     int id_cliente = rs.getInt("id_cliente");
                     int id_proyecto = rs.getInt("id_proyecto");
-                    contrato = new Contrato(idContrato, id_cliente, nombre, fechaIni, fechaFinC, id_proyecto);
+                    contrato = new Contrato(id_cliente, nombre, fechaIni, fechaFinC, id_proyecto);
                 }
             }
         } catch (SQLException e) {
@@ -338,7 +483,6 @@ public class Empresa implements Serializable {
     	con = Conect.getConnection();
         String sql = "INSERT INTO Contrato (id, id_cliente, nombre, fechaEntrega, fechaInicio, id_proyecto) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, contrato.getId());
             stmt.setInt(2, contrato.getIdCliente());
             stmt.setString(3, contrato.getNombre());
             stmt.setDate(4, (Date) contrato.getFechaEntrega());
@@ -354,7 +498,6 @@ public class Empresa implements Serializable {
     	con = Conect.getConnection();
         String sql = "INSERT INTO Proyecto (id_proyecto, fechaInicio, fechaFin, fechaProrroga, isPenalizado) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setInt(1, proyecto.getId());
             stmt.setDate(2, proyecto.getFechaInicio());
             stmt.setDate(3, proyecto.getFechaInicio());
             stmt.setDate(4, proyecto.getFechaProrroga());
@@ -449,74 +592,83 @@ public class Empresa implements Serializable {
         }
     }
 
-	public void actualizarProyecto(Proyecto proyecto) {
-		con = Conect.getConnection();
-		try {
-            String sql = "UPDATE Proyecto SET fechaFin = ?, isPenalizado = ? WHERE id_proyecto = ?";
+    public void actualizarProyecto(Proyecto proyecto, int id) {
+        Connection con = Conect.getConnection();
+        try {
+            String sql = "UPDATE Proyecto SET fechaProrroga = ? WHERE id_proyecto = ?";
             PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setDate(1, proyecto.getFechaInicio());
-            pstmt.setBoolean(2, proyecto.isPenalizado());
-            pstmt.setInt(3, proyecto.getId());
+            pstmt.setDate(1, proyecto.getFechaProrroga());
+            pstmt.setInt(2, id); 
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-		
-	}
+        }
+
 
 	public Proyecto BuscarProyectoById(String idProyecto) {
-		con = Conect.getConnection();
-		Proyecto proyecto = null;
-        try {
-            String sql = "SELECT * FROM Proyecto, Contrato WHERE Proyecto.id_proyecto = ? AND Proyecto.id_proyecto = Contrato.id";
-            PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, idProyecto);
-            ResultSet rs = pstmt.executeQuery();
+	    con = Conect.getConnection();
+	    Proyecto proyecto = null;
+	    try {
+	        String sql = "SELECT Proyecto.*, Contrato.*, Cliente.* FROM Proyecto "
+	                   + "JOIN Contrato ON Proyecto.id_proyecto = Contrato.id_proyecto "
+	                   + "JOIN Proyecto_cliente ON Proyecto.id_proyecto = Proyecto_cliente.id_proyecto "
+	                   + "JOIN Cliente ON Proyecto_cliente.id_cliente = Cliente.id_cliente "
+	                   + "WHERE Proyecto.id_proyecto = ?";
+	        PreparedStatement pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, idProyecto);
+	        ResultSet rs = pstmt.executeQuery();
 
-            if (rs.next()) {
-            	int id_proyecto = rs.getInt("id_proyecto");
-                Date fechaIni = rs.getDate("fechaInicio");
-                Date fechafin = rs.getDate("fechaFin");
-                Date fechaprorroga = rs.getDate("fechaProrroga");
-                Boolean isPenalizado = rs.getBoolean("isPenalizado");
+	        if (rs.next()) {
+	            int id_proyecto = rs.getInt("id_proyecto");
+	            Date fechaIni = rs.getDate("fechaInicio");
+	            Date fechaFin = rs.getDate("fechaFin");
+	            Date fechaProrroga = rs.getDate("fechaProrroga");
+	            boolean isPenalizado = rs.getString("isPenalizado").equalsIgnoreCase("s");
+
                 Cliente cliente = buscarClientePorId(rs.getString("id_cliente"));
-                Contrato contrato = buscarContratoPorId(rs.getInt("id"));
-                ArrayList<Trabajador>trabajadores = buscarTrabajadoresPorProyecto(rs.getInt("id_proyecto"));
-                proyecto = new Proyecto(id_proyecto, cliente, trabajadores, contrato, fechaIni, fechafin, fechafin, fechaprorroga, isPenalizado ) ;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return proyecto;
-	}
-	
-	public Contrato buscarContratoPorId(int idContrato) {
-		con = Conect.getConnection();
-        Contrato contrato = null;
-        try {
-            String sql = "SELECT id, fechaIni, fechaFin, Proyecto.id_proyecto, Cliente.id_cliente, Cliente.nombre FROM Contrato "
-            		+ "JOIN Proyecto on Proyecto.id_proyecto = Contrato.id_proyecto"
-            		+ "JOIN Proyecto_cliente on Proyecto_cliente.id_proyecto = Proyecto.id_proyecto"
-            		+ "JOIN Cliente on Cliente.id_cliente = Proyecto_cliente.id_cliente"
-            		+ "WHERE id = ?";
-            PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setInt(1, idContrato);
-            ResultSet rs = pstmt.executeQuery();
 
-            if (rs.next()) {
-            	int id = rs.getInt("id");
-            	String nom = rs.getString("nombre");
-                Date fechaIni = rs.getDate("fechaIni");
-                Date fechaFin = rs.getDate("fechaFin");
-                String id_proyecto = rs.getString("id_proyecto");
-                int id_cliente = rs.getInt("id_cliente");
-                contrato = new Contrato(id_proyecto, id_cliente, nom,fechaIni, fechaFin, id);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return contrato;
-    }
+	            Contrato contrato = buscarContratoPorId(rs.getInt("id"));
+
+	            ArrayList<Trabajador> trabajadores = buscarTrabajadoresPorProyecto(id_proyecto);
+
+	            proyecto = new Proyecto(cliente, trabajadores, contrato, fechaIni, fechaFin, fechaFin, fechaProrroga, isPenalizado);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return proyecto;
+	}
+
+	public Contrato buscarContratoPorId(int idContrato) {
+	    con = Conect.getConnection();
+	    Contrato contrato = null;
+	    try {
+	        String sql = "SELECT Contrato.id, Contrato.fechaIni, Contrato.fechaFin, Proyecto.id_proyecto, Cliente.id_cliente, Cliente.nombre "
+	                   + "FROM Contrato "
+	                   + "JOIN Proyecto ON Proyecto.id_proyecto = Contrato.id_proyecto "
+	                   + "JOIN Proyecto_cliente ON Proyecto_cliente.id_proyecto = Proyecto.id_proyecto "
+	                   + "JOIN Cliente ON Cliente.id_cliente = Proyecto_cliente.id_cliente "
+	                   + "WHERE Contrato.id = ?";
+	        PreparedStatement pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, idContrato);
+	        ResultSet rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            String nombreCliente = rs.getString("nombre");
+	            Date fechaIni = rs.getDate("fechaIni");
+	            Date fechaFin = rs.getDate("fechaFin");
+	            int id_proyecto = rs.getInt("id_proyecto");
+	            int id_cliente = rs.getInt("id_cliente");
+
+	            contrato = new Contrato(id_cliente, nombreCliente,fechaIni, fechaFin, id_proyecto);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return contrato;
+	}
+
 	
 	public ArrayList<Trabajador> buscarTrabajadoresPorProyecto(int i) {
 		con = Conect.getConnection();

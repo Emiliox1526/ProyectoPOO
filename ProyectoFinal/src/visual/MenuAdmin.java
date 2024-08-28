@@ -51,6 +51,7 @@ public class MenuAdmin extends JFrame {
      * Create the frame.
      */
     public MenuAdmin(Control control) {
+    	setResizable(false);
         setTitle("Empresa de programacion");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 736, 355);
@@ -79,13 +80,13 @@ public class MenuAdmin extends JFrame {
         JPanel panel_3 = new JPanel();
         panel_3.setForeground(new Color(153, 102, 102));
         panel_3.setBorder(new LineBorder(new Color(153, 102, 102), 2, true));
-        panel_3.setBounds(10, 39, 695, 254);
+        panel_3.setBounds(10, 38, 695, 254);
         contentPane.add(panel_3);
         panel_3.setLayout(null);
         
                 JPanel panel = new JPanel();
-                panel.setBackground(new Color(51, 204, 204));
-                panel.setBounds(48, 56, 120, 33);
+                panel.setBackground(new Color(0, 206, 209));
+                panel.setBounds(195, 56, 120, 33);
                 panel_3.add(panel);
                 panel.setBorder(new LineBorder(new Color(0, 0, 0)));
                 
@@ -104,7 +105,7 @@ public class MenuAdmin extends JFrame {
                                 	
                                 });
                                 
-                                btnCliente.setBounds(48, 87, 120, 122);
+                                btnCliente.setBounds(195, 87, 120, 103);
                                 panel_3.add(btnCliente);
                                 btnCliente.setForeground(Color.WHITE);
                                 btnCliente.setIcon(new ImageIcon(clienteImage));
@@ -112,8 +113,8 @@ public class MenuAdmin extends JFrame {
                                 btnCliente.setBackground(Color.WHITE);
                                 
                                         JPanel panel_1 = new JPanel();
-                                        panel_1.setBackground(new Color(102, 204, 204));
-                                        panel_1.setBounds(210, 56, 120, 33);
+                                        panel_1.setBackground(new Color(0, 206, 209));
+                                        panel_1.setBounds(374, 56, 120, 33);
                                         panel_3.add(panel_1);
                                         panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
                                         
@@ -131,7 +132,7 @@ public class MenuAdmin extends JFrame {
                                                         		l.setVisible(true);
                                                         	}
                                                         });
-                                                        btnTrabajador.setBounds(210, 87, 120, 122);
+                                                        btnTrabajador.setBounds(374, 87, 120, 103);
                                                         panel_3.add(btnTrabajador);
                                                         btnTrabajador.setHorizontalAlignment(SwingConstants.LEFT);
                                                         btnTrabajador.setForeground(Color.WHITE);
@@ -140,15 +141,15 @@ public class MenuAdmin extends JFrame {
                                                         btnTrabajador.setIcon(new ImageIcon(trabajadorImage));
                                                         
                                                                 JPanel panel_2 = new JPanel();
-                                                                panel_2.setBackground(new Color(102, 204, 204));
-                                                                panel_2.setBounds(367, 56, 120, 33);
+                                                                panel_2.setBackground(new Color(0, 206, 209));
+                                                                panel_2.setBounds(542, 56, 120, 33);
                                                                 panel_3.add(panel_2);
                                                                 panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
                                                                 
                                                                         JLabel lblProyectos_1 = new JLabel("Registrar Proyectos");
+                                                                        panel_2.add(lblProyectos_1);
                                                                         lblProyectos_1.setForeground(new Color(255, 255, 255));
                                                                         lblProyectos_1.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
-                                                                        panel_2.add(lblProyectos_1);
                                                                         
                                                                                 JButton btnProyecto = new JButton("");
                                                                                 btnProyecto.addActionListener(new ActionListener() {
@@ -158,40 +159,68 @@ public class MenuAdmin extends JFrame {
                                                                                 		registroProyecto.setVisible(true);
                                                                                 	}
                                                                                 });
-                                                                                btnProyecto.setBounds(367, 87, 120, 122);
+                                                                                btnProyecto.setBounds(542, 87, 120, 103);
                                                                                 panel_3.add(btnProyecto);
                                                                                 btnProyecto.setForeground(Color.WHITE);
                                                                                 btnProyecto.setBackground(Color.WHITE);
                                                                                 btnProyecto.setIcon(new ImageIcon(proyectoImage));                                  
                                                                                 btnProyecto.setHorizontalAlignment(SwingConstants.CENTER);
-                                                                                JButton btnExit = new JButton("");
-                                                                                btnExit.addActionListener(new ActionListener() {
+                                                                                
+                                                                                JButton btnNewButton = new JButton("CERRAR");
+                                                                                btnNewButton.setBackground(Color.RED);
+                                                                                btnNewButton.addActionListener(new ActionListener() {
                                                                                 	public void actionPerformed(ActionEvent arg0) {
                                                                                 		Principal p = new Principal(control);
                                                                                 		p.setVisible(true);
                                                                                 		dispose();
                                                                                 	}
                                                                                 });
-                                                                                btnExit.setBounds(520, 87, 120, 122);
-                                                                                
-                                                                                btnExit.setForeground(Color.WHITE);
-                                                                                btnExit.setBackground(Color.WHITE);
-                                                                                btnExit.setHorizontalAlignment(SwingConstants.CENTER);
-                                                                                btnExit.setIcon(new ImageIcon(exitImage));
-                                                                               
-                                                                               
-                                                                                panel_3.add(btnExit);
+                                                                                btnNewButton.setBounds(596, 220, 89, 23);
+                                                                                panel_3.add(btnNewButton);
                                                                                 
                                                                                 JPanel panel_4 = new JPanel();
-                                                                                panel_4.setBackground(new Color(102, 204, 204));
-                                                                                panel_4.setBorder(new LineBorder(new Color(0, 0, 0)));
-                                                                                panel_4.setBounds(520, 56, 120, 33);
+                                                                                panel_4.setBackground(new Color(0, 255, 127));
+                                                                                panel_4.setBounds(0, 0, 137, 254);
                                                                                 panel_3.add(panel_4);
+                                                                                panel_4.setLayout(null);
                                                                                 
-                                                                                JLabel lblAdministracion = new JLabel("SALIR");
-                                                                                lblAdministracion.setForeground(new Color(255, 255, 255));
-                                                                                lblAdministracion.setFont(new Font("Yu Gothic Medium", Font.BOLD, 11));
-                                                                                panel_4.add(lblAdministracion);
+                                                                                JButton btnNewButton_1 = new JButton("Log");
+                                                                                btnNewButton_1.setForeground(new Color(255, 255, 255));
+                                                                                btnNewButton_1.setBackground(new Color(0, 206, 209));
+                                                                                btnNewButton_1.addActionListener(new ActionListener() {
+                                                                                	public void actionPerformed(ActionEvent arg0) {
+                                                                                		LogDialog log = new LogDialog();
+                                                                                		log.setModal(true);
+                                                                                		log.setVisible(true);
+                                                                                	}
+                                                                                });
+                                                                                btnNewButton_1.setBounds(23, 52, 89, 23);
+                                                                                panel_4.add(btnNewButton_1);
+                                                                                
+                                                                                JButton btnListaDeUsuarios = new JButton("Lista de Usuarios");
+                                                                                btnListaDeUsuarios.addActionListener(new ActionListener() {
+                                                                                	public void actionPerformed(ActionEvent e) {
+                                                                                		ListaUsuarios lu = new ListaUsuarios();
+                                                                                		lu.setVisible(true);
+                                                                                		lu.setModal(true);
+                                                                                	}
+                                                                                });
+                                                                                btnListaDeUsuarios.setForeground(Color.WHITE);
+                                                                                btnListaDeUsuarios.setBackground(new Color(0, 206, 209));
+                                                                                btnListaDeUsuarios.setBounds(23, 117, 89, 23);
+                                                                                panel_4.add(btnListaDeUsuarios);
+                                                                                
+                                                                                JButton btnRegistrarUsuario = new JButton("Registrar Usuario");
+                                                                                btnRegistrarUsuario.addActionListener(new ActionListener() {
+                                                                                	public void actionPerformed(ActionEvent e) {
+                                                                                		regUser r = new regUser();
+                                                                                		r.setVisible(true);
+                                                                                	}
+                                                                                });
+                                                                                btnRegistrarUsuario.setForeground(Color.WHITE);
+                                                                                btnRegistrarUsuario.setBackground(new Color(0, 206, 209));
+                                                                                btnRegistrarUsuario.setBounds(23, 184, 89, 23);
+                                                                                panel_4.add(btnRegistrarUsuario);
                                                                                 
                                                                                 JLabel lblCuentaLogeada = new JLabel("Cuenta Logeada:");
                                                                                 lblCuentaLogeada.setFont(new Font("Yu Gothic Medium", Font.PLAIN, 14));
@@ -208,7 +237,7 @@ public class MenuAdmin extends JFrame {
 																				} else {
 																					txtUser.setText(Control.getLoginUser().getUserName());
 																					if(Control.getLoginUser().getTipo().equals("Administrador")) {
-																						btnExit.setEnabled(true);
+																						btnNewButton.setEnabled(true);
 																					}
 																				}
                                                                                 

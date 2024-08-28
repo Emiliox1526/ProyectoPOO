@@ -7,7 +7,6 @@ public class Contrato implements Serializable {
 	
 
 	private static final long serialVersionUID = 1L;
-	private String id;
 	private int idCliente;
 	private String nombre;
 	private Date fechaEntrega;
@@ -16,24 +15,13 @@ public class Contrato implements Serializable {
 	
 
 
-	public Contrato(String id, int idCliente, String nombre, Date fechaEntrega, Date fechaInicio, int id_proyecto) {
+	public Contrato (int idCliente, String nombre, Date fechaEntrega, Date fechaInicio, int id_proyecto) {
 		super();
-		this.id = id;
 		this.idCliente = idCliente;
 		this.nombre = nombre;
 		this.fechaEntrega = fechaEntrega;
 		this.fechaInicio = fechaInicio;
 		this.id_proyecto = id_proyecto;
-	}
-
-
-	public String getId() {
-		return id;
-	}
-
-
-	public void setId(String id) {
-		this.id = id;
 	}
 
 

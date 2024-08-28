@@ -3,10 +3,8 @@ package visual;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.*;
@@ -16,6 +14,12 @@ import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 
 import logico.Conect;
+import logico.Diseñador;
+import logico.Empresa;
+import logico.Jefe;
+import logico.Planificador;
+import logico.Programador;
+import logico.Trabajador;
 
 public class ListadoTrabajador extends JDialog {
 
@@ -45,7 +49,7 @@ public class ListadoTrabajador extends JDialog {
      */
     public ListadoTrabajador() {
         setResizable(false);
-        setBounds(100, 100, 675, 466);
+        setBounds(100, 100, 725, 466);
         getContentPane().setLayout(new BorderLayout());
         contentPanel.setBackground(new Color(230, 230, 250));
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -53,14 +57,14 @@ public class ListadoTrabajador extends JDialog {
         contentPanel.setLayout(null);
         setLocationRelativeTo(null);
 
-        String[] header = {"Cédula", "Nombre", "Edad", "Sexo", "Dirección"};
+        String[] header = {"Cédula", "Nombre", "Edad", "Sexo", "Dirección", "Ocupacion"};
         model = new DefaultTableModel();
         model.setColumnIdentifiers(header);
 
         JPanel panel_1 = new JPanel();
         panel_1.setBackground(SystemColor.menu);
         panel_1.setBorder(new LineBorder(new Color(160, 82, 45), 2, true));
-        panel_1.setBounds(10, 35, 636, 344);
+        panel_1.setBounds(10, 35, 699, 344);
         contentPanel.add(panel_1);
         panel_1.setLayout(null);
 
@@ -122,7 +126,7 @@ public class ListadoTrabajador extends JDialog {
         panel_1.add(btnReiniciar);
 
         JPanel panel = new JPanel();
-        panel.setBounds(10, 145, 616, 188);
+        panel.setBounds(10, 145, 679, 188);
         panel.setBorder(new LineBorder(new Color(30, 144, 255), 2, true));
         panel.setLayout(new BorderLayout(0, 0));
         panel_1.add(panel);
@@ -155,6 +159,7 @@ public class ListadoTrabajador extends JDialog {
             }
         });
         buttonPane.add(cancelButton, BorderLayout.EAST);
+        
         loadTrabajadores();
     }
 
@@ -187,6 +192,7 @@ public class ListadoTrabajador extends JDialog {
                     row[2] = rs.getDate("fechaNacimiento").toString();
                     row[3] = rs.getString("sexo");
                     row[4] = rs.getString("direccion");
+                    row[5] = getTipoTrabajador(rs.getString("cedula"));
                     model.addRow(row);
                 }
             }
@@ -196,38 +202,134 @@ public class ListadoTrabajador extends JDialog {
     }
 
     public void loadTrabajadores() {
-    	model.setRowCount(0);
-    	String sql = "SELECT t.cedula, t.nombre, t.fechaNacimiento, t.sexo, t.direccion FROM Trabajador t";
-    	String sql1 = "SELECT dbo.CalcularEdad(?) AS Edad";
+    	
+    	
+        model.setRowCount(0);
+        String sql = "SELECT t.cedula, t.nombre, t.fechaNacimiento, t.sexo, t.direccion FROM Trabajador t";
+        String sqlEdad = "SELECT dbo.CalcularEdad(?) AS Edad";
 
-    	try (Connection con = Conect.getConnection();
-    	     PreparedStatement pst = con.prepareStatement(sql);
-    	     ResultSet rs = pst.executeQuery()) {
-    	    
-    	    while (rs.next()) {
-    	        Date fechaNacimiento = rs.getDate("fechaNacimiento");
-    	        
-    	        try (PreparedStatement pst1 = con.prepareStatement(sql1)) {
-    	            pst1.setDate(1, (java.sql.Date) fechaNacimiento);
+        try (Connection con = Conect.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
 
-    	            try (ResultSet rs1 = pst1.executeQuery()) {
-    	                if (rs1.next()) {
+            while (rs.next()) {
+                String cedula = rs.getString("cedula");
+                String nombre = rs.getString("nombre");
+                Date fechaNacimiento = rs.getDate("fechaNacimiento");
+                String sexo = rs.getString("sexo");
+                String direccion = rs.getString("direccion");
 
-    	                    Object[] row = new Object[model.getColumnCount()];
-    	                    row[0] = rs.getString("cedula");
-    	                    row[1] = rs.getString("nombre");
-    	                    row[2] = rs1.getInt("Edad");  
-    	                    row[3] = rs.getString("sexo");
-    	                    row[4] = rs.getString("direccion");
-    	                    
-    	                    model.addRow(row);
-    	                }
-    	            }
-    	        }
-    	    }
-    	} catch (SQLException e) {
-    	    e.printStackTrace();
-    	}
+                PreparedStatement pstEdad = con.prepareStatement(sqlEdad);
+                pstEdad.setDate(1, new java.sql.Date(fechaNacimiento.getTime()));
 
+                ResultSet rsEdad = pstEdad.executeQuery();
+                int edad = 0;
+                if (rsEdad.next()) {
+                    edad = rsEdad.getInt("Edad");
+                }
+
+                String tipo = getTipoTrabajador(cedula);
+                
+                	if(tipo == "Programador") {
+                		model.addRow(new Object[]{cedula, nombre , edad, sexo, direccion, tipo + " ( " + getLenguajes(con, cedula) + " ) " });
+                	}if (tipo == "Diseñador") {
+                    	model.addRow(new Object[]{cedula, rs.getString("nombre"), edad, sexo, direccion, tipo + " ( " + getAnosExperiencia(con, cedula) + " ) "});
+                    }if (tipo == "Jefe") {
+                    	model.addRow(new Object[]{cedula, rs.getString("nombre"), edad, sexo, direccion, tipo + " ( " + getCantidadTrabajadores(con, cedula) + " ) "});
+                    }if (tipo == "Planificador") {
+                    	model.addRow(new Object[]{cedula, rs.getString("nombre"), edad, sexo, direccion, tipo + " ( " + getFrecuenciaPlanificacion(con, cedula) + " ) "});
+                    }
+                
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
+    private String getTipoTrabajador(String cedula) throws SQLException {
+        String tipo = null;
+        Connection con = Conect.getConnection();
+        String[] tipos = {"Programador", "Jefe", "Planificador", "Diseniador"};
+        for (String t : tipos) {
+            try (PreparedStatement stmt = con.prepareStatement("SELECT 1 FROM " + t + " WHERE cedula = ?")) {
+                stmt.setString(1, cedula);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        tipo = t;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return tipo;
+    }
+    
+    private String getCantidadTrabajadores(Connection con, String cedula) {
+        String sql = "SELECT cantidad_trabajadores FROM Jefe WHERE cedula = ?";
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, cedula);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("cantidad_trabajadores");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "N/A";
+    }
+    
+    private String getAnosExperiencia(Connection con, String cedula) {
+        String sql = "SELECT anos_experiencia FROM Diseñador WHERE cedula = ?";
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, cedula);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("anos_experiencia");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "N/A"; 
+    }
+
+
+    
+    private String getFrecuenciaPlanificacion(Connection con, String cedula) {
+        String sql = "SELECT frecuencia_planificacion FROM Planificador WHERE cedula = ?";
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, cedula);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("frecuencia_planificacion");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "N/A";
+    }
+
+
+    private String getLenguajes(Connection con, String cedula) throws SQLException {
+        StringBuilder lenguajes = new StringBuilder();
+        try (PreparedStatement pst = con.prepareStatement("SELECT lp.nombre FROM Programador_Lenguaje pl " +
+                                                          "JOIN LenguajeProgramacion lp ON pl.id_lenguaje = lp.id " +
+                                                          "WHERE pl.cedula = ?")) {
+            pst.setString(1, cedula);
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    if (lenguajes.length() > 0) {
+                        lenguajes.append(", ");
+                    }
+                    lenguajes.append(rs.getString("nombre"));
+                }
+            }
+        }
+        return lenguajes.toString();
+    }
+    
+    
 }

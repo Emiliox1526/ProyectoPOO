@@ -39,7 +39,6 @@ public class ListadoProyecto extends JDialog {
     public static void main(String[] args) {
         try {
             ListadoProyecto dialog = new ListadoProyecto();
-            dialog.loadProyectos();
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setVisible(true);
         } catch (Exception e) {
@@ -121,7 +120,7 @@ public class ListadoProyecto extends JDialog {
                     Connection con = Conect.getConnection();
                     String sql = "SELECT p.id_proyecto, c.nombre, c.apellido, p.fechaInicio, p.fechaFin, p.fechaProrroga, p.isPenalizado " +
                             "FROM Proyecto p " +
-                            "INNER JOIN Proyecto_Cliente pc ON p.id_proyecto = pc.id_proyecto " +
+                            "INNER JOIN Proyecto_cliente pc ON p.id_proyecto = pc.id_proyecto " +
                             "INNER JOIN Cliente c ON pc.id_cliente = c.id_cliente " +
                             "WHERE (p.id_proyecto = ? OR ? = '') " +
                             "AND (c.nombre = ? OR ? = '') " +
@@ -144,7 +143,12 @@ public class ListadoProyecto extends JDialog {
                         row[2] = rs.getDate("fechaInicio").toString();
                         row[3] = rs.getDate("fechaFin").toString();
                         row[4] = rs.getDate("fechaProrroga") == null ? "No" : rs.getDate("fechaProrroga").toString();
-                        row[5] = rs.getBoolean("isPenalizado") ? "Si" : "No";
+                        if (rs.getDate("fechaFin").before(new java.util.Date()) && rs.getDate("fechaProrroga").before(new java.util.Date())) {
+                            row[5] = "NO";
+                        } else {
+                            row[5] = "SI";
+                        }
+
                         model.addRow(row);
                     }
                 } catch (SQLException e) {
@@ -223,12 +227,13 @@ public class ListadoProyecto extends JDialog {
     }
 
     private void loadProyectos() {
+    	java.util.Date fechaActual = new java.util.Date();
         model.setRowCount(0);
         try {
             Connection con = Conect.getConnection();
             String sql = "SELECT p.id_proyecto, c.nombre, c.apellido, p.fechaInicio, p.fechaFin, p.fechaProrroga, p.isPenalizado " +
                     "FROM Proyecto p " +
-                    "INNER JOIN Proyecto_Cliente pc ON p.id_proyecto = pc.id_proyecto " +
+                    "INNER JOIN Proyecto_cliente pc ON p.id_proyecto = pc.id_proyecto " +
                     "INNER JOIN Cliente c ON pc.id_cliente = c.id_cliente";
 
             PreparedStatement pst = con.prepareStatement(sql);
@@ -241,7 +246,11 @@ public class ListadoProyecto extends JDialog {
                 row[2] = rs.getDate("fechaInicio").toString();
                 row[3] = rs.getDate("fechaFin").toString();
                 row[4] = rs.getDate("fechaProrroga") == null ? "No" : rs.getDate("fechaProrroga").toString();
-                row[5] = rs.getBoolean("isPenalizado") ? "Si" : "No";
+                if (rs.getDate("fechaFin").before(fechaActual)) {
+                    row[5] = "Si";
+                } else {
+                    row[5] = "No";
+                }
                 model.addRow(row);
             }
         } catch (SQLException e) {

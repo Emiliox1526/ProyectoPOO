@@ -132,9 +132,7 @@ public class regUser extends JDialog {
         JButton btnCancelar = new JButton("Cancelar");
         btnCancelar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                VentanaLogin frame = new VentanaLogin();
                 dispose();
-                frame.setVisible(true);
             }
         });
         btnCancelar.setActionCommand("Cancel");

@@ -92,7 +92,7 @@ public class VentanaLogin extends JDialog {
         lblContraseña.setBounds(22, 100, 99, 14);
         panel.add(lblContraseña);
 
-        txtUsuario = SSnew JTextField();
+        txtUsuario = new JTextField();
         txtUsuario.setBounds(97, 51, 380, 20);
         panel.add(txtUsuario);
         txtUsuario.setColumns(10);
